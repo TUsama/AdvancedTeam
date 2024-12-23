@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+
+  "name": "Teams Mod",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "CommodoreThrawn","Tfarcenim"
+  ],
+  "contact": {
+    "sources": "https://github.com/Tfarcenim/teamshud"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.t2pellet.teams.TeamsHUDFabric"
+    ],
+    "client": [
+      "com.t2pellet.teams.client.TeamsHUDClientFabric"
+    ]
+  },
+  "mixins": [
+    "teams.fabric.mixins.json",
+    "teams.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric-api": "*",
+    "java": ">=17"
+  }
+}

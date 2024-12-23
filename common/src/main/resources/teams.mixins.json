@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.t2pellet.teams.mixin",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AdvancementAccessor",
+    "ServerPlayerMixin",
+    "TeamMessageCommandMixin"
+  ],
+  "client": [
+    "InventoryScreenAccessor",
+    "ScreenMixin"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+
