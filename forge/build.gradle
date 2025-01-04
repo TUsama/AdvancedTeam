@@ -1,6 +1,5 @@
 plugins {
     id 'idea'
-    id 'maven-publish'
     id 'net.minecraftforge.gradle'
     id 'org.spongepowered.mixin'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
@@ -89,9 +88,7 @@ dependencies {
 tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
-tasks.withType(Javadoc).configureEach {
-    source(project(":common").sourceSets.main.allJava)
-}
+
 tasks.named("sourcesJar", Jar) {
     from(project(":common").sourceSets.main.allSource)
 }
@@ -102,17 +99,4 @@ processResources {
 
 jar.finalizedBy('reobfJar')
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-            fg.component(it)
-        }
-    }
-    repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
-        }
-    }
-}
+

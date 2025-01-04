@@ -18,10 +18,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.t2pellet.teams.TeamsHUDFabric"
+      "com.clefal.teams.TeamsHUDFabric"
     ],
     "client": [
-      "com.t2pellet.teams.client.TeamsHUDClientFabric"
+      "com.clefal.teams.client.TeamsHUDClientFabric"
     ]
   },
   "mixins": [

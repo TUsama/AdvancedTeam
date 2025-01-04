@@ -4,10 +4,10 @@
   "package": "com.t2pellet.teams.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AdvancementMixinFabric"
+    "com.clefal.teams.mixin.AdvancementMixinFabric"
   ],
   "client": [
-    "TabHudMixin"
+    "com.clefal.teams.mixin.TabHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

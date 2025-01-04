@@ -1,0 +1,16 @@
+package com.clefal.teams.core;
+
+import net.minecraft.server.level.ServerPlayer;
+
+public interface IHasTeam {
+
+    // Returns whether target is in team
+    boolean hasTeam();
+
+    // Returns target's team, or null if not in a team
+    ModTeam getTeam();
+
+    void setTeam(ModTeam team);
+
+    boolean isTeammate(ServerPlayer other);
+}
