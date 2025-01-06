@@ -7,12 +7,11 @@ import com.mojang.authlib.properties.Property;
 import com.clefal.teams.ScreenDuck;
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.ClientTeamDB;
+import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.ui.hud.CompassOverlay;
 import com.clefal.teams.client.ui.hud.StatusOverlay;
 import com.clefal.teams.client.ui.menu.TeamsLonelyScreen;
 import com.clefal.teams.client.ui.menu.TeamsMainScreen;
-import com.t2pellet.teams.client.ui.toast.*;
 import com.clefal.teams.mixin.InventoryScreenAccessor;
 import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
 import com.clefal.teams.network.client.S2CTeamUpdatePacket;
@@ -48,7 +47,7 @@ public class TeamsHUDClient {
 
     public static void clientDisconnect() {
         ClientTeam.INSTANCE.reset();
-        ClientTeamDB.INSTANCE.clear();
+        ClientTeamData.INSTANCE.clear();
     }
 
     public static void afterScreenInit(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight){

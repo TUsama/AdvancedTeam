@@ -10,7 +10,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.clefal.teams.core.IHasTeam;
 import com.clefal.teams.core.ModComponents;
 import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamDB;
+import com.clefal.teams.core.TeamData;
 import com.clefal.teams.network.client.S2CTeamInviteSentPacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.commands.CommandSourceStack;
@@ -57,7 +57,7 @@ public class TeamCommand {
         String name = ctx.getArgument("name", String.class);
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         try {
-            TeamDB.getOrMakeDefault(player.server).addTeam(name, player);
+            TeamData.getOrMakeDefault(player.server).addTeam(name, player);
         } catch (ModTeam.TeamException e) {
             throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
         }
@@ -66,17 +66,16 @@ public class TeamCommand {
 
     private static int invitePlayer(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
-        ServerPlayer newPlayer = EntityArgument.getPlayer(ctx, "player");
+        ServerPlayer other = EntityArgument.getPlayer(ctx, "player");
         ModTeam team = ((IHasTeam) player).getTeam();
         if (team == null) {
             throw new SimpleCommandExceptionType(ModComponents.translatable("teams.error.notinteam", player.getName().getString())).create();
         }
-        try {
-            get(ctx).invitePlayerToTeam(newPlayer, team);
-            Services.PLATFORM.sendToClient(new S2CTeamInviteSentPacket(team.getName(), newPlayer.getName().getString()), player);
-        } catch (ModTeam.TeamException e) {
-            throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
-        }
+
+        boolean b = get(ctx).invitePlayerToTeam(other, team);
+        if (!b) player.sendSystemMessage(ModComponents.translatable("teams.error.alreadyinteam", other.getName().getString()));
+        Services.PLATFORM.sendToClient(new S2CTeamInviteSentPacket(team.getName(), other.getName().getString()), player);
+
         return Command.SINGLE_SUCCESS;
     }
 
@@ -102,7 +101,7 @@ public class TeamCommand {
 
     private static int removeTeam(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String name = ctx.getArgument("name", String.class);
-        ModTeam team = TeamDB.getOrMakeDefault(ctx.getSource().getServer()).getTeam(name);
+        ModTeam team = TeamData.getOrMakeDefault(ctx.getSource().getServer()).getTeam(name);
         if (team == null) {
             throw new SimpleCommandExceptionType(ModComponents.translatable("teams.error.invalidteam", name)).create();
         }
@@ -128,8 +127,8 @@ public class TeamCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static TeamDB get(CommandContext<CommandSourceStack> context) {
-        return TeamDB.getOrMakeDefault(context.getSource().getServer());
+    private static TeamData get(CommandContext<CommandSourceStack> context) {
+        return TeamData.getOrMakeDefault(context.getSource().getServer());
     }
 
 }

@@ -1,7 +1,7 @@
 package com.clefal.teams.client.ui.menu;
 
 import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.client.core.ClientTeamDB;
+import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.core.ModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +25,7 @@ public class TeamsLonelyScreen extends TeamsScreen {
         super.init();
         // ModTeam Entries
         int yPos = y + 12;
-        for (String team : ClientTeamDB.INSTANCE.getOnlineTeams()) {
+        for (String team : ClientTeamData.INSTANCE.getOnlineTeams()) {
             var entry = new TeamEntry(team, this.width / 2 - 122, yPos);
             addRenderableWidget(entry);
             addWidget(entry.joinButton);
@@ -41,7 +41,7 @@ public class TeamsLonelyScreen extends TeamsScreen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         super.render(graphics, mouseX, mouseY, delta);
-        if (ClientTeamDB.INSTANCE.getOnlineTeams().isEmpty()) {
+        if (ClientTeamData.INSTANCE.getOnlineTeams().isEmpty()) {
             int textWidth = font.width(ModComponents.LONELY_TEXT);
             int textHeight   = font.lineHeight;
             graphics.drawString(font, ModComponents.LONELY_TEXT, (this.width - textWidth) / 2, y + 24 - (textHeight / 2), ChatFormatting.BLACK.getColor(),false);

@@ -18,23 +18,27 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Stream;
 
-;
+
 
 public class ModTeam extends net.minecraft.world.scores.Team {
 
     public final String name;
-    private final TeamDB teamDB;
+    private final TeamData teamData;
+    @Nullable
+    private UUID leader;
     private Set<UUID> players;
     private Map<UUID, ServerPlayer> onlinePlayers;
     private final Set<Advancement> advancements = new LinkedHashSet<>();
     private PlayerTeam scoreboardTeam;
 
-    ModTeam(Scoreboard scoreboard, String name, TeamDB teamDB) {
+    ModTeam(Scoreboard scoreboard, String name, TeamData teamData) {
         this.name = name;
-        this.teamDB = teamDB;
+        this.teamData = teamData;
+        this.leader = null;
         players = new HashSet<>();
         onlinePlayers = new HashMap<>();
         scoreboardTeam = scoreboard.getPlayerTeam(name);
@@ -43,12 +47,12 @@ public class ModTeam extends net.minecraft.world.scores.Team {
         }
     }
 
-    public UUID getOwner() {
-        return players.stream().findFirst().orElseThrow();
+    public @Nullable UUID getLeader() {
+        return leader;
     }
 
     public boolean playerHasPermissions(ServerPlayer player) {
-        return getOwner().equals(player.getUUID()) || player.hasPermissions(2);
+        return getLeader() != null && getLeader().equals(player.getUUID()) || player.hasPermissions(2);
     }
     public Collection<ServerPlayer> getOnlinePlayers() {
         return onlinePlayers.values();
@@ -95,7 +99,7 @@ public class ModTeam extends net.minecraft.world.scores.Team {
         if (sendPackets) {
             Services.PLATFORM.sendToClient(new S2CTeamInitPacket(name, playerHasPermissions(player)), player);
             if (onlinePlayers.size() == 1) {
-                var players = teamDB.serverLevel.getServer().getPlayerList().getPlayers();
+                var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
                 Services.PLATFORM.sendToClients(new S2CTeamDataPacket(S2CTeamDataPacket.Type.ONLINE, name), players);
             }
             var players = getOnlinePlayers();
@@ -122,7 +126,7 @@ public class ModTeam extends net.minecraft.world.scores.Team {
         // Packets
         if (sendPackets) {
             if (isEmpty()) {
-                var players = teamDB.serverLevel.getServer().getPlayerList().getPlayers();
+                var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
                 Services.PLATFORM.sendToClients(new S2CTeamDataPacket(S2CTeamDataPacket.Type.OFFLINE, name), players);
             }
             var players = getOnlinePlayers();
@@ -134,11 +138,11 @@ public class ModTeam extends net.minecraft.world.scores.Team {
         players.add(player);
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        var playerScoreboardTeam = teamDB.scoreboard.getPlayersTeam(playerName);
+        var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
         if (playerScoreboardTeam == null || !playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
-            teamDB.scoreboard.addPlayerToTeam(playerName, scoreboardTeam);
+            teamData.scoreboard.addPlayerToTeam(playerName, scoreboardTeam);
         }
-        var playerEntity = teamDB.serverLevel.getServer().getPlayerList().getPlayer(player);
+        var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
             // Packets
             Services.PLATFORM.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, true), playerEntity);
@@ -158,12 +162,12 @@ public class ModTeam extends net.minecraft.world.scores.Team {
         players.remove(player);
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        var playerScoreboardTeam = teamDB.scoreboard.getPlayersTeam(playerName);
+        var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
         if (playerScoreboardTeam != null && playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
-            teamDB.scoreboard.removePlayerFromTeam(playerName, scoreboardTeam);
+            teamData.scoreboard.removePlayerFromTeam(playerName, scoreboardTeam);
         }
         // Packets
-        var playerEntity = teamDB.serverLevel.getServer().getPlayerList().getPlayer(player);
+        var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
             playerOffline(playerEntity, true);
             Services.PLATFORM.sendToClient(new S2CTeamClearPacket(), playerEntity);
@@ -174,10 +178,10 @@ public class ModTeam extends net.minecraft.world.scores.Team {
     }
 
     private String getNameFromUUID(UUID id) {
-        return teamDB.serverLevel.getServer().getProfileCache().get(id).map(GameProfile::getName).orElseThrow();
+        return teamData.serverLevel.getServer().getProfileCache().get(id).map(GameProfile::getName).orElseThrow();
     }
 
-    static ModTeam fromNBT(CompoundTag compound, TeamDB teamDB) {
+    static ModTeam fromNBT(CompoundTag compound, TeamData teamData) {
         ModTeam team = new Builder(compound.getString("name"))
                 .setColour(ChatFormatting.getByName(compound.getString("colour")))
                 .setCollisionRule(CollisionRule.byName(compound.getString("collision")))
@@ -185,7 +189,7 @@ public class ModTeam extends net.minecraft.world.scores.Team {
                 .setNameTagVisibilityRule(Visibility.byName(compound.getString("nameTags")))
                 .setFriendlyFireAllowed(compound.getBoolean("friendlyFire"))
                 .setShowFriendlyInvisibles(compound.getBoolean("showInvisible"))
-                .complete(teamDB);
+                .complete(teamData);
 
         ListTag players = compound.getList("players", Tag.TAG_STRING);
         for (var elem : players) {
@@ -195,7 +199,7 @@ public class ModTeam extends net.minecraft.world.scores.Team {
         ListTag advancements = compound.getList("advancement", Tag.TAG_STRING);
         for (var adv : advancements) {
             ResourceLocation id = ResourceLocation.tryParse(adv.getAsString());
-            team.addAdvancement(teamDB.serverLevel.getServer().getAdvancements().getAdvancement(id));
+            team.addAdvancement(teamData.serverLevel.getServer().getAdvancements().getAdvancement(id));
         }
 
         return team;
@@ -356,8 +360,8 @@ public class ModTeam extends net.minecraft.world.scores.Team {
             return this;
         }
 
-        public ModTeam complete(TeamDB teamDB) {
-            ModTeam team = new ModTeam(teamDB.scoreboard,name,teamDB);
+        public ModTeam complete(TeamData teamData) {
+            ModTeam team = new ModTeam(teamData.scoreboard,name, teamData);
             team.setShowFriendlyInvisibles(showFriendlyInvisibles);
             team.setFriendlyFireAllowed(friendlyFireAllowed);
             team.setNameTagVisibilityRule(nameTagVisibilityRule);

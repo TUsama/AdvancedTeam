@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ClientTeamDB {
+public class ClientTeamData {
 
-    public static ClientTeamDB INSTANCE = new ClientTeamDB();
+    public static ClientTeamData INSTANCE = new ClientTeamData();
 
     private Set<String> teams;
     private Set<String> onlineTeams;
 
-    private ClientTeamDB() {
+    private ClientTeamData() {
         teams = new HashSet<>();
         onlineTeams = new HashSet<>();
     }

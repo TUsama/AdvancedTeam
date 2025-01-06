@@ -2,7 +2,7 @@ package com.clefal.teams.network.server;
 
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamDB;
+import com.clefal.teams.core.TeamData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -23,9 +23,9 @@ public class C2STeamJoinPacket implements C2SModPacket {
     }
     @Override
     public void handleServer(ServerPlayer player) {
-        ModTeam team = TeamDB.getOrMakeDefault(player.server).getTeam(this.team);
+        ModTeam team = TeamData.getOrMakeDefault(player.server).getTeam(this.team);
         try {
-            TeamDB.getOrMakeDefault(player.server).addPlayerToTeam(player, team);
+            TeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team);
         } catch (ModTeam.TeamException ex) {
             TeamsHUD.LOGGER.error("Failed to join team: {}", team);
             TeamsHUD.LOGGER.error(ex.getMessage());

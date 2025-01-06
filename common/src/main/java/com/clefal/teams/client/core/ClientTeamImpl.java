@@ -76,8 +76,8 @@ class ClientTeamImpl implements ClientTeam {
     public void updatePlayer(UUID player, float health, int hunger) {
         var teammate = teammates.get(player);
         if (teammate != null) {
-            teammate.health = health;
-            teammate.hunger = hunger;
+            teammate.addProperty(Teammate.HEALTH, health);
+            teammate.addProperty(Teammate.HUNGER, hunger);
         } else {
             TeamsHUD.LOGGER.warn("Tried updating player with UUID " + player + "but they are not in this clients team");
         }

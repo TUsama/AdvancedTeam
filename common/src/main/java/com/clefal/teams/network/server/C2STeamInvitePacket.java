@@ -3,7 +3,7 @@ package com.clefal.teams.network.server;
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.core.IHasTeam;
 import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamDB;
+import com.clefal.teams.core.TeamData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -13,6 +13,7 @@ public class C2STeamInvitePacket implements C2SModPacket {
 
 
     String to;
+
     public C2STeamInvitePacket(String to) {
         this.to = to;
     }
@@ -36,11 +37,7 @@ public class C2STeamInvitePacket implements C2SModPacket {
         if (team == null) {
             TeamsHUD.LOGGER.error("{} tried inviting {} but they are not in a team..", player.getName().getString(), toPlayer.getName().getString());
         } else {
-            try {
-                TeamDB.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team);
-            } catch (ModTeam.TeamException e) {
-                TeamsHUD.LOGGER.error(e.getMessage());
-            }
+            TeamData.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team);
         }
     }
 }

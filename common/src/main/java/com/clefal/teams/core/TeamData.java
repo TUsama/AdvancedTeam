@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class TeamDB extends SavedData {
+public class TeamData extends SavedData {
 
     private static final String TEAMS_KEY = "teams";
 
@@ -27,7 +27,7 @@ public class TeamDB extends SavedData {
     ServerLevel serverLevel;
     Scoreboard scoreboard;
 
-    private TeamDB(ServerLevel serverLevel) {
+    private TeamData(ServerLevel serverLevel) {
         this.serverLevel = serverLevel;
         scoreboard = serverLevel.getScoreboard();
     }
@@ -93,11 +93,14 @@ public class TeamDB extends SavedData {
         return teams.get(name);
     }
 
-    public void invitePlayerToTeam(ServerPlayer player, ModTeam team) throws ModTeam.TeamException {
+    public boolean invitePlayerToTeam(ServerPlayer player, ModTeam team) {
         if (((IHasTeam) player).hasTeam()) {
-            throw new ModTeam.TeamException(ModComponents.translatable("teams.error.alreadyinteam", player.getName().getString()));
+            return false;
+        } else {
+            Services.PLATFORM.sendToClient(new S2CTeamInvitedPacket(team), player);
+            return true;
         }
-        Services.PLATFORM.sendToClient(new S2CTeamInvitedPacket(team), player);
+
     }
 
     public void addPlayerToTeam(ServerPlayer player, ModTeam team) throws ModTeam.TeamException {
@@ -139,23 +142,23 @@ public class TeamDB extends SavedData {
     }
 
 
-    static TeamDB get(ServerLevel serverLevel) {
+    static TeamData get(ServerLevel serverLevel) {
         return serverLevel.getDataStorage()
                 .get(compoundTag -> loadStatic(compoundTag, serverLevel),TEAMS_KEY);
     }
 
 
-    static TeamDB getOrMake(ServerLevel serverLevel) {
+    static TeamData getOrMake(ServerLevel serverLevel) {
         return serverLevel.getDataStorage()
-                .computeIfAbsent(compoundTag -> loadStatic(compoundTag,serverLevel), () -> new TeamDB(serverLevel), TEAMS_KEY);
+                .computeIfAbsent(compoundTag -> loadStatic(compoundTag,serverLevel), () -> new TeamData(serverLevel), TEAMS_KEY);
     }
 
-    public static TeamDB getOrMakeDefault(MinecraftServer server) {
+    public static TeamData getOrMakeDefault(MinecraftServer server) {
         return getOrMake(server.overworld());
     }
 
-    public static TeamDB loadStatic(CompoundTag compoundTag,ServerLevel level) {
-        TeamDB id = new TeamDB(level);
+    public static TeamData loadStatic(CompoundTag compoundTag, ServerLevel level) {
+        TeamData id = new TeamData(level);
         id.fromNBT(compoundTag);
         return id;
     }

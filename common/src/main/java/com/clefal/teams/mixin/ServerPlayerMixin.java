@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.core.IHasTeam;
 import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamDB;
+import com.clefal.teams.core.TeamData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -65,7 +65,7 @@ public abstract class ServerPlayerMixin extends Player implements IHasTeam {
 	@Inject(at = @At(value = "TAIL"), method = "readAdditionalSaveData")
 	private void readCustomDataFromNbt(CompoundTag nbt, CallbackInfo info) {
 		if (team == null && nbt.contains("playerTeam")) {
-			team = TeamDB.getOrMakeDefault(this.serverLevel().getServer()).getTeam(nbt.getString("playerTeam"));
+			team = TeamData.getOrMakeDefault(this.serverLevel().getServer()).getTeam(nbt.getString("playerTeam"));
 			if (team == null || !team.hasPlayer(getUUID())) {
 				team = null;
 			}
