@@ -1,4 +1,4 @@
-package com.clefal.teams.core;
+package com.clefal.teams.server;
 
 import net.minecraft.server.level.ServerPlayer;
 
@@ -8,9 +8,9 @@ public interface IHasTeam {
     boolean hasTeam();
 
     // Returns target's team, or null if not in a team
-    ModTeam getTeam();
+    ATServerTeam getTeam();
 
-    void setTeam(ModTeam team);
+    void setTeam(ATServerTeam team);
 
     boolean isTeammate(ServerPlayer other);
 }

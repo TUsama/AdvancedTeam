@@ -1,4 +1,4 @@
-package com.clefal.teams.core;
+package com.clefal.teams.server;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

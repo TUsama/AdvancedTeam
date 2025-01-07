@@ -2,8 +2,6 @@ package com.clefal.teams.network;
 
 import com.clefal.teams.network.client.*;
 import com.clefal.teams.network.server.*;
-import com.t2pellet.teams.network.client.*;
-import com.t2pellet.teams.network.server.*;
 import com.clefal.teams.platform.PhysicalSide;
 import com.clefal.teams.platform.Platform;
 import com.clefal.teams.platform.Services;
@@ -24,7 +22,7 @@ public class CommonPacketHandler {
 
     public static void registerClientPackets() {
         Services.PLATFORM.registerClientMessage(S2CTeamPlayerDataPacket.class, S2CTeamPlayerDataPacket::new);
-        Services.PLATFORM.registerClientMessage(S2CTeamDataPacket.class, S2CTeamDataPacket::new);
+        Services.PLATFORM.registerClientMessage(S2CTeamDataUpdatePacket.class, S2CTeamDataUpdatePacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamRequestedPacket.class, S2CTeamRequestedPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamClearPacket.class, S2CTeamClearPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamInvitedPacket.class, S2CTeamInvitedPacket::new);

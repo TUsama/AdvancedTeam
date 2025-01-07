@@ -1,8 +1,8 @@
 package com.clefal.teams.command;
 
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamData;
+import com.clefal.teams.server.ATServerTeam;
+import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +15,7 @@ public class TeamSuggestions {
     }
 
     static final SuggestionProvider<CommandSourceStack> TEAMS = SuggestionProviders.register(new ResourceLocation("teams"), (context, builder) -> {
-        Stream<ModTeam> teams = TeamData.getOrMakeDefault(((CommandSourceStack)context.getSource()).getServer()).getTeams();
+        Stream<ATServerTeam> teams = ATServerTeamData.getOrMakeDefault(((CommandSourceStack)context.getSource()).getServer()).getTeams();
         teams.forEach(team -> {
             builder.suggest(team.getName());
         });

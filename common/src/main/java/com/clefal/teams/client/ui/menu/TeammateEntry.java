@@ -3,7 +3,7 @@ package com.clefal.teams.client.ui.menu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.core.ModComponents;
+import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamKickPacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.ChatFormatting;

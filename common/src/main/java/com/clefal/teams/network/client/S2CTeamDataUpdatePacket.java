@@ -7,14 +7,14 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class S2CTeamDataPacket implements S2CModPacket {
+public class S2CTeamDataUpdatePacket implements S2CModPacket {
 
     private static final String TEAM_KEY = "teamName";
     private static final String TYPE_KEY = "type";
 
     public enum Type {
         ADD,
-        REMOVE,
+        DISBAND,
         ONLINE,
         OFFLINE,
         CLEAR
@@ -22,7 +22,7 @@ public class S2CTeamDataPacket implements S2CModPacket {
 
     CompoundTag tag = new CompoundTag();
 
-    public S2CTeamDataPacket(Type type, String... teams) {
+    public S2CTeamDataUpdatePacket(Type type, String... teams) {
         ListTag nbtList = new ListTag();
         for (var team : teams) {
             nbtList.add(StringTag.valueOf(team));
@@ -31,7 +31,7 @@ public class S2CTeamDataPacket implements S2CModPacket {
         tag.putString(TYPE_KEY, type.name());
     }
 
-    public S2CTeamDataPacket(FriendlyByteBuf byteBuf) {
+    public S2CTeamDataUpdatePacket(FriendlyByteBuf byteBuf) {
         tag = byteBuf.readNbt();
     }
 
@@ -48,7 +48,7 @@ public class S2CTeamDataPacket implements S2CModPacket {
             String team = elem.getAsString();
             switch (type) {
                 case ADD -> ClientTeamData.INSTANCE.addTeam(team);
-                case REMOVE -> ClientTeamData.INSTANCE.removeTeam(team);
+                case DISBAND -> ClientTeamData.INSTANCE.removeTeam(team);
                 case ONLINE -> ClientTeamData.INSTANCE.teamOnline(team);
                 case OFFLINE -> ClientTeamData.INSTANCE.teamOffline(team);
                 case CLEAR -> ClientTeamData.INSTANCE.clear();

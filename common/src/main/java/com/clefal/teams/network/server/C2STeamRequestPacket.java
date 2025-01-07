@@ -1,7 +1,7 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamData;
+import com.clefal.teams.server.ATServerTeam;
+import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.network.client.S2CTeamRequestedPacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,7 +26,7 @@ public class C2STeamRequestPacket implements C2SModPacket {
 
     @Override
     public void handleServer(ServerPlayer player) {
-        ModTeam team = TeamData.getOrMakeDefault(player.server).getTeam(name);
+        ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(name);
         if (team == null) {
             throw new IllegalArgumentException("Got request to join team " + name + ", but that team doesn't exist");
         } else {

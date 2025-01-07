@@ -1,8 +1,8 @@
 package com.clefal.teams.network.server;
 
 import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamData;
+import com.clefal.teams.server.ATServerTeam;
+import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -31,12 +31,12 @@ public class C2STeamKickPacket implements C2SModPacket {
 
     @Override
     public void handleServer(ServerPlayer player) {
-        ModTeam team = TeamData.getOrMakeDefault(player.server).getTeam(name);
+        ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(name);
         if (player != null && team.playerHasPermissions(player)) {
             ServerPlayer kicked = player.server.getPlayerList().getPlayer(toKick);
             try {
-                TeamData.getOrMakeDefault(player.server).removePlayerFromTeam(kicked);
-            } catch (ModTeam.TeamException ex) {
+                ATServerTeamData.getOrMakeDefault(player.server).removePlayerFromTeam(kicked);
+            } catch (ATServerTeam.TeamException ex) {
                 TeamsHUD.LOGGER.error(ex.getMessage());
             }
         } else {

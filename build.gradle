@@ -65,6 +65,14 @@ subprojects {
         it.options.getRelease().set(17)
     }
 
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.34'
+        annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.34'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    }
+
     processResources {
         int pack_format = getPackFormat()
         def expandProps = [

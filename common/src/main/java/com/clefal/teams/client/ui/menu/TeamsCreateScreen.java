@@ -1,7 +1,7 @@
 package com.clefal.teams.client.ui.menu;
 
 import com.clefal.teams.client.core.ClientTeamData;
-import com.clefal.teams.core.ModComponents;
+import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamCreatePacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.client.gui.components.Button;

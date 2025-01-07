@@ -2,7 +2,7 @@ package com.clefal.teams.client.ui.menu;
 
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.client.core.ClientTeamData;
-import com.clefal.teams.core.ModComponents;
+import com.clefal.teams.server.ModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

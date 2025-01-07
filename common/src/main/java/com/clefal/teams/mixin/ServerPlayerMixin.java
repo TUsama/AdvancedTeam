@@ -2,9 +2,9 @@ package com.clefal.teams.mixin;
 
 import com.mojang.authlib.GameProfile;
 import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.core.IHasTeam;
-import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamData;
+import com.clefal.teams.server.IHasTeam;
+import com.clefal.teams.server.ATServerTeam;
+import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +28,7 @@ public abstract class ServerPlayerMixin extends Player implements IHasTeam {
 	@Shadow public abstract ServerLevel serverLevel();
 
 	@Unique
-	private ModTeam team;
+	private ATServerTeam team;
 
 	public ServerPlayerMixin(Level $$0, BlockPos $$1, float $$2, GameProfile $$3) {
 		super($$0, $$1, $$2, $$3);
@@ -41,12 +41,12 @@ public abstract class ServerPlayerMixin extends Player implements IHasTeam {
 	}
 
 	@Override
-	public ModTeam getTeam() {
+	public ATServerTeam getTeam() {
 		return team;
 	}
 
 	@Override
-	public void setTeam(ModTeam team) {
+	public void setTeam(ATServerTeam team) {
 		this.team = team;
 	}
 
@@ -65,7 +65,7 @@ public abstract class ServerPlayerMixin extends Player implements IHasTeam {
 	@Inject(at = @At(value = "TAIL"), method = "readAdditionalSaveData")
 	private void readCustomDataFromNbt(CompoundTag nbt, CallbackInfo info) {
 		if (team == null && nbt.contains("playerTeam")) {
-			team = TeamData.getOrMakeDefault(this.serverLevel().getServer()).getTeam(nbt.getString("playerTeam"));
+			team = ATServerTeamData.getOrMakeDefault(this.serverLevel().getServer()).getTeam(nbt.getString("playerTeam"));
 			if (team == null || !team.hasPlayer(getUUID())) {
 				team = null;
 			}

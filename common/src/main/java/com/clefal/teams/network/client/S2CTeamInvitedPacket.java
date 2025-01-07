@@ -1,14 +1,14 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.teams.client.TeamsHUDClient;
-import com.clefal.teams.core.ModTeam;
+import com.clefal.teams.server.ATServerTeam;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class S2CTeamInvitedPacket implements S2CModPacket {
 
     private final String team;
 
-    public S2CTeamInvitedPacket(ModTeam team) {
+    public S2CTeamInvitedPacket(ATServerTeam team) {
         this.team = team.getName();
     }
 

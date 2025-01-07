@@ -2,7 +2,7 @@ package com.clefal.teams.mixin;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.clefal.teams.core.ModTeam;
+import com.clefal.teams.server.ATServerTeam;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.MessageArgument;
 import net.minecraft.network.chat.PlayerChatMessage;
@@ -32,11 +32,11 @@ public abstract class TeamMessageCommandMixin {
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private static void fixMsgCommand(CommandContext<CommandSourceStack> ctx, CallbackInfoReturnable<Integer> cir, CommandSourceStack commandSource, Entity entity) throws CommandSyntaxException {
         Team team = entity.getTeam();
-        if (team instanceof ModTeam modTeam) {
-            List<ServerPlayer> list = commandSource.getServer().getPlayerList().getPlayers().stream().filter((p_288679_) -> p_288679_ == entity || p_288679_.getTeam() == modTeam).toList();
+        if (team instanceof ATServerTeam ATServerTeam) {
+            List<ServerPlayer> list = commandSource.getServer().getPlayerList().getPlayers().stream().filter((p_288679_) -> p_288679_ == entity || p_288679_.getTeam() == ATServerTeam).toList();
             if (!list.isEmpty()) {
                 MessageArgument.resolveChatMessage(ctx, "message", (p_248180_) -> {
-                    sendMessage(commandSource, entity, modTeam.getScoreboardTeam(), list, p_248180_);
+                    sendMessage(commandSource, entity, ATServerTeam.getScoreboardTeam(), list, p_248180_);
                 });
             }
             cir.setReturnValue(list.size());

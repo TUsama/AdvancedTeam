@@ -7,10 +7,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.clefal.teams.core.IHasTeam;
-import com.clefal.teams.core.ModComponents;
-import com.clefal.teams.core.ModTeam;
-import com.clefal.teams.core.TeamData;
+import com.clefal.teams.server.IHasTeam;
+import com.clefal.teams.server.ModComponents;
+import com.clefal.teams.server.ATServerTeam;
+import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.network.client.S2CTeamInviteSentPacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.commands.CommandSourceStack;
@@ -57,8 +57,8 @@ public class TeamCommand {
         String name = ctx.getArgument("name", String.class);
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         try {
-            TeamData.getOrMakeDefault(player.server).addTeam(name, player);
-        } catch (ModTeam.TeamException e) {
+            ATServerTeamData.getOrMakeDefault(player.server).createTeam(name, player);
+        } catch (ATServerTeam.TeamException e) {
             throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
         }
         return Command.SINGLE_SUCCESS;
@@ -67,7 +67,7 @@ public class TeamCommand {
     private static int invitePlayer(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         ServerPlayer other = EntityArgument.getPlayer(ctx, "player");
-        ModTeam team = ((IHasTeam) player).getTeam();
+        ATServerTeam team = ((IHasTeam) player).getTeam();
         if (team == null) {
             throw new SimpleCommandExceptionType(ModComponents.translatable("teams.error.notinteam", player.getName().getString())).create();
         }
@@ -83,7 +83,7 @@ public class TeamCommand {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         try {
             get(ctx).removePlayerFromTeam(player);
-        } catch (ModTeam.TeamException e) {
+        } catch (ATServerTeam.TeamException e) {
             throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
         }
         return Command.SINGLE_SUCCESS;
@@ -93,7 +93,7 @@ public class TeamCommand {
         ServerPlayer otherPlayer = EntityArgument.getPlayer(ctx, "player");
         try {
             get(ctx).removePlayerFromTeam(otherPlayer);
-        } catch (ModTeam.TeamException e) {
+        } catch (ATServerTeam.TeamException e) {
             throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
         }
         return Command.SINGLE_SUCCESS;
@@ -101,11 +101,11 @@ public class TeamCommand {
 
     private static int removeTeam(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String name = ctx.getArgument("name", String.class);
-        ModTeam team = TeamData.getOrMakeDefault(ctx.getSource().getServer()).getTeam(name);
+        ATServerTeam team = ATServerTeamData.getOrMakeDefault(ctx.getSource().getServer()).getTeam(name);
         if (team == null) {
             throw new SimpleCommandExceptionType(ModComponents.translatable("teams.error.invalidteam", name)).create();
         }
-        get(ctx).removeTeam(team);
+        get(ctx).disbandTeam(team);
         ctx.getSource().sendSuccess(() -> ModComponents.translatable("teams.success.remove", name), false);
         return Command.SINGLE_SUCCESS;
     }
@@ -118,7 +118,7 @@ public class TeamCommand {
 
     private static int getTeamInfo(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String name = ctx.getArgument("name", String.class);
-        ModTeam team = get(ctx).getTeam(name);
+        ATServerTeam team = get(ctx).getTeam(name);
         if (team == null) {
             throw new SimpleCommandExceptionType(ModComponents.translatable("teams.error.invalidteam", name)).create();
         }
@@ -127,8 +127,8 @@ public class TeamCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static TeamData get(CommandContext<CommandSourceStack> context) {
-        return TeamData.getOrMakeDefault(context.getSource().getServer());
+    private static ATServerTeamData get(CommandContext<CommandSourceStack> context) {
+        return ATServerTeamData.getOrMakeDefault(context.getSource().getServer());
     }
 
 }
