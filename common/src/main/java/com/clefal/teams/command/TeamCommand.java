@@ -56,11 +56,7 @@ public class TeamCommand {
     private static int createTeam(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         String name = ctx.getArgument("name", String.class);
         ServerPlayer player = ctx.getSource().getPlayerOrException();
-        try {
-            ATServerTeamData.getOrMakeDefault(player.server).createTeam(name, player);
-        } catch (ATServerTeam.TeamException e) {
-            throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
-        }
+        ATServerTeamData.getOrMakeDefault(player.server).createTeam(name, player);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -81,21 +77,13 @@ public class TeamCommand {
 
     private static int leaveTeam(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
-        try {
-            get(ctx).removePlayerFromTeam(player);
-        } catch (ATServerTeam.TeamException e) {
-            throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
-        }
+        get(ctx).removePlayerFromTeam(player);
         return Command.SINGLE_SUCCESS;
     }
 
     private static int kickPlayer(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer otherPlayer = EntityArgument.getPlayer(ctx, "player");
-        try {
-            get(ctx).removePlayerFromTeam(otherPlayer);
-        } catch (ATServerTeam.TeamException e) {
-            throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
-        }
+        get(ctx).removePlayerFromTeam(otherPlayer);
         return Command.SINGLE_SUCCESS;
     }
 

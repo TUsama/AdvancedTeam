@@ -3,6 +3,7 @@ package com.clefal.teams.server;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.network.client.S2CTeamInvitedPacket;
 import com.clefal.teams.platform.Services;
+import me.fzzyhmstrs.fzzy_config.config.Config;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -50,7 +51,7 @@ public class ATServerTeamData extends SavedData {
             creator.sendSystemMessage(ModComponents.translatable("teams.error.alreadyinteam", creator.getName().getString()));
             team = ((IHasTeam) creator).getTeam();
         } else {
-            team = new ATServerTeam.Builder(name).complete(this);
+            team = new ATServerTeam.Builder(name).complete(this, creator.getUUID());
             teams.put(team.getName(), team);
             team.addPlayer(creator);
             team.promote(creator);
@@ -104,15 +105,14 @@ public class ATServerTeamData extends SavedData {
         team.addPlayer(player);
     }
 
-    public void removePlayerFromTeam(ServerPlayer player) throws ATServerTeam.TeamException {
+    public boolean removePlayerFromTeam(ServerPlayer player) {
         ATServerTeam playerTeam = ((IHasTeam) player).getTeam();
-        if (playerTeam == null) {
-            throw new ATServerTeam.TeamException(ModComponents.translatable("teams.error.notinteam", player.getName().getString()));
-        }
+        if (playerTeam == null) return false;
         playerTeam.removePlayer(player);
         if (playerTeam.isEmpty()) {
             disbandTeam(playerTeam);
         }
+        return true;
     }
 
     public void fromNBT(CompoundTag compound) {

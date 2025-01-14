@@ -5,6 +5,7 @@ import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.network.client.S2CTeamRequestedPacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class C2STeamRequestPacket implements C2SModPacket {
@@ -28,14 +29,11 @@ public class C2STeamRequestPacket implements C2SModPacket {
     public void handleServer(ServerPlayer player) {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(name);
         if (team == null) {
-            throw new IllegalArgumentException("Got request to join team " + name + ", but that team doesn't exist");
+            player.sendSystemMessage(Component.literal("Team doesn't exist"));
         } else {
             // Get first online player in list of seniority
-            var playerManager = player.server.getPlayerList();
-            ServerPlayer seniorPlayer = team.getPlayerUuids()
-                    .filter(p -> playerManager.getPlayer(p) != null)
-                    .map(playerManager::getPlayer)
-                    .findFirst().orElseThrow();
+            var list = player.server.getPlayerList();
+            ServerPlayer seniorPlayer = list.getPlayer(team.getLeader());
             Services.PLATFORM.sendToClient(new S2CTeamRequestedPacket(name, player.getUUID()), seniorPlayer);
         }
     }

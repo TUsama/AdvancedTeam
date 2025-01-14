@@ -1,6 +1,9 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.teams.client.TeamsHUDClient;
+import com.clefal.teams.client.ui.toast.ToastJoin;
+import com.clefal.teams.client.ui.toast.ToastLeave;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -41,6 +44,10 @@ public class S2CTeamUpdatePacket implements S2CModPacket {
         String player = tag.getString(PLAYER_KEY);
         S2CTeamUpdatePacket.Action action = S2CTeamUpdatePacket.Action.valueOf(tag.getString(ACTION_KEY));
         boolean isLocal = tag.getBoolean(LOCAL_KEY);
-        TeamsHUDClient.handleTeamUpdatePacket(team,player,action,isLocal);
+
+        switch (action) {
+            case JOINED -> Minecraft.getInstance().getToasts().addToast(new ToastJoin(team, player, isLocal));
+            case LEFT -> Minecraft.getInstance().getToasts().addToast(new ToastLeave(team, player, isLocal));
+        }
     }
 }

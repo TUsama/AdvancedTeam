@@ -56,6 +56,10 @@ subprojects {
                 includeGroup "curse.maven"
             }
         }
+        maven {
+            name = "FzzyMaven"
+            url = "https://maven.fzzyhmstrs.me/"
+        }
 
     }
 
@@ -71,6 +75,8 @@ subprojects {
 
         testCompileOnly 'org.projectlombok:lombok:1.18.34'
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+        compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}"
     }
 
     processResources {

@@ -4,13 +4,11 @@ import com.clefal.teams.network.client.*;
 import com.mojang.authlib.GameProfile;
 import com.clefal.teams.mixin.AdvancementAccessor;
 import com.clefal.teams.platform.Services;
+import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -23,23 +21,25 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Stream;
 
-
+//1. 硬编码需要队长，以及对应的权限方法？主要是在builder里加上这个。 done
+//3. 事件系统还得捋一捋
+//4. Teammate应该怎样才能支持任意属性传输？
 
 public class ATServerTeam extends Team {
 
     public final String name;
     private final ATServerTeamData teamData;
-    @Nullable
+    @Getter
     private UUID leader;
     private Set<UUID> players;
     private Map<UUID, ServerPlayer> onlinePlayers;
     private final Set<Advancement> advancements = new LinkedHashSet<>();
     private PlayerTeam scoreboardTeam;
 
-    ATServerTeam(Scoreboard scoreboard, String name, ATServerTeamData teamData) {
+    private ATServerTeam(Scoreboard scoreboard, String name, ATServerTeamData teamData, UUID leader) {
         this.name = name;
         this.teamData = teamData;
-        this.leader = null;
+        this.leader = leader;
         players = new HashSet<>();
         onlinePlayers = new HashMap<>();
         scoreboardTeam = scoreboard.getPlayerTeam(name);
@@ -48,16 +48,12 @@ public class ATServerTeam extends Team {
         }
     }
 
-    public @Nullable UUID getLeader() {
-        return leader;
-    }
-
     public void promote(ServerPlayer player){
         this.leader = player.getUUID();
     }
 
     public boolean playerHasPermissions(ServerPlayer player) {
-        return getLeader() != null && getLeader().equals(player.getUUID()) || player.hasPermissions(2);
+        return getLeader().equals(player.getUUID()) || player.hasPermissions(2);
     }
     public Collection<ServerPlayer> getOnlinePlayers() {
         return onlinePlayers.values();
@@ -190,11 +186,11 @@ public class ATServerTeam extends Team {
                 .setNameTagVisibilityRule(Visibility.byName(compound.getString("nameTags")))
                 .setFriendlyFireAllowed(compound.getBoolean("friendlyFire"))
                 .setShowFriendlyInvisibles(compound.getBoolean("showInvisible"))
-                .complete(teamData);
+                .complete(teamData, compound.getUUID("leader"));
 
-        ListTag players = compound.getList("players", Tag.TAG_STRING);
+        ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
         for (var elem : players) {
-            team.addPlayer(UUID.fromString(elem.getAsString()));
+            team.addPlayer(NbtUtils.loadUUID(elem));
         }
 
         ListTag advancements = compound.getList("advancement", Tag.TAG_STRING);
@@ -209,6 +205,7 @@ public class ATServerTeam extends Team {
     CompoundTag toNBT() {
         CompoundTag compound = new CompoundTag();
         compound.putString("name", name);
+        compound.putUUID("leader", leader);
         compound.putString("colour", scoreboardTeam.getColor().getName());
         compound.putString("collision", scoreboardTeam.getCollisionRule().name);
         compound.putString("deathMessages", scoreboardTeam.getDeathMessageVisibility().name);
@@ -218,7 +215,8 @@ public class ATServerTeam extends Team {
 
         ListTag playerList = new ListTag();
         for (var player : players) {
-            playerList.add(StringTag.valueOf(player.toString()));
+
+            playerList.add(NbtUtils.createUUID(player));
         }
         compound.put("players", playerList);
 
@@ -361,8 +359,8 @@ public class ATServerTeam extends Team {
             return this;
         }
 
-        public ATServerTeam complete(ATServerTeamData teamData) {
-            ATServerTeam team = new ATServerTeam(teamData.scoreboard,name, teamData);
+        public ATServerTeam complete(ATServerTeamData teamData, UUID leader) {
+            ATServerTeam team = new ATServerTeam(teamData.scoreboard, name, teamData, leader);
             team.setShowFriendlyInvisibles(showFriendlyInvisibles);
             team.setFriendlyFireAllowed(friendlyFireAllowed);
             team.setNameTagVisibilityRule(nameTagVisibilityRule);

@@ -1,6 +1,9 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.teams.client.TeamsHUDClient;
+import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.client.ui.toast.ToastRequested;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -30,6 +33,6 @@ public class S2CTeamRequestedPacket implements S2CModPacket {
     public void handleClient() {
         String name = tag.getString(S2CTeamPlayerDataPacket.NAME_KEY);
         UUID id = tag.getUUID(S2CTeamPlayerDataPacket.ID_KEY);
-        TeamsHUDClient.handleTeamRequestedPacket(name,id);
+        Minecraft.getInstance().getToasts().addToast(new ToastRequested(ClientTeam.INSTANCE.getName(), name, id));
     }
 }
