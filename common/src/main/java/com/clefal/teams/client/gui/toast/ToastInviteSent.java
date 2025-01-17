@@ -1,4 +1,4 @@
-package com.clefal.teams.client.ui.toast;
+package com.clefal.teams.client.gui.toast;
 
 import net.minecraft.client.resources.language.I18n;
 

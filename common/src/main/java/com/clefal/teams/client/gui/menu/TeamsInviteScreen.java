@@ -1,7 +1,7 @@
-package com.clefal.teams.client.ui.menu;
+package com.clefal.teams.client.gui.menu;
 
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.ui.toast.ToastInviteSent;
+import com.clefal.teams.client.gui.toast.ToastInviteSent;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamInvitePacket;
 import com.clefal.teams.platform.Services;

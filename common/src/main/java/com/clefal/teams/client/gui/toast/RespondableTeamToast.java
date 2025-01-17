@@ -1,4 +1,4 @@
-package com.clefal.teams.client.ui.toast;
+package com.clefal.teams.client.gui.toast;
 
 import com.clefal.teams.client.TeamsKeys;
 import net.minecraft.client.gui.GuiGraphics;

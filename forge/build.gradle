@@ -85,6 +85,8 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
     implementation fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6065006")
+
+    implementation fg.deobf("me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge")
 }
 
 tasks.withType(JavaCompile).configureEach {

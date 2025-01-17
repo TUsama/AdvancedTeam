@@ -1,8 +1,8 @@
-package com.clefal.teams.client.ui.hud;
+package com.clefal.teams.client.gui.hud;
 
+import com.clefal.teams.config.ATConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +34,7 @@ public class CompassOverlay {
     }
 
     public void render(GuiGraphics graphics) {
-        if (!Services.PLATFORM.getConfig().enableCompassHUD() || !enabled) {
+        if (!ATConfig.config.overlays.enableCompassHUD || !enabled) {
             isShowing = false;
             return;
         }

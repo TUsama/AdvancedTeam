@@ -67,23 +67,4 @@ public class TeamsConfig implements ConfigData, MultiloaderConfig {
         return collisionRule;
     }
 
-    @Override
-    public boolean enableCompassHUD() {
-        return enableCompassHUD;
-    }
-
-    @Override
-    public boolean enableStatusHUD() {
-        return enableStatusHUD;
-    }
-
-    @Override
-    public int toastDuration() {
-        return toastDuration;
-    }
-
-    @Override
-    public boolean showHunger() {
-        return showHunger;
-    }
 }

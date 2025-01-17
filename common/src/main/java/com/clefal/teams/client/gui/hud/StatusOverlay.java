@@ -1,9 +1,9 @@
-package com.clefal.teams.client.ui.hud;
+package com.clefal.teams.client.gui.hud;
 
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.config.ATConfig;
 import com.clefal.teams.server.ModComponents;
-import com.clefal.teams.platform.Services;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -38,7 +38,7 @@ public class StatusOverlay {
     }
 
     private void renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate) {
-        if (!Services.PLATFORM.getConfig().enableStatusHUD() || !enabled) return;
+        if (!ATConfig.config.overlays.enableStatusHUD || !enabled) return;
 
         // Dont render dead players
         if (teammate.getHealth() <= 0) return;
@@ -47,12 +47,14 @@ public class StatusOverlay {
         int posY = client.getWindow().getGuiScaledHeight() / 4 - 5 + offsetY;
 
         // Health
-        String health = String.valueOf(Math.round(teammate.getHealth()));
-        graphics.blit(ICONS,posX + 20, posY, 0, 0, 9, 9);
-        graphics.drawString(client.font, ModComponents.literal(health), posX + 32, posY, ChatFormatting.WHITE.getColor());
+        if (ATConfig.config.overlays.showHealth){
+            String health = String.valueOf(Math.round(teammate.getHealth()));
+            graphics.blit(ICONS,posX + 20, posY, 0, 0, 9, 9);
+            graphics.drawString(client.font, ModComponents.literal(health), posX + 32, posY, ChatFormatting.WHITE.getColor());
+        }
 
         // Hunger
-        if (Services.PLATFORM.getConfig().showHunger()) {
+        if (ATConfig.config.overlays.showHunger) {
             String hunger = String.valueOf(teammate.getHunger());
             graphics.blit(ICONS, posX + 46, posY, 9, 0, 9, 9);
             graphics.drawString(client.font, ModComponents.literal(hunger), posX + 58, posY, ChatFormatting.WHITE.getColor());

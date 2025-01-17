@@ -1,4 +1,4 @@
-package com.clefal.teams.client.ui.menu;
+package com.clefal.teams.client.gui.menu;
 
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.server.ModComponents;

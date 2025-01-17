@@ -39,6 +39,7 @@
   "teams.menu.create": "Create a Team",
   "teams.menu.lonely.title": "Teams Menu",
   "teams.menu.lonely.alone": "No other teams are online right now :(",
+
   "key.teams.accept": "Accept Team",
   "key.teams.reject": "Reject Team",
   "key.teams.toggle_hud": "Toggle HUD",

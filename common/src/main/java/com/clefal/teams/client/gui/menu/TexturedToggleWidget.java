@@ -1,4 +1,4 @@
-package com.clefal.teams.client.ui.menu;
+package com.clefal.teams.client.gui.menu;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

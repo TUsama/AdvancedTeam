@@ -37,25 +37,6 @@ public class TomlConfig implements MultiloaderConfig {
         return Server.collisionRule.get();
     }
 
-    @Override
-    public boolean enableCompassHUD() {
-        return Client.enableCompassHUD.get();
-    }
-
-    @Override
-    public boolean enableStatusHUD() {
-        return Client.enableStatusHUD.get();
-    }
-
-    @Override
-    public int toastDuration() {
-        return Client.toastDuration.get();
-    }
-
-    @Override
-    public boolean showHunger() {
-        return Client.showHunger.get();
-    }
 
     public static class Server {
         public static ForgeConfigSpec.BooleanValue showInvisibleTeammates;
@@ -77,19 +58,4 @@ public class TomlConfig implements MultiloaderConfig {
         }
     }
 
-    public static class Client {
-        public static ForgeConfigSpec.BooleanValue enableCompassHUD;
-        public static ForgeConfigSpec.BooleanValue enableStatusHUD;
-        public static ForgeConfigSpec.IntValue toastDuration;
-        public static ForgeConfigSpec.BooleanValue showHunger;
-
-        public Client(ForgeConfigSpec.Builder builder) {
-            builder.push("visual");
-            enableCompassHUD = builder.define("enable_compass_hud",true);
-            enableStatusHUD = builder.define("enable_status_hud",true);
-            toastDuration = builder.comment("How long teams toast notifications should last").defineInRange("toast_duration",5,0,100000000);
-            showHunger = builder.comment("Show other team members' hunger").define("show_hunger",true);
-            builder.pop();
-        }
-    }
 }

@@ -1,9 +1,12 @@
 package com.clefal.teams.client.core;
 
 import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.client.ui.menu.TeamsLonelyScreen;
-import com.clefal.teams.client.ui.menu.TeamsMainScreen;
-import com.clefal.teams.client.ui.menu.TeamsScreen;
+import com.clefal.teams.client.core.property.Health;
+import com.clefal.teams.client.core.property.Hunger;
+import com.clefal.teams.client.gui.menu.TeamsLonelyScreen;
+import com.clefal.teams.client.gui.menu.TeamsMainScreen;
+import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -53,7 +56,7 @@ class ClientTeamImpl implements ClientTeam {
 
     @Override
     public List<Teammate> getTeammates() {
-        return teammates.values().stream().toList();
+        return ImmutableList.copyOf(teammates.values());
     }
 
     public boolean hasPlayer(UUID player) {
@@ -61,8 +64,8 @@ class ClientTeamImpl implements ClientTeam {
     }
 
     @Override
-    public void addPlayer(UUID player, String name, ResourceLocation skin, float health, int hunger) {
-        teammates.put(player, new Teammate(player, name, skin, health, hunger));
+    public void addPlayer(UUID player, String name, ResourceLocation skin, IRenderableProperty... others) {
+        teammates.put(player, new Teammate(player, name, skin, others));
         // Refresh TeamsMainScreen if open
         if (client.screen instanceof TeamsMainScreen screen) {
             screen.refresh();
@@ -73,11 +76,13 @@ class ClientTeamImpl implements ClientTeam {
     }
 
     @Override
-    public void updatePlayer(UUID player, float health, int hunger) {
+    public void updatePlayer(UUID player, IRenderableProperty... properties) {
         var teammate = teammates.get(player);
         if (teammate != null) {
-            teammate.addProperty(Teammate.HEALTH, health);
-            teammate.addProperty(Teammate.HUNGER, hunger);
+            for (IRenderableProperty property : properties) {
+                teammate.addProperty(property);
+            }
+
         } else {
             TeamsHUD.LOGGER.warn("Tried updating player with UUID " + player + "but they are not in this clients team");
         }
@@ -98,28 +103,6 @@ class ClientTeamImpl implements ClientTeam {
         }
     }
 
-    @Override
-    public List<Teammate> getFavourites() {
-        return favourites.stream()
-                .filter(teammates::containsKey)
-                .map(teammates::get)
-                .toList();
-    }
-
-    @Override
-    public boolean isFavourite(Teammate player) {
-        return favourites.contains(player.id);
-    }
-
-    @Override
-    public void addFavourite(Teammate player) {
-        favourites.add(player.id);
-    }
-
-    @Override
-    public void removeFavourite(Teammate player) {
-        favourites.remove(player.id);
-    }
 
     @Override
     public void reset() {

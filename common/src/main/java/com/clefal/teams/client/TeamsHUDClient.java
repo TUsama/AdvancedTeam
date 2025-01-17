@@ -1,31 +1,21 @@
 package com.clefal.teams.client;
 
-import com.clefal.teams.client.ui.toast.*;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.properties.Property;
 import com.clefal.teams.ScreenDuck;
 import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.ClientTeamData;
-import com.clefal.teams.client.ui.hud.CompassOverlay;
-import com.clefal.teams.client.ui.hud.StatusOverlay;
-import com.clefal.teams.client.ui.menu.TeamsLonelyScreen;
-import com.clefal.teams.client.ui.menu.TeamsMainScreen;
+import com.clefal.teams.client.gui.hud.CompassOverlay;
+import com.clefal.teams.client.gui.hud.StatusOverlay;
+import com.clefal.teams.client.gui.menu.TeamsLonelyScreen;
+import com.clefal.teams.client.gui.menu.TeamsMainScreen;
 import com.clefal.teams.mixin.InventoryScreenAccessor;
-import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
-import com.clefal.teams.network.client.S2CTeamUpdatePacket;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.UUID;
 
 public class TeamsHUDClient {
 

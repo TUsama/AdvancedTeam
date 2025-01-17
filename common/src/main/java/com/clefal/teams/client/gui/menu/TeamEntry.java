@@ -1,8 +1,8 @@
-package com.clefal.teams.client.ui.menu;
+package com.clefal.teams.client.gui.menu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.client.ui.toast.ToastRequest;
+import com.clefal.teams.client.gui.toast.ToastRequest;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamRequestPacket;
 import com.clefal.teams.platform.Services;

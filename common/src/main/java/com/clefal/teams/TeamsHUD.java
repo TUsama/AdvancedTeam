@@ -2,6 +2,7 @@ package com.clefal.teams;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.BusBuilder;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.IEventBus;
+import com.clefal.teams.config.ConfigManager;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.event.client.ClientEvent;
@@ -52,6 +53,7 @@ public class TeamsHUD {
 
     public static void init() {
         CommonPacketHandler.registerPackets();
+        ConfigManager.init();
     }
 
     public static void onAdvancement(ServerPlayer player, Advancement advancement) {

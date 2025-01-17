@@ -1,4 +1,4 @@
-package com.clefal.teams.client.ui.menu;
+package com.clefal.teams.client.gui.menu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.clefal.teams.TeamsHUD;
@@ -34,15 +34,6 @@ public class TeammateEntry extends AbstractWidget {
         this.teammate = teammate;
         this.x = x;
         this.y = y;
-        if (!local) {
-            this.favButton = new TexturedToggleWidget(x + WIDTH - 12, y + 8, 8, 8, 0, 190, TEXTURE, button -> {
-                if (ClientTeam.INSTANCE.isFavourite(teammate)) {
-                    ClientTeam.INSTANCE.removeFavourite(teammate);
-                } else {
-                    ClientTeam.INSTANCE.addFavourite(teammate);
-                }
-            }, () -> ClientTeam.INSTANCE.isFavourite(teammate));
-        }
         if (ClientTeam.INSTANCE.hasPermissions()) {
             this.kickButton = new ImageButton(x + WIDTH - 24, y + 8, 8, 8, 16, 190, TEXTURE, button -> {
                 Services.PLATFORM.sendToServer(new C2STeamKickPacket(ClientTeam.INSTANCE.getName(), teammate.id));

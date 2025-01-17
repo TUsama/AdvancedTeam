@@ -12,8 +12,5 @@ public interface MultiloaderConfig {
     Team.Visibility deathMessageVisibility();
     Team.CollisionRule collisionRule();
 
-    boolean enableCompassHUD();
-    boolean enableStatusHUD();
-    int toastDuration();
-    boolean showHunger();
+
 }

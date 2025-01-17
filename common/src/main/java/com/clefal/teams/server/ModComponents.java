@@ -18,6 +18,8 @@ public class ModComponents {
     public static final Component DUPLICATE_TEAM = translatable("teams.error.duplicateteam");
     public static final Component INVITE_TITLE_TEXT = translatable("teams.menu.invite.title");
     public static final Component INVITE_TEXT2 = translatable("teams.menu.invite.text");
+    public static final Component CAN_SEE_FRIENDLY_INVISIBLES = translatable("teams.config.can_see_friendly_invisibles");
+
 
     public static MutableComponent translatable(String key, Object... args) {
         return Component.translatable(key,args);

@@ -1,7 +1,7 @@
-package com.clefal.teams.client.ui.toast;
+package com.clefal.teams.client.gui.toast;
 
+import com.clefal.teams.config.ATConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.clefal.teams.platform.Services;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
@@ -36,5 +36,5 @@ public abstract class TeamToast implements Toast {
         graphics.drawString(manager.getMinecraft().font, title(), 22, 7, ChatFormatting.WHITE.getColor());
         graphics.drawString(manager.getMinecraft().font, subTitle(), 22, 18, 0xff000000,false);
 
-        return startTime - firstDrawTime < Services.PLATFORM.getConfig().toastDuration() * 1000L && team != null ? Visibility.SHOW : Visibility.HIDE;    }
+        return startTime - firstDrawTime < ATConfig.config.info.toastShowSecond.get() * 1000L && team != null ? Visibility.SHOW : Visibility.HIDE;    }
 }

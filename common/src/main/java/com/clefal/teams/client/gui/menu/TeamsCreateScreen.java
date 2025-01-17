@@ -1,4 +1,4 @@
-package com.clefal.teams.client.ui.menu;
+package com.clefal.teams.client.gui.menu;
 
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.server.ModComponents;
@@ -29,4 +29,6 @@ public class TeamsCreateScreen extends TeamsInputScreen {
     protected boolean submitCondition() {
         return !ClientTeamData.INSTANCE.containsTeam(inputField.getValue());
     }
+
+
 }

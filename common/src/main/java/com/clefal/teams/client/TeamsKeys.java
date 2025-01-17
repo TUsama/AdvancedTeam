@@ -2,8 +2,8 @@ package com.clefal.teams.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.ui.toast.ToastInvited;
-import com.clefal.teams.client.ui.toast.ToastRequested;
+import com.clefal.teams.client.gui.toast.ToastInvited;
+import com.clefal.teams.client.gui.toast.ToastRequested;
 import com.clefal.teams.network.server.C2STeamJoinPacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.client.KeyMapping;

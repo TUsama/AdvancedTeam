@@ -1,4 +1,4 @@
-package com.clefal.teams.client.ui.menu;
+package com.clefal.teams.client.gui.menu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.clefal.teams.client.core.ClientTeam;

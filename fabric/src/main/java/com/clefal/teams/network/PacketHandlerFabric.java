@@ -1,7 +1,6 @@
 package com.clefal.teams.network;
 
 import com.clefal.teams.network.server.C2SModPacket;
-import com.t2pellet.teams.network.server.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 

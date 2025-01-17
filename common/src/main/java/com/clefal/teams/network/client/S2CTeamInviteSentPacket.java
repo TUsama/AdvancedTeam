@@ -1,7 +1,6 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.teams.client.TeamsHUDClient;
-import com.clefal.teams.client.ui.toast.ToastInviteSent;
+import com.clefal.teams.client.gui.toast.ToastInviteSent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 

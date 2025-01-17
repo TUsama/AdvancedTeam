@@ -1,17 +1,27 @@
 package com.clefal.teams.network.client;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.API;
+import com.clefal.nirvana_lib.relocated.io.vavr.CheckedRunnable;
+import com.clefal.nirvana_lib.relocated.io.vavr.Tuple2;
+import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
+import com.clefal.teams.TeamsHUD;
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.client.core.IRenderableProperty;
+import com.clefal.teams.event.server.ServerGatherPropertyEvent;
+import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.properties.Property;
-import com.clefal.teams.client.TeamsHUDClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class S2CTeamPlayerDataPacket implements S2CModPacket {
 
@@ -19,9 +29,8 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     public static final String NAME_KEY = "playerName";
     public static final String SKIN_KEY = "playerSkin";
     public static final String SKIN_SIG_KEY = "playerSkinSignature";
-    public static final String HEALTH_KEY = "playerHealth";
-    public static final String HUNGER_KEY = "playerHunger";
     public static final String TYPE_KEY = "actionType";
+    public List<String> propertiesName = new ArrayList<>();
 
     public enum Type {
         ADD,
@@ -30,12 +39,14 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     }
 
     CompoundTag tag = new CompoundTag();
-
+// health and hunger should be merged into the event system.
     public S2CTeamPlayerDataPacket(ServerPlayer player, Type type) {
-        var health = player.getHealth();
-        var hunger = player.getFoodData().getFoodLevel();
         tag.putUUID(ID_KEY, player.getUUID());
         tag.putString(TYPE_KEY, type.toString());
+        Runnable gather = () -> this.postOnServerAndDo(new ServerGatherPropertyEvent(player), event -> API.For(event.gather).yield().forEach(iRenderablePropertyPropertyConsumerTuple2 -> {
+            iRenderablePropertyPropertyConsumerTuple2._2().accept(iRenderablePropertyPropertyConsumerTuple2._1(), tag);
+            this.propertiesName.add(iRenderablePropertyPropertyConsumerTuple2._1().getIdentifier());
+        }));
         switch (type) {
             case ADD -> {
                 tag.putString(NAME_KEY, player.getName().getString());
@@ -48,23 +59,21 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                 tag.putString(SKIN_SIG_KEY, skin != null ?
                         skin.getSignature() != null ? skin.getSignature() : ""
                         : "");
-                tag.putFloat(HEALTH_KEY, health);
-                tag.putInt(HUNGER_KEY, hunger);
+                gather.run();
             }
-            case UPDATE -> {
-                tag.putFloat(HEALTH_KEY, health);
-                tag.putInt(HUNGER_KEY, hunger);
-            }
+            case UPDATE -> gather.run();
         }
     }
 
     public S2CTeamPlayerDataPacket(FriendlyByteBuf byteBuf) {
         tag = byteBuf.readNbt();
+        this.propertiesName = byteBuf.readList(FriendlyByteBuf::readUtf);
     }
 
     @Override
     public void write(FriendlyByteBuf to) {
         to.writeNbt(tag);
+        to.writeCollection(this.propertiesName, FriendlyByteBuf::writeUtf);
     }
 
     @Override
@@ -75,33 +84,39 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                 if (ClientTeam.INSTANCE.hasPlayer(uuid)) return;
 
                 String name = tag.getString(S2CTeamPlayerDataPacket.NAME_KEY);
-                float health = tag.getFloat(S2CTeamPlayerDataPacket.HEALTH_KEY);
-                int hunger = tag.getInt(S2CTeamPlayerDataPacket.HUNGER_KEY);
 
                 // Get skin data
                 String skinVal = tag.getString(S2CTeamPlayerDataPacket.SKIN_KEY);
                 String skinSig = tag.getString(S2CTeamPlayerDataPacket.SKIN_SIG_KEY);
+
                 // Force download
                 if (!skinVal.isEmpty()) {
                     GameProfile dummy = new GameProfile(UUID.randomUUID(), "");
                     dummy.getProperties().put("textures", new Property("textures", skinVal, skinSig));
                     Minecraft.getInstance().getSkinManager().registerSkins(dummy, (type, id, texture) -> {
                         if (type == MinecraftProfileTexture.Type.SKIN) {
-                            ClientTeam.INSTANCE.addPlayer(uuid, name, id, health, hunger);
+
+                            this.postOnClientAndDo(new ClientReadPropertyEvent(tag, com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, id, event.getResults()));
+
                         }
                     }, false);
                 } else {
-                    ClientTeam.INSTANCE.addPlayer(uuid, name, DefaultPlayerSkin.getDefaultSkin(uuid), health, hunger);
+                    this.postOnClientAndDo(new ClientReadPropertyEvent(tag, com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, DefaultPlayerSkin.getDefaultSkin(uuid), event.getResults()));
                 }
             }
-            case UPDATE -> {
-                float health = tag.getFloat(S2CTeamPlayerDataPacket.HEALTH_KEY);
-                int hunger = tag.getInt(S2CTeamPlayerDataPacket.HUNGER_KEY);
-                ClientTeam.INSTANCE.updatePlayer(uuid, health, hunger);
-            }
+            case UPDATE ->
+                    this.postOnClientAndDo(new ClientReadPropertyEvent(tag, com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(this.propertiesName)), event -> ClientTeam.INSTANCE.updatePlayer(uuid, event.getResults()));
             case REMOVE -> {
                 ClientTeam.INSTANCE.removePlayer(uuid);
             }
         }
+    }
+
+    private <T extends Event> void postOnServerAndDo(T event, Consumer<T> handle){
+        handle.accept(TeamsHUD.serverBus.post(event));
+    }
+
+    private <T extends Event> void postOnClientAndDo(T event, Consumer<T> handle){
+        handle.accept(TeamsHUD.clientBus.post(event));
     }
 }
