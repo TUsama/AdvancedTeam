@@ -43,9 +43,9 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     public S2CTeamPlayerDataPacket(ServerPlayer player, Type type) {
         tag.putUUID(ID_KEY, player.getUUID());
         tag.putString(TYPE_KEY, type.toString());
-        Runnable gather = () -> this.postOnServerAndDo(new ServerGatherPropertyEvent(player), event -> API.For(event.gather).yield().forEach(iRenderablePropertyPropertyConsumerTuple2 -> {
-            iRenderablePropertyPropertyConsumerTuple2._2().accept(iRenderablePropertyPropertyConsumerTuple2._1(), tag);
-            this.propertiesName.add(iRenderablePropertyPropertyConsumerTuple2._1().getIdentifier());
+        Runnable gather = () -> this.postOnServerAndDo(new ServerGatherPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
+            tuple2._2().accept(tuple2._1(), tag);
+            this.propertiesName.add(tuple2._1().getIdentifier());
         }));
         switch (type) {
             case ADD -> {

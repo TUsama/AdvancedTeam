@@ -1,5 +1,6 @@
 package com.clefal.teams.client.core;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
 import com.clefal.teams.client.core.property.Health;
 import com.clefal.teams.client.core.property.Hunger;
 import net.minecraft.resources.ResourceLocation;
@@ -37,24 +38,16 @@ public interface ClientTeam {
         public final UUID id;
         public final String name;
         public final ResourceLocation skin;
-        private final Map<String, IRenderableProperty> properties;
+        private final Map<String, IRenderableProperty> properties = new LinkedHashMap<>();
 
-        Teammate(UUID id, String name, ResourceLocation skin, float health, int hunger) {
+
+        Teammate(UUID id, String name, ResourceLocation skin, IRenderableProperty... properties) {
             this.id = id;
             this.name = name;
             this.skin = skin;
-            this.properties = new LinkedHashMap<>();
-            Health health1 = new Health(health);
-            Hunger hunger1 = new Hunger(hunger);
-            this.properties.put(health1.getIdentifier(), health1);
-            this.properties.put(hunger1.getIdentifier(), hunger1);
-        }
-
-        Teammate(UUID id, String name, ResourceLocation skin, Map<String, IRenderableProperty> properties) {
-            this.id = id;
-            this.name = name;
-            this.skin = skin;
-            this.properties = properties;
+            for (IRenderableProperty property : properties) {
+                this.properties.put(property.getIdentifier(), property);
+            }
         }
 
         public float getHealth() {
@@ -65,14 +58,14 @@ public interface ClientTeam {
             return Integer.parseInt(this.properties.get(Hunger.KEY).getRenderString());
         }
 
-        public void addProperty(IRenderableProperty property){
+        public void addProperty(IRenderableProperty property) {
             properties.put(property.getIdentifier(), property);
         }
 
-
-        public void removeProperty(ResourceLocation resourceLocation){
-            this.properties.remove(resourceLocation);
+        public Option<IRenderableProperty> getProperty(String key){
+            return Option.of(this.properties.get(key));
         }
+
     }
 
 }

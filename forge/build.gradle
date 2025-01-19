@@ -33,6 +33,8 @@ minecraft {
             taskName 'Client'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            args '-XX:+AllowEnhancedClassRedefinition'
+            args '-XX:HotswapAgent=core'
             mods {
                 modClientRun {
                     source sourceSets.main

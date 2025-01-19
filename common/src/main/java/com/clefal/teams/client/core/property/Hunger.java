@@ -20,7 +20,7 @@ public class Hunger extends RenderableProperty {
 
     @Override
     public String getRenderString() {
-        return String.valueOf(hunger);
+        return hunger + "/" + 20;
     }
 
     @Override

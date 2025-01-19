@@ -1,17 +1,24 @@
 package com.clefal.teams.server.propertyhandler;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class HandlerManager {
-    private static final List<IPropertyHandler> handlers = new ArrayList<>();
+    public static HandlerManager INSTANCE = new HandlerManager();
+    private final List<IPropertyHandler> handlers = new ArrayList<>();
 
     static {
-        handlers.add(VanillaPropertyHandler.INSTANCE);
+        INSTANCE.registerHandler(VanillaPropertyHandler.INSTANCE);
     }
 
 
-    public static void registerHandler(IPropertyHandler handler){
+    public void registerHandler(IPropertyHandler handler){
         handlers.add(handler);
+    }
+
+    public List<IPropertyHandler> getHandlers(){
+        return ImmutableList.copyOf(this.handlers);
     }
 }

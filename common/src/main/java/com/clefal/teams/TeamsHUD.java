@@ -11,6 +11,8 @@ import com.clefal.teams.network.CommonPacketHandler;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
 import com.clefal.teams.platform.Services;
+import com.clefal.teams.server.propertyhandler.HandlerManager;
+import com.clefal.teams.server.propertyhandler.IPropertyHandler;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -54,6 +56,11 @@ public class TeamsHUD {
     public static void init() {
         CommonPacketHandler.registerPackets();
         ConfigManager.init();
+        for (IPropertyHandler handler : HandlerManager.INSTANCE.getHandlers()) {
+            //todo potentially bug if client has additional handlers.
+            serverBus.register(handler);
+            clientBus.register(handler);
+        }
     }
 
     public static void onAdvancement(ServerPlayer player, Advancement advancement) {
