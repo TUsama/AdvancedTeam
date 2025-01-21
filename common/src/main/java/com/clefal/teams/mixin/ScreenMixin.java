@@ -1,6 +1,6 @@
 package com.clefal.teams.mixin;
 
-import com.clefal.teams.ScreenDuck;
+import com.clefal.teams.mixinhelper.ScreenDuck;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;

@@ -1,12 +1,9 @@
 package com.clefal.teams.platform;
 
-import com.clefal.teams.client.TeamsHUDClient;
-import com.clefal.teams.config.TomlConfig;
 import com.clefal.teams.network.PacketHandlerForge;
 import com.clefal.teams.network.client.S2CModPacket;
 import com.clefal.teams.network.server.C2SModPacket;
 import com.clefal.teams.platform.services.IPlatformHelper;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.ModList;
@@ -17,7 +14,6 @@ import java.util.function.Function;
 
 public class ForgePlatformHelper implements IPlatformHelper {
 
-    protected final MultiloaderConfig config = new TomlConfig();
 
     @Override
     public Platform getPlatform() {
@@ -49,10 +45,6 @@ public class ForgePlatformHelper implements IPlatformHelper {
         return !FMLLoader.isProduction();
     }
 
-    @Override
-    public MultiloaderConfig getConfig() {
-        return config;
-    }
 
     @Override
     public void sendToClient(S2CModPacket msg, ServerPlayer player) {
@@ -64,10 +56,6 @@ public class ForgePlatformHelper implements IPlatformHelper {
         PacketHandlerForge.sendToServer(msg);
     }
 
-    @Override
-    public void registerKeyBinding(KeyMapping keyMapping) {
-        TeamsHUDClient.registerKeybinding(keyMapping);
-    }
 
     int i;
 

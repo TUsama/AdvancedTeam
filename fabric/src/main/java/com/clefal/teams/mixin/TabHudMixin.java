@@ -1,6 +1,7 @@
 package com.clefal.teams.mixin;
 
-import com.clefal.teams.client.TeamsHUDClient;
+import com.clefal.teams.AdvancedTeamsHUDClient;
+import com.clefal.teams.client.gui.hud.CompassOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import org.spongepowered.asm.mixin.Final;
@@ -16,7 +17,7 @@ public class TabHudMixin {
 
     @ModifyVariable(method = "render", at = @At("STORE"), ordinal = 9)
     private int onRenderTabList(int p) {
-        if (TeamsHUDClient.compass.isShowing()) {
+        if (CompassOverlay.INSTANCE.isShowing()) {
             float scaledHeight = minecraft.getWindow().getGuiScaledHeight();
             return (int) (scaledHeight * 0.01) + 12 + 16;
         }

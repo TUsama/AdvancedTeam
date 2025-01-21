@@ -3,6 +3,8 @@ plugins {
     id 'net.minecraftforge.gradle'
     id 'org.spongepowered.mixin'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 base {
     archivesName = "${mod_name}-forge-${minecraft_version}"
@@ -33,8 +35,7 @@ minecraft {
             taskName 'Client'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            args '-XX:+AllowEnhancedClassRedefinition'
-            args '-XX:HotswapAgent=core'
+            jvmArgs '-XX:+AllowEnhancedClassRedefinition'
             mods {
                 modClientRun {
                     source sourceSets.main
@@ -83,12 +84,22 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    implementation fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6065006")
+    compileOnly fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6065006")
+
+
+    implementation fg.deobf("curse.maven:nirvana-library-1164411:6016044")
+
 
     implementation fg.deobf("me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge")
+    implementation("thedarkcolour:kotlinforforge:4.11.0")
 }
 
 tasks.withType(JavaCompile).configureEach {

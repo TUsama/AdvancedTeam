@@ -1,7 +1,6 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.event.server.ServerCreateTeamEvent;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
@@ -27,7 +26,7 @@ public class C2STeamJoinPacket implements C2SModPacket {
     public void handleServer(ServerPlayer player) {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(this.team);
         ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team);
-        TeamsHUD.serverBus.post(new ServerJoinTeamEvent(team, player));
+        AdvancedTeam.eventBus.post(new ServerJoinTeamEvent(team, player));
 
     }
 }

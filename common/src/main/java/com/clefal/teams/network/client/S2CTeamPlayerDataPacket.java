@@ -1,14 +1,12 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
-import com.clefal.nirvana_lib.relocated.io.vavr.CheckedRunnable;
-import com.clefal.nirvana_lib.relocated.io.vavr.Tuple2;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.IRenderableProperty;
 import com.clefal.teams.event.server.ServerGatherPropertyEvent;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
+import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.properties.Property;
@@ -43,7 +41,7 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     public S2CTeamPlayerDataPacket(ServerPlayer player, Type type) {
         tag.putUUID(ID_KEY, player.getUUID());
         tag.putString(TYPE_KEY, type.toString());
-        Runnable gather = () -> this.postOnServerAndDo(new ServerGatherPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
+        Runnable gather = () -> this.postAndDo(new ServerGatherPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
             tuple2._2().accept(tuple2._1(), tag);
             this.propertiesName.add(tuple2._1().getIdentifier());
         }));
@@ -59,6 +57,7 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                 tag.putString(SKIN_SIG_KEY, skin != null ?
                         skin.getSignature() != null ? skin.getSignature() : ""
                         : "");
+                System.out.println("try run!");
                 gather.run();
             }
             case UPDATE -> gather.run();
@@ -96,27 +95,24 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                     Minecraft.getInstance().getSkinManager().registerSkins(dummy, (type, id, texture) -> {
                         if (type == MinecraftProfileTexture.Type.SKIN) {
 
-                            this.postOnClientAndDo(new ClientReadPropertyEvent(tag, com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, id, event.getResults()));
+                            this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, id, event.getResults()));
 
                         }
                     }, false);
                 } else {
-                    this.postOnClientAndDo(new ClientReadPropertyEvent(tag, com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, DefaultPlayerSkin.getDefaultSkin(uuid), event.getResults()));
+                    this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, DefaultPlayerSkin.getDefaultSkin(uuid), event.getResults()));
                 }
             }
             case UPDATE ->
-                    this.postOnClientAndDo(new ClientReadPropertyEvent(tag, com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(this.propertiesName)), event -> ClientTeam.INSTANCE.updatePlayer(uuid, event.getResults()));
+                    this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.updatePlayer(uuid, event.getResults()));
             case REMOVE -> {
                 ClientTeam.INSTANCE.removePlayer(uuid);
             }
         }
     }
 
-    private <T extends Event> void postOnServerAndDo(T event, Consumer<T> handle){
-        handle.accept(TeamsHUD.serverBus.post(event));
+    private <T extends Event> void postAndDo(T event, Consumer<T> handle){
+        handle.accept(AdvancedTeam.eventBus.post(event));
     }
 
-    private <T extends Event> void postOnClientAndDo(T event, Consumer<T> handle){
-        handle.accept(TeamsHUD.clientBus.post(event));
-    }
 }

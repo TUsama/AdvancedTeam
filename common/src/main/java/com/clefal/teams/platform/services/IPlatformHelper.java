@@ -2,7 +2,6 @@ package com.clefal.teams.platform.services;
 
 import com.clefal.teams.network.client.S2CModPacket;
 import com.clefal.teams.network.server.C2SModPacket;
-import com.clefal.teams.platform.MultiloaderConfig;
 import com.clefal.teams.platform.PhysicalSide;
 import com.clefal.teams.platform.Platform;
 import net.minecraft.client.KeyMapping;
@@ -47,7 +46,6 @@ public interface IPlatformHelper {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
 
-    MultiloaderConfig getConfig();
 
     void sendToClient(S2CModPacket msg, ServerPlayer player);
 
@@ -56,7 +54,6 @@ public interface IPlatformHelper {
     }
     void sendToServer(C2SModPacket msg);
 
-    void registerKeyBinding(KeyMapping keyMapping);
 
     <MSG extends S2CModPacket> void registerClientMessage(Class<MSG> packetClass, Function<FriendlyByteBuf,MSG> reader);
 

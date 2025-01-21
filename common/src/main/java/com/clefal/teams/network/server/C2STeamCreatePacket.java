@@ -1,6 +1,6 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerCreateTeamEvent;
 import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,6 +26,6 @@ public class C2STeamCreatePacket implements C2SModPacket {
     @Override
     public void handleServer(ServerPlayer player) {
         ATServerTeamData.getOrMakeDefault(player.server).createTeam(team, player);
-        TeamsHUD.serverBus.post(new ServerCreateTeamEvent(team, player));
+        AdvancedTeam.eventBus.post(new ServerCreateTeamEvent(team, player));
     }
 }

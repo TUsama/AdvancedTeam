@@ -1,4 +1,4 @@
-package com.clefal.teams;
+package com.clefal.teams.mixinhelper;
 
 import net.minecraft.client.gui.components.Button;
 

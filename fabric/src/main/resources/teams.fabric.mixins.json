@@ -1,13 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.t2pellet.teams.mixin",
+  "package": "com.clefal.teams.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "com.clefal.teams.mixin.AdvancementMixinFabric"
+    "AdvancementMixinFabric"
   ],
   "client": [
-    "com.clefal.teams.mixin.TabHudMixin"
+    "TabHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

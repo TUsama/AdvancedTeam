@@ -1,7 +1,7 @@
 package com.clefal.teams.config;
 
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
@@ -18,7 +18,7 @@ public class ATConfig extends Config {
     public Info info = new Info();
 
     public ATConfig() {
-        super(TeamsHUD.id("config"));
+        super(AdvancedTeam.id("config"));
     }
 
     public static void init() {
@@ -29,14 +29,14 @@ public class ATConfig extends Config {
 
         public boolean enableStatusHUD = true;
         public ConfigGroup statusGroup = new ConfigGroup("status");
-        public boolean showHunger = true;
+        public boolean showHunger = false;
         @ConfigGroup.Pop
         public boolean showHealth = true;
 
     }
 
     public static class Info extends ConfigSection {
-        public ValidatedInt toastShowSecond = new ValidatedInt(3, 0, 10, ValidatedNumber.WidgetType.SLIDER);
+        public ValidatedInt toastShowSecond = new ValidatedInt(3, 10, 0, ValidatedNumber.WidgetType.SLIDER);
     }
 
 

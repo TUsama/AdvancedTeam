@@ -1,6 +1,6 @@
 package com.clefal.teams.network;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.network.client.S2CModPacket;
 import com.clefal.teams.network.server.C2SModPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class PacketHandlerForge {
 
-    public static SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(TeamsHUD.id(TeamsHUD.MODID), () -> "1.0", s -> true, s -> true);;
+    public static SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(AdvancedTeam.id(AdvancedTeam.MODID), () -> "1.0", s -> true, s -> true);;
 
     public static <MSG extends S2CModPacket> BiConsumer<MSG, Supplier<NetworkEvent.Context>> wrapS2C() {
         return ((msg, contextSupplier) -> {

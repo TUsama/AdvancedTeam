@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class CompassOverlay {
-
+    public static final CompassOverlay INSTANCE = new CompassOverlay();
     private static final int HUD_WIDTH = 182;
     private static final int HUD_HEIGHT = 5;
 

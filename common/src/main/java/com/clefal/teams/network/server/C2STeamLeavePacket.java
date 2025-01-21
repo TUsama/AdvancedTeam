@@ -1,8 +1,7 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerPlayerLeaveEvent;
-import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +23,7 @@ public class C2STeamLeavePacket implements C2SModPacket {
     @Override
     public void handleServer(ServerPlayer player) {
         if (ATServerTeamData.getOrMakeDefault(player.server).removePlayerFromTeam(player)) {
-            TeamsHUD.serverBus.post(new ServerPlayerLeaveEvent(player));
+            AdvancedTeam.eventBus.post(new ServerPlayerLeaveEvent(player));
         }
     }
 }

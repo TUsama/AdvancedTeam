@@ -1,6 +1,6 @@
 package com.clefal.teams.client.gui.toast;
 
-import com.clefal.teams.client.TeamsKeys;
+import com.clefal.teams.client.keybind.TeamsKeys;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.resources.language.I18n;

@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import com.clefal.teams.mixin.AdvancementAccessor;
 import com.clefal.teams.platform.Services;
 import lombok.Getter;
+import lombok.val;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -180,13 +181,15 @@ public class ATServerTeam extends Team {
 
     static ATServerTeam fromNBT(CompoundTag compound, ATServerTeamData teamData) {
         ATServerTeam team = new Builder(compound.getString("name"))
-                .setColour(ChatFormatting.getByName(compound.getString("colour")))
-                .setCollisionRule(CollisionRule.byName(compound.getString("collision")))
-                .setDeathMessageVisibilityRule(Visibility.byName(compound.getString("deathMessages")))
-                .setNameTagVisibilityRule(Visibility.byName(compound.getString("nameTags")))
-                .setFriendlyFireAllowed(compound.getBoolean("friendlyFire"))
-                .setShowFriendlyInvisibles(compound.getBoolean("showInvisible"))
                 .complete(teamData, compound.getUUID("leader"));
+        val vanillaTeam = team.scoreboardTeam;
+        vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
+        vanillaTeam.setCollisionRule(CollisionRule.byName(compound.getString("collision")));
+        vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
+        vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
+        vanillaTeam.setDeathMessageVisibility(Visibility.byName(compound.getString("deathMessages")));
+        vanillaTeam.setNameTagVisibility(Visibility.byName(compound.getString("nameTags")));
+
 
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
         for (var elem : players) {
@@ -309,64 +312,17 @@ public class ATServerTeam extends Team {
     }
 
 
-    public static class TeamException extends Exception {
-        public TeamException(Component message) {
-            super(message.getString());
-        }
-    }
 
     public static class Builder {
 
         private final String name;
-        private boolean showFriendlyInvisibles = Services.PLATFORM.getConfig().showInvisibleTeammates();
-        private boolean friendlyFireAllowed = Services.PLATFORM.getConfig().friendlyFireEnabled();
-        private Visibility nameTagVisibilityRule = Services.PLATFORM.getConfig().nameTagVisibility();
-        private ChatFormatting colour = Services.PLATFORM.getConfig().colour();
-        private Visibility deathMessageVisibilityRule = Services.PLATFORM.getConfig().deathMessageVisibility();
-        private CollisionRule collisionRule = Services.PLATFORM.getConfig().collisionRule();
 
         public Builder(String name) {
             this.name = name;
         }
 
-        public Builder setShowFriendlyInvisibles(boolean showFriendlyInvisibles) {
-            this.showFriendlyInvisibles = showFriendlyInvisibles;
-            return this;
-        }
-
-        public Builder setFriendlyFireAllowed(boolean friendlyFireAllowed) {
-            this.friendlyFireAllowed = friendlyFireAllowed;
-            return this;
-        }
-
-        public Builder setNameTagVisibilityRule(Visibility nameTagVisibilityRule) {
-            this.nameTagVisibilityRule = nameTagVisibilityRule;
-            return this;
-        }
-
-        public Builder setColour(ChatFormatting colour) {
-            this.colour = colour;
-            return this;
-        }
-
-        public Builder setDeathMessageVisibilityRule(Visibility deathMessageVisibilityRule) {
-            this.deathMessageVisibilityRule = deathMessageVisibilityRule;
-            return this;
-        }
-
-        public Builder setCollisionRule(CollisionRule collisionRule) {
-            this.collisionRule = collisionRule;
-            return this;
-        }
-
         public ATServerTeam complete(ATServerTeamData teamData, UUID leader) {
             ATServerTeam team = new ATServerTeam(teamData.scoreboard, name, teamData, leader);
-            team.setShowFriendlyInvisibles(showFriendlyInvisibles);
-            team.setFriendlyFireAllowed(friendlyFireAllowed);
-            team.setNameTagVisibilityRule(nameTagVisibilityRule);
-            team.setColour(colour);
-            team.setDeathMessageVisibilityRule(deathMessageVisibilityRule);
-            team.setCollisionRule(collisionRule);
             return team;
         }
     }

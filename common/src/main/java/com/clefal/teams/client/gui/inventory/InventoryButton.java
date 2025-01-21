@@ -1,44 +1,19 @@
-package com.clefal.teams.client;
+package com.clefal.teams.client.gui.inventory;
 
-import com.clefal.teams.ScreenDuck;
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.ClientTeamData;
-import com.clefal.teams.client.gui.hud.CompassOverlay;
-import com.clefal.teams.client.gui.hud.StatusOverlay;
 import com.clefal.teams.client.gui.menu.TeamsLonelyScreen;
 import com.clefal.teams.client.gui.menu.TeamsMainScreen;
 import com.clefal.teams.mixin.InventoryScreenAccessor;
-import net.minecraft.client.KeyMapping;
+import com.clefal.teams.mixinhelper.ScreenDuck;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.ArrayUtils;
 
-public class TeamsHUDClient {
-
-    public static final StatusOverlay status = new StatusOverlay();
-    public static final CompassOverlay compass = new CompassOverlay();
-
-    public static void registerKeybinding(KeyMapping keyMapping) {
-        Minecraft.getInstance().options.keyMappings = ArrayUtils.add(Minecraft.getInstance().options.keyMappings, keyMapping);
-    }
-
-    public static final ResourceLocation TEAMS_BUTTON_TEXTURE = TeamsHUD.id("textures/gui/buttonsmall.png");
-
-    public static void registerKeybinds() {
-        // Register keybinds
-        for (TeamsKeys.TeamsKey key : TeamsKeys.KEYS) {
-            key.register();
-        }
-    }
-
-    public static void clientDisconnect() {
-        ClientTeam.INSTANCE.reset();
-        ClientTeamData.INSTANCE.clear();
-    }
+public class InventoryButton {
+    public static final ResourceLocation TEAMS_BUTTON_TEXTURE = AdvancedTeam.id("textures/gui/buttonsmall.png");
 
     public static void afterScreenInit(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight){
         if (screen instanceof InventoryScreen inventoryScreen && minecraft.gameMode != null && !minecraft.gameMode.hasInfiniteItems()) {
@@ -58,14 +33,4 @@ public class TeamsHUDClient {
             });
         }
     }
-
-    public static void endClientTick() {
-        for (var key : TeamsKeys.KEYS) {
-            if (key.keyBinding.consumeClick()) {
-                key.onPress.execute(Minecraft.getInstance());
-            }
-        }
-    }
-
-
 }

@@ -1,8 +1,6 @@
 package com.clefal.teams.client.core;
 
-import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.client.core.property.Health;
-import com.clefal.teams.client.core.property.Hunger;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.gui.menu.TeamsLonelyScreen;
 import com.clefal.teams.client.gui.menu.TeamsMainScreen;
 import com.clefal.teams.client.gui.menu.TeamsScreen;
@@ -16,7 +14,6 @@ class ClientTeamImpl implements ClientTeam {
 
     private Minecraft client = Minecraft.getInstance();
     private Map<UUID, Teammate> teammates = new HashMap<>();
-    private Set<UUID> favourites = new HashSet<>();
     private boolean initialized = false;
     private String name = "";
     private boolean hasPerms = false;
@@ -84,7 +81,7 @@ class ClientTeamImpl implements ClientTeam {
             }
 
         } else {
-            TeamsHUD.LOGGER.warn("Tried updating player with UUID " + player + "but they are not in this clients team");
+            AdvancedTeam.LOGGER.warn("Tried updating player with UUID " + player + "but they are not in this clients team");
         }
     }
 

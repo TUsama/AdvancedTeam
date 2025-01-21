@@ -1,6 +1,6 @@
 package com.clefal.teams.client.gui.menu;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.server.ModComponents;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class TeamsInputScreen extends TeamsScreen {
 
-    private static final ResourceLocation TEXTURE = TeamsHUD.id("textures/gui/smaller_background.png");
+    private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/smaller_background.png");
     private static final int WIDTH = 120;
     private static final int HEIGHT = 110;
 

@@ -1,6 +1,6 @@
 package com.clefal.teams.client.gui.menu;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.server.ModComponents;
 import net.minecraft.ChatFormatting;
@@ -14,7 +14,7 @@ public class TeamsLonelyScreen extends TeamsScreen {
 
     static final int WIDTH = 256;
     static final int HEIGHT = 166;
-    private static final ResourceLocation TEXTURE = TeamsHUD.id("textures/gui/screen_background.png");
+    private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
 
     public TeamsLonelyScreen(Screen parent) {
         super(parent, ModComponents.LONELY_MENU_TITLE);

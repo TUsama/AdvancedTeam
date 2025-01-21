@@ -1,5 +1,7 @@
-package com.clefal.teams.client;
+package com.clefal.teams.client.keybind;
 
+import com.clefal.teams.client.gui.hud.CompassOverlay;
+import com.clefal.teams.client.gui.hud.StatusOverlay;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.toast.ToastInvited;
@@ -11,9 +13,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+
 public class TeamsKeys {
 
+    public static void registerAllKey(Consumer<KeyMapping[]> handle){
+        handle.accept(Arrays.stream(KEYS).map(x -> x.keyBinding).toArray(KeyMapping[]::new));
+    }
+
+    public static void consumerKeys(){
+        for (var key : KEYS) {
+            if (key.keyBinding.consumeClick()) {
+                key.onPress.execute(Minecraft.getInstance());
+            }
+        }
+    }
+
     public static class TeamsKey {
+
         @FunctionalInterface
         public interface OnPress {
             void execute(Minecraft client);
@@ -29,8 +47,8 @@ public class TeamsKeys {
             onPress = action;
         }
 
-        public void register() {
-            Services.PLATFORM.registerKeyBinding(keyBinding);
+        public void register(Consumer<KeyMapping> handle) {
+            handle.accept(this.keyBinding);
         }
 
         public String getLocalizedName() {
@@ -70,8 +88,8 @@ public class TeamsKeys {
     });
 
     public static final TeamsKey TOGGLE_HUD = new TeamsKey("key.teams.toggle_hud", GLFW.GLFW_KEY_B, client -> {
-        TeamsHUDClient.compass.enabled = !TeamsHUDClient.compass.enabled;
-        TeamsHUDClient.status.enabled = !TeamsHUDClient.status.enabled;
+        StatusOverlay.INSTANCE.enabled = !StatusOverlay.INSTANCE.enabled;
+        CompassOverlay.INSTANCE.enabled = !CompassOverlay.INSTANCE.enabled;
     });
 
     static final TeamsKey[] KEYS = {

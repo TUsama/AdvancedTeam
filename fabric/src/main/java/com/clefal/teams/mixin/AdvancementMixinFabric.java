@@ -1,6 +1,6 @@
 package com.clefal.teams.mixin;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +17,6 @@ public class AdvancementMixinFabric {
 
     @Inject(method = "award", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerAdvancements;markForVisibilityUpdate(Lnet/minecraft/advancements/Advancement;)V"))
     public void advancementCompleted(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> ci) {
-            TeamsHUD.onAdvancement(player, advancement);
+            AdvancedTeam.onAdvancement(player, advancement);
     }
 }

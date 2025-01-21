@@ -1,13 +1,16 @@
 package com.clefal.teams.event.client;
 
-import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.teams.client.core.IRenderableProperty;
 import net.minecraft.nbt.CompoundTag;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ClientReadPropertyEvent extends ClientEvent {
     public List<String> properties;
     public final CompoundTag tag;
-    private List<IRenderableProperty> results = List.of();
+    private List<IRenderableProperty> results = new ArrayList<>();
 
     public ClientReadPropertyEvent(CompoundTag tag, List<String> properties) {
         this.tag = tag;
@@ -15,10 +18,10 @@ public class ClientReadPropertyEvent extends ClientEvent {
     }
 
     public IRenderableProperty[] getResults() {
-        return results.reverse().toJavaArray(IRenderableProperty[]::new);
+        return results.toArray(IRenderableProperty[]::new);
     }
 
     public void addResult(IRenderableProperty property) {
-        this.results.prepend(property);
+        this.results.add(property);
     }
 }

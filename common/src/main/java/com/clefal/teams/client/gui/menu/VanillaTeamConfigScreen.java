@@ -1,6 +1,6 @@
 package com.clefal.teams.client.gui.menu;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.server.ModComponents;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.CycleButton;
@@ -9,17 +9,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.scores.Team;
 
-public class TeamConfigScreen extends TeamsScreen{
+public class VanillaTeamConfigScreen extends TeamsScreen{
     static final int WIDTH = 256;
     static final int HEIGHT = 166;
-    private static final ResourceLocation TEXTURE = TeamsHUD.id("textures/gui/screen_background.png");
+    private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
     private final Checkbox seeFriendlyInvisiblesBox;
     private final Checkbox allowFriendlyFire;
     private final CycleButton<Team.Visibility> nameTagVisibility;
     private final CycleButton<Team.Visibility> deathMessageVisibility;
     private final CycleButton<Team.CollisionRule> collisionRule;
 
-    public TeamConfigScreen(Screen parent, Component title) {
+    public VanillaTeamConfigScreen(Screen parent, Component title) {
         super(parent, title);
         this.seeFriendlyInvisiblesBox = new Checkbox(x + 10, y + 10, 10, 10, ModComponents.CAN_SEE_FRIENDLY_INVISIBLES, true);
         this.allowFriendlyFire = new Checkbox(x + 20, y + 20, 10, 10, ModComponents.CAN_SEE_FRIENDLY_INVISIBLES, true);

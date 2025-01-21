@@ -17,6 +17,7 @@ public class StatusRenderType extends RenderType {
     public static RenderType getStatusRenderType(String name, ResourceLocation texture) {
         RenderType.CompositeState renderTypeState = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
+                .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
                 .setTextureState(new TextureStateShard(texture, false, false))
                 .setTransparencyState(new TransparencyStateShard("normal_blend", RenderSystem::enableBlend, RenderSystem::disableBlend))
                 .setLightmapState(LIGHTMAP)

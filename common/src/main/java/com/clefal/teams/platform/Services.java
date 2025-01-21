@@ -1,7 +1,7 @@
 package com.clefal.teams.platform;
 
 import com.clefal.teams.platform.services.IPlatformHelper;
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 
 import java.util.ServiceLoader;
 
@@ -24,7 +24,7 @@ public class Services {
         final T loadedService = ServiceLoader.load(clazz)
                 .findFirst()
                 .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
-        TeamsHUD.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
+        AdvancedTeam.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
         return loadedService;
     }
 }

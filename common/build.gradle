@@ -1,8 +1,9 @@
 plugins {
     id 'idea'
     id 'java'
-    id 'maven-publish'
     id 'org.spongepowered.gradle.vanilla'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 base {
     archivesName = "${mod_name}-common-${minecraft_version}"
@@ -18,22 +19,15 @@ dependencies {
      compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
      implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 
-    compileOnly ("curse.maven:nirvana-library-1164411:6016044")
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    compileOnly "curse.maven:nirvana-library-1164411:6016044"
 
 
     compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
-        }
-    }
-}

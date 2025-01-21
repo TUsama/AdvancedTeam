@@ -1,7 +1,7 @@
 package com.clefal.teams.client.gui.menu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.gui.toast.ToastRequest;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamRequestPacket;
@@ -19,7 +19,7 @@ public class TeamEntry extends AbstractWidget {
 
     static final int WIDTH = 244;
     static final int HEIGHT = 24;
-    private static final ResourceLocation TEXTURE = TeamsHUD.id("textures/gui/screen_background.png");
+    private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
 
     public final ImageButton joinButton;
     private Minecraft client;

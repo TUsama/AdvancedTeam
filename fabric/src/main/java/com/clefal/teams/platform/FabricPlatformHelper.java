@@ -1,7 +1,6 @@
 package com.clefal.teams.platform;
 
-import com.clefal.teams.TeamsHUD;
-import com.clefal.teams.TeamsHUDFabric;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.network.ClientPacketHandlerFabric;
 import com.clefal.teams.network.PacketHandlerFabric;
 import com.clefal.teams.network.client.S2CModPacket;
@@ -21,7 +20,6 @@ import java.util.Locale;
 import java.util.function.Function;
 
 public class FabricPlatformHelper implements IPlatformHelper {
-    MultiloaderConfig config = TeamsHUDFabric.getConfig();
     @Override
     public Platform getPlatform() {
         return Platform.FABRIC;
@@ -52,10 +50,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
-    @Override
-    public MultiloaderConfig getConfig() {
-        return config;
-    }
 
     @Override
     public void sendToClient(S2CModPacket msg, ServerPlayer player) {
@@ -71,10 +65,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
         ClientPlayNetworking.send(packet(msg.getClass()), buf);
     }
 
-    @Override
-    public void registerKeyBinding(KeyMapping keyMapping) {
-        KeyBindingHelper.registerKeyBinding(keyMapping);
-    }
+
 
     @Override
     public <MSG extends S2CModPacket> void registerClientMessage(Class<MSG> packetClass, Function<FriendlyByteBuf, MSG> reader) {
@@ -87,7 +78,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     ResourceLocation packet(Class<?> clazz) {
-        return TeamsHUD.id(clazz.getName().toLowerCase(Locale.ROOT));
+        return AdvancedTeam.id(clazz.getName().toLowerCase(Locale.ROOT));
     }
 
 }

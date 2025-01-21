@@ -1,6 +1,6 @@
 package com.clefal.teams.client.gui.menu;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamLeavePacket;
@@ -13,7 +13,7 @@ public class TeamsMainScreen extends TeamsScreen {
 
     static final int WIDTH = 256;
     static final int HEIGHT = 166;
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TeamsHUD.MODID, "textures/gui/screen_background.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(AdvancedTeam.MODID, "textures/gui/screen_background.png");
 
     public TeamsMainScreen(Screen parent) {
         super(parent, ModComponents.TEAMS_MENU_TITLE);

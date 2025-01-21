@@ -18,7 +18,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.clefal.teams.TeamsHUDFabric"
+      "com.clefal.teams.AdvancedTeamFabric"
     ],
     "client": [
       "com.clefal.teams.client.TeamsHUDClientFabric"

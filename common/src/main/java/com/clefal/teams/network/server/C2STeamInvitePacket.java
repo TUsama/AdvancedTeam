@@ -1,6 +1,6 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.server.IHasTeam;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
@@ -35,7 +35,7 @@ public class C2STeamInvitePacket implements C2SModPacket {
 
         ATServerTeam team = ((IHasTeam) player).getTeam();
         if (team == null) {
-            TeamsHUD.LOGGER.error("{} tried inviting {} but they are not in a team..", player.getName().getString(), toPlayer.getName().getString());
+            AdvancedTeam.LOGGER.error("{} tried inviting {} but they are not in a team..", player.getName().getString(), toPlayer.getName().getString());
         } else {
             ATServerTeamData.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team);
         }

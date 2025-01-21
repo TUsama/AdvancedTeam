@@ -1,6 +1,6 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.teams.TeamsHUD;
+import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerKickPlayerEvent;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
@@ -37,7 +37,7 @@ public class C2STeamKickPacket implements C2SModPacket {
         if (team.playerHasPermissions(player)) {
             ServerPlayer kicked = player.server.getPlayerList().getPlayer(toKick);
             ATServerTeamData.getOrMakeDefault(player.server).removePlayerFromTeam(kicked);
-            TeamsHUD.serverBus.post(new ServerKickPlayerEvent(name, toKick, player));
+            AdvancedTeam.eventBus.post(new ServerKickPlayerEvent(name, toKick, player));
         } else {
             player.sendSystemMessage(Component.literal("You don't have permission!"));
         }
