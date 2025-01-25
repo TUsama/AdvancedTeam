@@ -1,6 +1,8 @@
 package com.clefal.teams;
 
 import com.clefal.teams.client.AdvancedTeamClientForge;
+import com.clefal.teams.compat.CompatManager;
+import com.clefal.teams.compat.MineAndSlashCompatModule;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
@@ -33,6 +35,9 @@ public class AdvancedTeamForge {
         if (FMLEnvironment.dist.isClient()) {
             AdvancedTeamClientForge.init(bus);
         }
+
+        CompatManager.compats.add(MineAndSlashCompatModule.INSTANCE);
+        CompatManager.tryEnableAll();
 
     }
 

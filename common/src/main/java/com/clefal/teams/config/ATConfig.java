@@ -7,6 +7,7 @@ import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
 import me.fzzyhmstrs.fzzy_config.config.ConfigSection;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 
@@ -32,6 +33,7 @@ public class ATConfig extends Config {
         public boolean showHunger = false;
         @ConfigGroup.Pop
         public boolean showHealth = true;
+        public ValidatedFloat barAnimationSpeed = new ValidatedFloat(0.3f, 1.0f, 0.1f, ValidatedNumber.WidgetType.SLIDER);
 
     }
 

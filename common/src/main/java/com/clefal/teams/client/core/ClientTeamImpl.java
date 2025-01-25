@@ -61,7 +61,7 @@ class ClientTeamImpl implements ClientTeam {
     }
 
     @Override
-    public void addPlayer(UUID player, String name, ResourceLocation skin, IRenderableProperty... others) {
+    public void addPlayer(UUID player, String name, ResourceLocation skin, IProperty... others) {
         teammates.put(player, new Teammate(player, name, skin, others));
         // Refresh TeamsMainScreen if open
         if (client.screen instanceof TeamsMainScreen screen) {
@@ -73,10 +73,10 @@ class ClientTeamImpl implements ClientTeam {
     }
 
     @Override
-    public void updatePlayer(UUID player, IRenderableProperty... properties) {
+    public void updatePlayer(UUID player, IProperty... properties) {
         var teammate = teammates.get(player);
         if (teammate != null) {
-            for (IRenderableProperty property : properties) {
+            for (IProperty property : properties) {
                 teammate.addProperty(property);
             }
 

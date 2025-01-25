@@ -67,6 +67,18 @@ subprojects {
             url = 'https://thedarkcolour.github.io/KotlinForForge/'
         }
 
+        maven {
+            name = "TerraformersMC"
+            url = "https://maven.terraformersmc.com/"
+        }
+        maven {
+            name = "Ladysnake Libs"
+            url = 'https://maven.ladysnake.org/releases'
+        }
+        maven {
+            url = "https://maven.theillusivec4.top/"
+        }
+
     }
 
     tasks.withType(JavaCompile).configureEach {

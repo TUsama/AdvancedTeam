@@ -1,11 +1,11 @@
 package com.clefal.teams.client.gui.hud;
 
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.property.Health;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.config.ATConfig;
 import com.clefal.teams.server.propertyhandler.HandlerManager;
 import com.clefal.teams.server.propertyhandler.IPropertyHandler;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,72 +20,56 @@ public class StatusOverlay {
     private final Minecraft client = Minecraft.getInstance();
     private final List<IPropertyHandler> handlers = HandlerManager.INSTANCE.getHandlers();
     private final VertexContainer container = new VertexContainer();
-    private static final float startX = Minecraft.getInstance().getWindow().getGuiScaledWidth() * 0.003f;
 
     public StatusOverlay() {
     }
 
     public void render(GuiGraphics graphics) {
         if (!ATConfig.config.overlays.enableStatusHUD || !enabled) return;
-        //if (client.screen != null) return;
         List<ClientTeam.Teammate> teammates = ClientTeam.INSTANCE.getTeammates();
         int shown = 0;
-        Vector2f pos = new Vector2f(0, 0);
-        pos.add(client.getWindow().getGuiScaledWidth() * 0.003f, 0);
-        pos.add(0, (float) client.getWindow().getGuiScaledHeight() / 4 - 5);
+
         for (int i = 0; i < teammates.size() && shown < 4; ++i) {
             /*if (client.player.getUUID().equals(teammates.get(i).id)) {
                 continue;
             }*/
 
-           renderStatus(graphics, teammates.get(i), pos);
+           renderStatus(graphics, teammates.get(i));
             ++shown;
         }
         this.container.draw(graphics.bufferSource());
         this.container.refresh();
     }
 
-    private Vector2f renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate, Vector2f pos) {
-        // Dont render dead players
-        //Clefal: why?
-        //if (teammate.getHealth() <= 0) return;
+    private void renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate) {
+        PoseStack pose = graphics.pose();
         //from left to right
-        graphics.pose().pushPose();
+        pose.pushPose();
+
         // Draw skin
 
-        graphics.pose().scale(0.5F, 0.5F, 0);
+        float scale = 0.5f;
+        pose.scale(scale, scale, 0);
+
+        pose.translate(getRelativeWidth(0.05f / scale), getRelativeHeight(0.5f / scale), 0);
+
         {
-            pos.add(4, 0).set(pos.x, ((float) client.getWindow().getGuiScaledHeight() / 2 - 34 + 2 * pos.y));
-            graphics.blit(teammate.skin, ((int) pos.x), (int) (pos.y), 32, 32, 32, 32);
-
+            graphics.blit(teammate.skin, 0, 0, 32, 32, 32, 32);
         }
-
-
 
         // Draw name
         {
-            pos.add(getRelativeWidth(0.035f), 0.0f)
-                    //due to the scale()
-                    .mul(2.0f, 1.0f);
-            //System.out.println(pos.x);
-            graphics.drawString(client.font, Component.literal(teammate.name), ((int) pos.x), ((int) (pos.y)), ChatFormatting.WHITE.getColor());
+            pose.translate(40, 0, 0);
+            graphics.drawString(client.font, Component.literal(teammate.name), 0, 0, ChatFormatting.WHITE.getColor());
         }
 
         {
             for (IPropertyHandler handler : this.handlers) {
-                handler.onRender(graphics, container, teammate, pos);
+                handler.onRender(graphics, container, teammate);
             }
         }
-        graphics.pose().popPose();
-        //System.out.println(teammate.getProperty(Health.KEY));
+        pose.popPose();
 
-
-
-
-
-        // Update offset
-        pos.add(0, 46).set(startX, pos.y);
-        return pos;
     }
 
     public static float getRelativeWidth(float factor){

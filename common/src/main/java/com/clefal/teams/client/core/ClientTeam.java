@@ -1,11 +1,15 @@
 package com.clefal.teams.client.core;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
-import com.clefal.teams.client.core.property.Health;
-import com.clefal.teams.client.core.property.Hunger;
+import com.clefal.teams.client.core.property.ITracking;
+import com.clefal.teams.client.core.property.impl.Health;
+import com.clefal.teams.client.core.property.impl.Hunger;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public interface ClientTeam {
 
@@ -25,9 +29,9 @@ public interface ClientTeam {
 
     boolean hasPlayer(UUID player);
 
-    void addPlayer(UUID player, String name, ResourceLocation skin, IRenderableProperty... others);
+    void addPlayer(UUID player, String name, ResourceLocation skin, IProperty... others);
 
-    void updatePlayer(UUID player, IRenderableProperty... properties);
+    void updatePlayer(UUID player, IProperty... properties);
 
     void removePlayer(UUID player);
 
@@ -38,31 +42,32 @@ public interface ClientTeam {
         public final UUID id;
         public final String name;
         public final ResourceLocation skin;
-        private final Map<String, IRenderableProperty> properties = new LinkedHashMap<>();
+        private final Map<String, IProperty> properties = new LinkedHashMap<>();
 
 
-        Teammate(UUID id, String name, ResourceLocation skin, IRenderableProperty... properties) {
+        Teammate(UUID id, String name, ResourceLocation skin, IProperty... properties) {
             this.id = id;
             this.name = name;
             this.skin = skin;
-            for (IRenderableProperty property : properties) {
+            for (IProperty property : properties) {
                 this.properties.put(property.getIdentifier(), property);
             }
         }
 
-        public float getHealth() {
-            return Float.parseFloat(this.properties.get(Health.KEY).getRenderString());
+
+        public void addProperty(IProperty property) {
+            if (property instanceof ITracking tracking) {
+                IProperty old = properties.get(property.getIdentifier());
+                ITracking<?> o = (ITracking<?>) tracking.mergeWith(old);
+                properties.put(property.getIdentifier(), (IProperty) o);
+            } else {
+                properties.put(property.getIdentifier(), property);
+            }
+
+
         }
 
-        public int getHunger() {
-            return Integer.parseInt(this.properties.get(Hunger.KEY).getRenderString());
-        }
-
-        public void addProperty(IRenderableProperty property) {
-            properties.put(property.getIdentifier(), property);
-        }
-
-        public Option<IRenderableProperty> getProperty(String key){
+        public Option<IProperty> getProperty(String key) {
             return Option.of(this.properties.get(key));
         }
 

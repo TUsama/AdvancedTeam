@@ -1,7 +1,6 @@
 package com.clefal.teams.mixin;
 
-import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
-import com.clefal.teams.platform.Services;
+import com.clefal.teams.mixinhelper.Hooker;
 import com.mojang.authlib.GameProfile;
 import com.clefal.teams.server.IHasTeam;
 import com.clefal.teams.server.ATServerTeam;
@@ -21,9 +20,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player implements IHasTeam {
@@ -77,13 +73,8 @@ public abstract class ServerPlayerMixin extends Player implements IHasTeam {
 	}
 
 	@Inject(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/server/level/ServerPlayer;getHealth()F",ordinal = 1), method = "doTick")
-	private void UpdateHealthInfoUpdateForEveryone(CallbackInfo info) {
-		var player = (ServerPlayer) ((Object) this);
-		ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(player);
-		if (team != null) {
-			List<ServerPlayer> players = team.getOnlinePlayers().stream().filter(other -> !other.equals(player)).collect(Collectors.toList());
-			Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.UPDATE), players);
-		}
+	private void UpdateHealthInfoForEveryone(CallbackInfo info) {
+		Hooker.UpdatePropertyInfoForEveryone((ServerPlayer) ((Object) this));
 	}
 
 	@Override

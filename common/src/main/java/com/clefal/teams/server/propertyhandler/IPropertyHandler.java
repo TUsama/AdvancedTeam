@@ -11,5 +11,5 @@ import org.joml.Vector2f;
 public interface IPropertyHandler {
     void onGather(ServerGatherPropertyEvent event);
     void onRead(ClientReadPropertyEvent event);
-    Vector2f onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate,Vector2f pos);
+    void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate);
 }

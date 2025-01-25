@@ -57,7 +57,7 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                 tag.putString(SKIN_SIG_KEY, skin != null ?
                         skin.getSignature() != null ? skin.getSignature() : ""
                         : "");
-                System.out.println("try run!");
+                //System.out.println("try run!");
                 gather.run();
             }
             case UPDATE -> gather.run();
@@ -78,7 +78,9 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     @Override
     public void handleClient() {
         UUID uuid = tag.getUUID(S2CTeamPlayerDataPacket.ID_KEY);
-        switch (S2CTeamPlayerDataPacket.Type.valueOf(tag.getString(S2CTeamPlayerDataPacket.TYPE_KEY))) {
+        Type type1 = Type.valueOf(tag.getString(S2CTeamPlayerDataPacket.TYPE_KEY));
+        //System.out.println("handle on client, the type is " + type1);
+        switch (type1) {
             case ADD -> {
                 if (ClientTeam.INSTANCE.hasPlayer(uuid)) return;
 
@@ -103,8 +105,10 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                     this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, DefaultPlayerSkin.getDefaultSkin(uuid), event.getResults()));
                 }
             }
-            case UPDATE ->
-                    this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.updatePlayer(uuid, event.getResults()));
+            case UPDATE -> {
+                //System.out.println("updating!");
+                this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.updatePlayer(uuid, event.getResults()));
+            }
             case REMOVE -> {
                 ClientTeam.INSTANCE.removePlayer(uuid);
             }
@@ -112,7 +116,9 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     }
 
     private <T extends Event> void postAndDo(T event, Consumer<T> handle){
-        handle.accept(AdvancedTeam.eventBus.post(event));
+        //System.out.println("post!");
+        T post = AdvancedTeam.eventBus.post(event);
+        handle.accept(post);
     }
 
 }
