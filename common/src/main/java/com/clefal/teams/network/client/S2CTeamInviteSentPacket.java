@@ -27,6 +27,6 @@ public class S2CTeamInviteSentPacket implements S2CModPacket {
 
     @Override
     public void handleClient() {
-        Minecraft.getInstance().getToasts().addToast(new ToastInviteSent(team, player));
+        Helper.addInviteSentToast(team, player);
     }
 }

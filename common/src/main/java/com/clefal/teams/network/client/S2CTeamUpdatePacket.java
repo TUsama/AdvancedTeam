@@ -2,22 +2,15 @@ package com.clefal.teams.network.client;
 
 import com.clefal.teams.client.gui.toast.ToastJoin;
 import com.clefal.teams.client.gui.toast.ToastLeave;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class S2CTeamUpdatePacket implements S2CModPacket {
 
-    public enum Action {
-        JOINED,
-        LEFT
-    }
-
     private static final String TEAM_KEY = "teamName";
     private static final String PLAYER_KEY = "playerName";
     private static final String ACTION_KEY = "action";
     private static final String LOCAL_KEY = "local";
-
     CompoundTag tag = new CompoundTag();
 
     public S2CTeamUpdatePacket(String team, String player, Action action, boolean isLocal) {
@@ -36,17 +29,18 @@ public class S2CTeamUpdatePacket implements S2CModPacket {
         to.writeNbt(tag);
     }
 
-
     @Override
     public void handleClient() {
         String team = tag.getString(TEAM_KEY);
         String player = tag.getString(PLAYER_KEY);
         S2CTeamUpdatePacket.Action action = S2CTeamUpdatePacket.Action.valueOf(tag.getString(ACTION_KEY));
         boolean isLocal = tag.getBoolean(LOCAL_KEY);
+        Helper.addJoinOrLeaveToast(action, team, player, isLocal);
+    }
 
-        switch (action) {
-            case JOINED -> Minecraft.getInstance().getToasts().addToast(new ToastJoin(team, player, isLocal));
-            case LEFT -> Minecraft.getInstance().getToasts().addToast(new ToastLeave(team, player, isLocal));
-        }
+
+    public enum Action {
+        JOINED,
+        LEFT
     }
 }

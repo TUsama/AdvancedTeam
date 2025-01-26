@@ -1,37 +1,23 @@
-package com.clefal.teams.server.propertyhandler;
+package com.clefal.teams.server.propertyhandler.vanilla;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.IProperty;
-import com.clefal.teams.client.core.property.IRenderable;
 import com.clefal.teams.client.core.property.impl.Health;
 import com.clefal.teams.client.core.property.impl.Hunger;
-import com.clefal.teams.client.gui.hud.StatusOverlay;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
-import com.clefal.teams.event.server.ServerGatherPropertyEvent;
-import com.clefal.teams.server.ModComponents;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
+import com.clefal.teams.server.propertyhandler.HandlerManager;
+import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import org.joml.Vector2f;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class VanillaPropertyHandler implements IPropertyHandler {
-    public static VanillaPropertyHandler INSTANCE = new VanillaPropertyHandler();
-    public static ThreadLocalRandom random = ThreadLocalRandom.current();
+public class VanillaPropertyClientHandler implements IPropertyClientHandler {
 
-    @Override
-    @SubscribeEvent
-    public void onGather(ServerGatherPropertyEvent event) {
-        ServerPlayer player = event.player;
-        event.addProperty(new Health(player.getHealth(), player.getMaxHealth()), (property, compoundTag) -> compoundTag.putString(property.getIdentifier(), player.getHealth() + "/" + player.getMaxHealth()));
-        event.addProperty(new Hunger(player.getFoodData().getFoodLevel()), (property, compoundTag) -> compoundTag.putInt(property.getIdentifier(), player.getFoodData().getFoodLevel()));
-    }
+    public static VanillaPropertyClientHandler INSTANCE = new VanillaPropertyClientHandler();
+
 
     @Override
     @SubscribeEvent

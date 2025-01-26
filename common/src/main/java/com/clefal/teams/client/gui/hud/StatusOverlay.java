@@ -4,13 +4,12 @@ import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.config.ATConfig;
 import com.clefal.teams.server.propertyhandler.HandlerManager;
-import com.clefal.teams.server.propertyhandler.IPropertyHandler;
+import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import org.joml.Vector2f;
 
 import java.util.List;
 
@@ -18,14 +17,14 @@ public class StatusOverlay {
     public static final StatusOverlay INSTANCE = new StatusOverlay();
     public boolean enabled = true;
     private final Minecraft client = Minecraft.getInstance();
-    private final List<IPropertyHandler> handlers = HandlerManager.INSTANCE.getHandlers();
+    private final List<IPropertyClientHandler> handlers = HandlerManager.INSTANCE.getClientHandlers();
     private final VertexContainer container = new VertexContainer();
 
     public StatusOverlay() {
     }
 
     public void render(GuiGraphics graphics) {
-        if (!ATConfig.config.overlays.enableStatusHUD || !enabled) return;
+        if (!ATConfig.config.overlays.enableStatusOverlay || !enabled) return;
         List<ClientTeam.Teammate> teammates = ClientTeam.INSTANCE.getTeammates();
         int shown = 0;
 
@@ -64,7 +63,7 @@ public class StatusOverlay {
         }
 
         {
-            for (IPropertyHandler handler : this.handlers) {
+            for (var handler : this.handlers) {
                 handler.onRender(graphics, container, teammate);
             }
         }

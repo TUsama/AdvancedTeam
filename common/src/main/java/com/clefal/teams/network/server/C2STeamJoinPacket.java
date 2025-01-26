@@ -26,7 +26,7 @@ public class C2STeamJoinPacket implements C2SModPacket {
     public void handleServer(ServerPlayer player) {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(this.team);
         ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team);
-        AdvancedTeam.eventBus.post(new ServerJoinTeamEvent(team, player));
+        AdvancedTeam.post(new ServerJoinTeamEvent(team, player));
 
     }
 }

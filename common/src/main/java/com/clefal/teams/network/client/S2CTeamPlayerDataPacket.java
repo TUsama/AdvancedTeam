@@ -4,6 +4,8 @@ import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.event.client.ClientEvent;
+import com.clefal.teams.event.server.ServerEvent;
 import com.clefal.teams.event.server.ServerGatherPropertyEvent;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.google.common.collect.ImmutableList;
@@ -116,9 +118,11 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     }
 
     private <T extends Event> void postAndDo(T event, Consumer<T> handle){
-        //System.out.println("post!");
-        T post = AdvancedTeam.eventBus.post(event);
-        handle.accept(post);
+        if (event instanceof ServerEvent){
+            handle.accept(AdvancedTeam.serverBus.post(event));
+        } else if (event instanceof ClientEvent){
+            handle.accept(AdvancedTeam.clientBus.post(event));
+        }
     }
 
 }

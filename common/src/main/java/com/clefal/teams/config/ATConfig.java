@@ -26,16 +26,23 @@ public class ATConfig extends Config {
     }
 
     public static class Overlays extends ConfigSection {
-        public boolean enableCompassHUD = true;
+        public boolean enableCompassOverlay = true;
 
-        public boolean enableStatusHUD = true;
-        public ConfigGroup statusGroup = new ConfigGroup("status");
+        public boolean enableStatusOverlay = true;
+
+        public ConfigGroup statusOption = new ConfigGroup("status");
         public boolean showHunger = false;
         @ConfigGroup.Pop
         public boolean showHealth = true;
         public ValidatedFloat barAnimationSpeed = new ValidatedFloat(0.3f, 1.0f, 0.1f, ValidatedNumber.WidgetType.SLIDER);
+        public boolean enableTeamOverlay = true;
+        public ConfigGroup TeamOption = new ConfigGroup("team");
+        public int originX = 43;
+        @ConfigGroup.Pop
+        public int originY = 127;
 
     }
+
 
     public static class Info extends ConfigSection {
         public ValidatedInt toastShowSecond = new ValidatedInt(3, 10, 0, ValidatedNumber.WidgetType.SLIDER);

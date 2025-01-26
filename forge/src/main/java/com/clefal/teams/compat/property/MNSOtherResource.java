@@ -78,6 +78,7 @@ public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource
             return this;
         } else {
             old.targetValue = this.currentValue;
+            old.maxValue = this.maxValue;
             return old;
         }
     }

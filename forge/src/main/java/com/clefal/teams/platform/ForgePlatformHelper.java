@@ -57,15 +57,16 @@ public class ForgePlatformHelper implements IPlatformHelper {
     }
 
 
-    int i;
+    int i = 1024000;
 
     @Override
     public <MSG extends S2CModPacket> void registerClientMessage(Class<MSG> packetClass, Function<FriendlyByteBuf, MSG> reader) {
         PacketHandlerForge.INSTANCE.registerMessage(i++, packetClass, MSG::write, reader, PacketHandlerForge.wrapS2C());
     }
 
+    int j = 5000;
     @Override
     public <MSG extends C2SModPacket> void registerServerMessage(Class<MSG> packetClass, Function<FriendlyByteBuf, MSG> reader) {
-        PacketHandlerForge.INSTANCE.registerMessage(i++, packetClass, MSG::write, reader, PacketHandlerForge.wrapC2S());
+        PacketHandlerForge.INSTANCE.registerMessage(j++, packetClass, MSG::write, reader, PacketHandlerForge.wrapC2S());
     }
 }

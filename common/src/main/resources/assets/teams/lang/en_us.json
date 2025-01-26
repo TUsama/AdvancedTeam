@@ -39,6 +39,7 @@
   "teams.menu.create": "Create a Team",
   "teams.menu.lonely.title": "Teams Menu",
   "teams.menu.lonely.alone": "No other teams are online right now :(",
+  "teams.compat.mns_command": "You've install the Advanced Team mod, the MNS team command has been disabled. You can control your team relationship on GUI by clicking the button on the left-top inventory GUI.",
 
   "key.teams.accept": "Accept Team",
   "key.teams.reject": "Reject Team",

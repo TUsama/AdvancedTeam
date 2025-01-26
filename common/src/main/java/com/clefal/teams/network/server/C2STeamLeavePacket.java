@@ -23,7 +23,7 @@ public class C2STeamLeavePacket implements C2SModPacket {
     @Override
     public void handleServer(ServerPlayer player) {
         if (ATServerTeamData.getOrMakeDefault(player.server).removePlayerFromTeam(player)) {
-            AdvancedTeam.eventBus.post(new ServerPlayerLeaveEvent(player));
+            AdvancedTeam.post(new ServerPlayerLeaveEvent(player));
         }
     }
 }

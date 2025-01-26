@@ -1,17 +1,17 @@
 package com.clefal.teams;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.BusBuilder;
+import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.IEventBus;
 import com.clefal.teams.config.ConfigManager;
-import com.clefal.teams.server.ATServerTeam;
-import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.event.client.ClientEvent;
 import com.clefal.teams.event.server.ServerEvent;
-import com.clefal.teams.network.CommonPacketHandler;
+import com.clefal.teams.network.Packets;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.platform.Services;
+import com.clefal.teams.server.ATServerTeam;
+import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.server.propertyhandler.HandlerManager;
-import com.clefal.teams.server.propertyhandler.IPropertyHandler;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -24,7 +24,15 @@ public class AdvancedTeam {
     public static final String MODID = "teams";
     public static final String MOD_NAME = "Advanced Team";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
-    public static final IEventBus eventBus = BusBuilder.builder().setExceptionHandler((iEventBus, event, eventListeners, i, throwable) -> {
+
+    public static final IEventBus clientBus = BusBuilder.builder().setExceptionHandler((iEventBus, event, eventListeners, i, throwable) -> {
+        try {
+            throw throwable;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }).build();
+    public static final IEventBus serverBus = BusBuilder.builder().setExceptionHandler((iEventBus, event, eventListeners, i, throwable) -> {
         try {
             throw throwable;
         } catch (Throwable e) {
@@ -32,13 +40,39 @@ public class AdvancedTeam {
         }
     }).build();
 
+    public static <T extends Event> T post(T t) {
+        if (t instanceof ServerEvent) {
+            AdvancedTeam.serverBus.post(t);
+        } else if (t instanceof ClientEvent) {
+            AdvancedTeam.clientBus.post(t);
+        }
+        return t;
+    }
 
+    public static void registerAtClient(Object o) {
+        AdvancedTeam.clientBus.register(o);
+    }
 
-    public static void init() {
-        CommonPacketHandler.registerPackets();
+    public static void registerAtServer(Object o) {
+        AdvancedTeam.serverBus.register(o);
+    }
+
+    public static void packetInit() {
+        Packets.registerClientPackets();
+        Packets.registerServerPackets();
+    }
+
+    public static void clientInit() {
         ConfigManager.init();
-        for (IPropertyHandler handler : HandlerManager.INSTANCE.getHandlers()) {
-            eventBus.register(handler);
+        for (var han : HandlerManager.INSTANCE.getClientHandlers()) {
+            clientBus.register(han);
+        }
+    }
+
+    public static void serverInit() {
+        for (var han : HandlerManager.INSTANCE.getServerHandlers()) {
+            System.out.println("server register: " + han);
+            serverBus.register(han);
         }
     }
 

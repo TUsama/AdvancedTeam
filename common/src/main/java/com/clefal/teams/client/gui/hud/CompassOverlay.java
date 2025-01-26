@@ -34,7 +34,7 @@ public class CompassOverlay {
     }
 
     public void render(GuiGraphics graphics) {
-        if (!ATConfig.config.overlays.enableCompassHUD || !enabled) {
+        if (!ATConfig.config.overlays.enableCompassOverlay || !enabled) {
             isShowing = false;
             return;
         }

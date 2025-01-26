@@ -2,22 +2,19 @@ package com.clefal.teams.network;
 
 import com.clefal.teams.network.client.*;
 import com.clefal.teams.network.server.*;
-import com.clefal.teams.platform.PhysicalSide;
-import com.clefal.teams.platform.Platform;
 import com.clefal.teams.platform.Services;
 
-public class CommonPacketHandler {
+public class Packets {
 
-    public static void registerPackets() {
+
+    public static void registerServerPackets() {
         Services.PLATFORM.registerServerMessage(C2STeamCreatePacket.class, C2STeamCreatePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamRequestPacket.class, C2STeamRequestPacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamKickPacket.class, C2STeamKickPacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamLeavePacket.class, C2STeamLeavePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamInvitePacket.class, C2STeamInvitePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamJoinPacket.class, C2STeamJoinPacket::new);
-        if (Services.PLATFORM.getPlatform() == Platform.FORGE || Services.PLATFORM.getPhysicalSide() == PhysicalSide.CLIENT) {
-            registerClientPackets();
-        }
+
     }
 
     public static void registerClientPackets() {

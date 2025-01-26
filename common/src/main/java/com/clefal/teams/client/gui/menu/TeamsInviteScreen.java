@@ -1,19 +1,21 @@
 package com.clefal.teams.client.gui.menu;
 
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.client.gui.components.ATSuggestionsList;
 import com.clefal.teams.client.gui.toast.ToastInviteSent;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamInvitePacket;
 import com.clefal.teams.platform.Services;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public class TeamsInviteScreen extends TeamsInputScreen {
 
-
     public TeamsInviteScreen(Screen parent) {
         super(parent, ModComponents.INVITE_TITLE_TEXT);
+
     }
     @Override
     protected Component getSubmitText() {

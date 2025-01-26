@@ -2,7 +2,6 @@ package com.clefal.teams.network.client;
 
 import com.clefal.teams.client.gui.toast.ToastInvited;
 import com.clefal.teams.server.ATServerTeam;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class S2CTeamInvitedPacket implements S2CModPacket {
@@ -19,7 +18,7 @@ public class S2CTeamInvitedPacket implements S2CModPacket {
 
     @Override
     public void handleClient() {
-        Minecraft.getInstance().getToasts().addToast(new ToastInvited(team));
+        Helper.addInviteToast(team);
     }
 
     @Override

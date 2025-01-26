@@ -1,23 +1,23 @@
 plugins {
     id 'idea'
     id 'java'
-    id 'org.spongepowered.gradle.vanilla'
+    id 'fabric-loom'
     id 'org.jetbrains.kotlin.jvm'
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
 base {
     archivesName = "${mod_name}-common-${minecraft_version}"
 }
-minecraft {
-    version(minecraft_version)
-    if(file("src/main/resources/${mod_id}.accesswidener").exists()){
-        accessWideners(file("src/main/resources/${mod_id}.accesswidener"))
-    }
-}
 
 dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
      compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
      implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-$minecraft_version:$parch_mapping@zip")
+    }
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -29,5 +29,29 @@ dependencies {
 
 
     compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"
+}
+
+loom {
+    mods {
+        "${mod_id}" {
+            // Tell Loom about each source set used by your mod here. This ensures that your mod's classes are properly transformed by Loader.
+            sourceSet sourceSets.main
+        }
+    }
+
+    def awFile = project.file("src/main/resources/${mod_id}.accesswidener")
+    if (awFile.exists()) {
+        accessWidenerPath.set(awFile)
+    }
+
+    mixin {
+        useLegacyMixinAp = false
+    }
+
+    runs {
+        configureEach {
+            ideConfigGenerated(false)
+        }
+    }
 }
 

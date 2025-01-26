@@ -22,9 +22,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Stream;
 
-//1. 硬编码需要队长，以及对应的权限方法？主要是在builder里加上这个。 done
-//3. 事件系统还得捋一捋
-//4. Teammate应该怎样才能支持任意属性传输？
 
 public class ATServerTeam extends Team {
 
@@ -42,7 +39,7 @@ public class ATServerTeam extends Team {
         this.teamData = teamData;
         this.leader = leader;
         players = new HashSet<>();
-        onlinePlayers = new HashMap<>();
+        onlinePlayers = new LinkedHashMap<>();
         scoreboardTeam = scoreboard.getPlayerTeam(name);
         if (scoreboardTeam == null) {
             scoreboardTeam = scoreboard.addPlayerTeam(name);
@@ -158,6 +155,12 @@ public class ATServerTeam extends Team {
 
     private void removePlayer(UUID player) {
         players.remove(player);
+        if (this.leader == player) {
+            Iterator<ServerPlayer> iterator = onlinePlayers.values().iterator();
+            if (iterator.hasNext()){
+                this.promote(iterator.next());
+            }
+        }
         String playerName = getNameFromUUID(player);
         // Scoreboard
         var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);

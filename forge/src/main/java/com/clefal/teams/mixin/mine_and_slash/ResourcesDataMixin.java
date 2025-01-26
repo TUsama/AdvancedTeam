@@ -1,7 +1,6 @@
-package com.clefal.teams.mixin;
+package com.clefal.teams.mixin.mine_and_slash;
 
 import com.clefal.teams.mixinhelper.Hooker;
-import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourcesData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;

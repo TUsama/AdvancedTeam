@@ -5,7 +5,8 @@
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
-        "ResourcesDataMixin"
+        "mine_and_slash.ResourcesDataMixin",
+        "mine_and_slash.TeamCommandMixin"
     ],
     "client": [
     ],

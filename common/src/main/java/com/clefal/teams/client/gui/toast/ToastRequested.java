@@ -15,6 +15,10 @@ public class ToastRequested extends RespondableTeamToast {
         this.id = id;
     }
 
+    public static ToastRequested of(String team, String name, UUID id){
+        return new ToastRequested(team, name, id);
+    }
+
     @Override
     public String title() {
         return I18n.get("teams.toast.requested", name);

@@ -12,6 +12,7 @@ import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
@@ -65,7 +66,9 @@ public class MNSHealthResource extends RenderableCompoundProperty<MNSHealthResou
             gui.fill((int) (currentBarLength * healthFactor), 0, (int) currentBarLength, (int) barHeight, magicShieldColor);
             gui.fillGradient(0, 0, (int) (currentBarLength), (int) barHeight, shadowStart, shadowEnd);
             pose.translate(0, StatusOverlay.getRelativeHeight(0.005f), 0);
-            gui.drawString(Minecraft.getInstance().font, ModComponents.literal(this.getRenderString()), 0, 0, ChatFormatting.WHITE.getColor());
+            if (Screen.hasShiftDown()){
+                gui.drawString(Minecraft.getInstance().font, ModComponents.literal(this.getRenderString()), 0, 0, ChatFormatting.WHITE.getColor());
+            }
             pose.popPose();
         }
     }
