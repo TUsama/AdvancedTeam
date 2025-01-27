@@ -100,10 +100,11 @@ public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource
         @Override
         public void render(GuiGraphics gui, ClientTeam.Teammate teammate) {
             float factor = property.targetValue / property.maxValue;
-            //System.out.println(factor);
+            float width = getRelativeWidth(Constants.barWidth) / 2;
+            float height = getRelativeHeight(Constants.barHeight) / 3;
 
-            gui.fill(0, 0, (int) (getRelativeWidth(Constants.barWidth) / 2 * factor), ((int) (getRelativeHeight(Constants.barHeight) / 3)), colorMap.get(property.getIdentifier()));
-            gui.fillGradient(0, 0, (int) (getRelativeWidth(Constants.barWidth) / 2 * factor), ((int) (getRelativeHeight(Constants.barHeight) / 3)), Constants.shadowStart, Constants.shadowEnd);
+            gui.fill(0, 0, (int) (width * factor), ((int) (height)), colorMap.get(property.getIdentifier()));
+            gui.fillGradient(0, 0, (int) (width * factor), ((int) (height)), Constants.shadowStart, Constants.shadowEnd);
         }
 
     }

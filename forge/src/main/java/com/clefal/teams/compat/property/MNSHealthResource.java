@@ -41,9 +41,10 @@ public class MNSHealthResource extends RenderableCompoundProperty<MNSHealthResou
         float current = health.currentValue + magicShield.currentValue;
         float max = health.maxValue + magicShield.maxValue;
         float healthResourceRatio = Math.max(0, Math.min(1, current / max));
-        var v = Constants.getRelativeWidth(barWidth);
-        //System.out.println(v);
-        float currentBarLength = v * healthResourceRatio;
+        //it can't be 1.0f if I don't add this.
+        healthResourceRatio = healthResourceRatio > 0.99f ? 1.0f : healthResourceRatio;
+        var WholeWidth = Constants.getRelativeWidth(barWidth);
+        float currentBarLength = WholeWidth * healthResourceRatio;
         float healthFactor = health.currentValue / current;
         {
             PoseStack pose = gui.pose();
