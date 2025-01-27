@@ -26,5 +26,6 @@ public class Packets {
         Services.PLATFORM.registerClientMessage(S2CTeamInviteSentPacket.class, S2CTeamInviteSentPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamUpdatePacket.class, S2CTeamUpdatePacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamInitPacket.class, S2CTeamInitPacket::new);
+        Services.PLATFORM.registerClientMessage(S2CPromotePacket.class, friendlyByteBuf -> new S2CPromotePacket());
     }
 }

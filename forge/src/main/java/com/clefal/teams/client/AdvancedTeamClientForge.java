@@ -1,6 +1,6 @@
 package com.clefal.teams.client;
 
-import com.clefal.teams.AdvancedTeamsHUDClient;
+import com.clefal.teams.AdvancedTeamClient;
 import com.clefal.teams.client.gui.hud.CompassOverlay;
 import com.clefal.teams.client.gui.hud.StatusOverlay;
 import com.clefal.teams.client.gui.inventory.InventoryButton;
@@ -28,7 +28,7 @@ public class AdvancedTeamClientForge {
     }
 
     static void clientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
-        AdvancedTeamsHUDClient.resetClientTeamStatus();
+        AdvancedTeamClient.resetClientTeamStatus();
     }
     static void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {

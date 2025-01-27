@@ -22,7 +22,6 @@ public class TeammateEntry extends AbstractWidget {
     private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
 
     private ImageButton kickButton;
-    private TexturedToggleWidget favButton;
     private final Minecraft client;
     private final ClientTeam.Teammate teammate;
     private final int x;
@@ -55,9 +54,6 @@ public class TeammateEntry extends AbstractWidget {
         // Nameplate
         graphics.drawString(client.font, teammate.name, x + 24, y + 12 - (client.font.lineHeight / 2), ChatFormatting.BLACK.getColor(),false);
         // Buttons
-        if (favButton != null) {
-            favButton.render(graphics, mouseX, mouseY, delta);
-        }
         if (kickButton != null) {
             kickButton.render(graphics, mouseX, mouseY, delta);
         }
@@ -83,9 +79,5 @@ public class TeammateEntry extends AbstractWidget {
 
     public ImageButton getKickButton() {
         return kickButton;
-    }
-
-    public TexturedToggleWidget getFavButton() {
-        return favButton;
     }
 }
