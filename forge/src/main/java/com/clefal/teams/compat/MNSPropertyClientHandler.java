@@ -1,17 +1,20 @@
 package com.clefal.teams.compat;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.Function1;
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.IProperty;
-import com.clefal.teams.client.core.property.IRenderable;
+import com.clefal.teams.client.core.property.Constants;
+import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.compat.property.MNSHealth;
 import com.clefal.teams.compat.property.MNSHealthResource;
 import com.clefal.teams.compat.property.MNSMagicShield;
 import com.clefal.teams.compat.property.MNSOtherResource;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
+import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
@@ -22,6 +25,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.List;
+
+import static com.clefal.teams.client.core.property.Constants.*;
 
 public class MNSPropertyClientHandler implements IPropertyClientHandler {
     public static final MNSPropertyClientHandler INSTANCE = new MNSPropertyClientHandler();
@@ -37,7 +42,7 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
 
     @Override
     @SubscribeEvent
-    public void onRead(ClientReadPropertyEvent event) {
+    public void onReadProperty(ClientReadPropertyEvent event) {
         if (!config.showModProperty) return;
         List<String> properties = event.properties;
         CompoundTag tag = event.tag;
@@ -64,6 +69,16 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
     }
 
     @Override
+    @SubscribeEvent
+    public void onRegisterRenderer(ClientRegisterPropertyRendererEvent event) {
+        for (ResourceType value : ResourceType.values()) {
+            if (value == ResourceType.health || value == ResourceType.magic_shield) continue;
+            event.register(MNSOtherResource.identifier.apply(value), Function1.of(property -> MNSOtherResource.Renderer.getRenderer(((MNSOtherResource) property))));
+        }
+
+    }
+
+    @Override
     public void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate) {
         Option<IProperty> property = teammate.getProperty(MNSHealthResource.KEY);
         for (IProperty iProperty : property) {
@@ -72,11 +87,14 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
                 healthResource.render(gui, teammate);
             }
         }
-
+        //System.out.println("test!");
         int count = 0;
         PoseStack pose = gui.pose();
-        pose.translate(0, IRenderable.oneEntryHeight, 0);
-        pose.translate(IRenderable.iconAndTextInterval, 0, 0);
+
+        pose.translate(0, getRelativeHeight(oneEntryHeight), 0);
+
+        pose.translate(getRelativeWidth(iconAndTextInterval), 0, 0);
+
         for (ResourceType value : ResourceType.values()) {
             if (value == ResourceType.health || value == ResourceType.magic_shield) continue;
 
@@ -84,12 +102,12 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
             for (IProperty iProperty : teammate.getProperty(identifier)) {
                 if (iProperty instanceof MNSOtherResource otherResource) {
                     if (otherResource.maxValue.equals(0.0f)) continue;
-                    otherResource.render(gui, teammate);
+                    RendererManager.getRenderer(otherResource).render(gui, teammate);
                     count++;
                     if (count % 2 == 0) {
-                        pose.translate(-MNSOtherResource.barWidth * 2, MNSOtherResource.barHeight, 0);
+                        pose.translate(-getRelativeWidth(Constants.barWidth) / 2 * 2, getRelativeHeight(barHeight) / 3, 0);
                     } else {
-                        pose.translate(MNSOtherResource.barWidth, 0, 0);
+                        pose.translate(getRelativeWidth(Constants.barWidth) / 2, 0, 0);
                     }
                 }
             }

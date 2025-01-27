@@ -1,6 +1,7 @@
 package com.clefal.teams.client.gui.hud;
 
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.config.ATConfig;
 import com.clefal.teams.server.propertyhandler.HandlerManager;
@@ -36,8 +37,6 @@ public class StatusOverlay {
            renderStatus(graphics, teammates.get(i));
             ++shown;
         }
-        this.container.draw(graphics.bufferSource());
-        this.container.refresh();
     }
 
     private void renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate) {
@@ -50,7 +49,7 @@ public class StatusOverlay {
         float scale = 0.5f;
         pose.scale(scale, scale, 0);
 
-        pose.translate(getRelativeWidth(0.05f / scale), getRelativeHeight(0.5f / scale), 0);
+        pose.translate(ATConfig.config.overlays.originX, ATConfig.config.overlays.originY, 0);
 
         {
             graphics.blit(teammate.skin, 0, 0, 32, 32, 32, 32);
@@ -64,18 +63,12 @@ public class StatusOverlay {
 
         {
             for (var handler : this.handlers) {
+                //System.out.println(handler);
                 handler.onRender(graphics, container, teammate);
             }
         }
         pose.popPose();
 
-    }
-
-    public static float getRelativeWidth(float factor){
-        return Minecraft.getInstance().getWindow().getGuiScaledWidth() * factor;
-    }
-    public static float getRelativeHeight(float factor){
-        return Minecraft.getInstance().getWindow().getGuiScaledHeight() * factor;
     }
 
 }

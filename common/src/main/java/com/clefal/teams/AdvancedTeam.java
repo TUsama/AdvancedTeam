@@ -3,6 +3,7 @@ package com.clefal.teams;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.BusBuilder;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.IEventBus;
+import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.config.ConfigManager;
 import com.clefal.teams.event.client.ClientEvent;
 import com.clefal.teams.event.server.ServerEvent;
@@ -67,6 +68,7 @@ public class AdvancedTeam {
         for (var han : HandlerManager.INSTANCE.getClientHandlers()) {
             clientBus.register(han);
         }
+        RendererManager.init();
     }
 
     public static void serverInit() {

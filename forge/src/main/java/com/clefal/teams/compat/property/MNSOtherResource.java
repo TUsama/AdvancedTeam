@@ -2,29 +2,32 @@ package com.clefal.teams.compat.property;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.property.IRenderable;
+import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.core.property.ITracking;
 import com.clefal.teams.client.core.property.RenderableTrackedProperty;
+import com.clefal.teams.client.core.property.impl.PropertyRenderer;
 import com.google.common.collect.ImmutableMap;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.clefal.teams.client.core.property.Constants.getRelativeHeight;
+import static com.clefal.teams.client.core.property.Constants.getRelativeWidth;
+
 public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource, Float> {
-    public final static float barWidth = IRenderable.barWidth / 2;
-    public final static float barHeight = IRenderable.barHeight / 3;
     public static Function<ResourceType, String> identifier = type1 -> "MNS" + type1;
-    private final ResourceType type;
-    private final ResourceLocation icon = AdvancedTeam.id("textures/gui/health.png");
     private final static Map<String, Integer> colorMap = ImmutableMap.of(
             identifier.apply(ResourceType.blood), FastColor.ARGB32.color(190, 221, 16, 16),
             identifier.apply(ResourceType.mana), FastColor.ARGB32.color(190, 78, 161, 241),
             identifier.apply(ResourceType.energy), FastColor.ARGB32.color(190, 93, 236, 149)
     );
+    private final ResourceType type;
+    private final ResourceLocation icon = AdvancedTeam.id("textures/gui/health.png");
 
     public MNSOtherResource(Float currentValue, Float maxValue, ResourceType type) {
         super(currentValue, maxValue);
@@ -83,11 +86,25 @@ public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource
         }
     }
 
-    @Override
-    public void render(GuiGraphics gui, ClientTeam.Teammate teammate) {
 
-        float factor = targetValue / maxValue;
-        gui.fill(0, 0, (int) (barWidth * factor), (int) barHeight, colorMap.get(this.getIdentifier()));
-        gui.fillGradient(0, 0, (int) (barWidth * factor), (int) barHeight, shadowStart, shadowEnd);
+    public static class Renderer extends PropertyRenderer<MNSOtherResource> {
+
+        public Renderer(@Nullable MNSOtherResource property) {
+            super(property);
+        }
+
+        public static Renderer getRenderer(MNSOtherResource other) {
+            return new Renderer(other);
+        }
+
+        @Override
+        public void render(GuiGraphics gui, ClientTeam.Teammate teammate) {
+            float factor = property.targetValue / property.maxValue;
+            //System.out.println(factor);
+
+            gui.fill(0, 0, (int) (getRelativeWidth(Constants.barWidth) / 2 * factor), ((int) (getRelativeHeight(Constants.barHeight) / 3)), colorMap.get(property.getIdentifier()));
+            gui.fillGradient(0, 0, (int) (getRelativeWidth(Constants.barWidth) / 2 * factor), ((int) (getRelativeHeight(Constants.barHeight) / 3)), Constants.shadowStart, Constants.shadowEnd);
+        }
+
     }
 }

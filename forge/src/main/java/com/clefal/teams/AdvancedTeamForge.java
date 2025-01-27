@@ -42,8 +42,10 @@ public class AdvancedTeamForge {
 
         AdvancedTeam.packetInit();
 
-        AdvancedTeam.clientInit();
-        AdvancedTeamClientForge.init(bus);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            AdvancedTeam.clientInit();
+            AdvancedTeamClientForge.init(bus);
+        });
 
         AdvancedTeam.serverInit();
 

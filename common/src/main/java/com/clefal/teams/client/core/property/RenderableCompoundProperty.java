@@ -1,13 +1,22 @@
 package com.clefal.teams.client.core.property;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public abstract class RenderableCompoundProperty<SELF> extends Property implements IRenderable, ITracking<SELF> {
+public abstract class RenderableCompoundProperty<SELF> extends Property implements IPropertyRenderer, ITracking<SELF> {
     public Map<String, ITracking<?>> propertyMap;
 
     public RenderableCompoundProperty(Map<String, ITracking<?>> propertyMap) {
         this.propertyMap = propertyMap;
+    }
+
+    @Override
+    public float getTrackedBarLengthFactor() {
+        return 0;
+    }
+
+    @Override
+    public int getTrackedBarColor() {
+        return 0;
     }
 
     @Override
