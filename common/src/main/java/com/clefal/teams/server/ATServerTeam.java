@@ -47,7 +47,9 @@ public class ATServerTeam extends Team {
     }
 
     public void promote(ServerPlayer player){
+        Services.PLATFORM.sendToClient(new S2CPermissionChangePacket(S2CPermissionChangePacket.Action.DEMOTE), this.onlinePlayers.get(this.leader));
         this.leader = player.getUUID();
+        Services.PLATFORM.sendToClient(new S2CPermissionChangePacket(S2CPermissionChangePacket.Action.PROMOTE), this.onlinePlayers.get(this.leader));
     }
 
     public boolean playerHasPermissions(ServerPlayer player) {
@@ -159,6 +161,7 @@ public class ATServerTeam extends Team {
             Iterator<ServerPlayer> iterator = onlinePlayers.values().iterator();
             if (iterator.hasNext()){
                 this.promote(iterator.next());
+
             }
         }
         String playerName = getNameFromUUID(player);

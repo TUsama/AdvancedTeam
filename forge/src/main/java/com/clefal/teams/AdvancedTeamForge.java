@@ -2,11 +2,8 @@ package com.clefal.teams;
 
 import com.clefal.teams.client.AdvancedTeamClientForge;
 import com.clefal.teams.compat.CompatManager;
-import com.clefal.teams.compat.MineAndSlashCompatModule;
-import com.clefal.teams.compat.MineAndSlashPartyCompat;
-import com.clefal.teams.network.PacketHandlerForge;
-import com.clefal.teams.network.client.S2CModPacket;
-import com.clefal.teams.platform.Services;
+import com.clefal.teams.compat.mine_and_slash.MineAndSlashCompatModule;
+import com.clefal.teams.compat.mine_and_slash.MineAndSlashPartyCompat;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,7 +16,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(AdvancedTeam.MODID)
 public class AdvancedTeamForge {

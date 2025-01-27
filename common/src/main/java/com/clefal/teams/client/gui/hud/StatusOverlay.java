@@ -28,15 +28,16 @@ public class StatusOverlay {
         if (!ATConfig.config.overlays.enableStatusOverlay || !enabled) return;
         List<ClientTeam.Teammate> teammates = ClientTeam.INSTANCE.getTeammates();
         int shown = 0;
-
+        graphics.pose().pushPose();
         for (int i = 0; i < teammates.size() && shown < 4; ++i) {
-            /*if (client.player.getUUID().equals(teammates.get(i).id)) {
+            if (client.player.getUUID().equals(teammates.get(i).id)) {
                 continue;
-            }*/
-
+            }
            renderStatus(graphics, teammates.get(i));
             ++shown;
         }
+        graphics.pose().popPose();
+
     }
 
     private void renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate) {
@@ -46,7 +47,7 @@ public class StatusOverlay {
 
         // Draw skin
 
-        float scale = 0.5f;
+        float scale = ATConfig.config.overlays.scale.get();
         pose.scale(scale, scale, 0);
 
         pose.translate(ATConfig.config.overlays.originX, ATConfig.config.overlays.originY, 0);
@@ -69,6 +70,7 @@ public class StatusOverlay {
         }
         pose.popPose();
 
+        graphics.pose().translate(0, ATConfig.config.overlays.entryInterval, 0);
     }
 
 }

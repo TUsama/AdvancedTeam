@@ -1,10 +1,10 @@
-package com.clefal.teams.compat;
+package com.clefal.teams.compat.mine_and_slash;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import com.clefal.teams.client.core.property.impl.Health;
-import com.clefal.teams.compat.property.MNSHealth;
-import com.clefal.teams.compat.property.MNSMagicShield;
-import com.clefal.teams.compat.property.MNSOtherResource;
+import com.clefal.teams.compat.mine_and_slash.property.MNSHealth;
+import com.clefal.teams.compat.mine_and_slash.property.MNSMagicShield;
+import com.clefal.teams.compat.mine_and_slash.property.MNSOtherResource;
 import com.clefal.teams.event.server.ServerGatherPropertyEvent;
 import com.clefal.teams.server.propertyhandler.IPropertyServerHandler;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;

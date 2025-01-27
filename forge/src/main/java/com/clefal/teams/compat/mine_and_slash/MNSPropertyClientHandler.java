@@ -1,4 +1,4 @@
-package com.clefal.teams.compat;
+package com.clefal.teams.compat.mine_and_slash;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.Function1;
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
@@ -9,10 +9,10 @@ import com.clefal.teams.client.core.IProperty;
 import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.client.gui.util.VertexContainer;
-import com.clefal.teams.compat.property.MNSHealth;
-import com.clefal.teams.compat.property.MNSHealthResource;
-import com.clefal.teams.compat.property.MNSMagicShield;
-import com.clefal.teams.compat.property.MNSOtherResource;
+import com.clefal.teams.compat.mine_and_slash.property.MNSHealth;
+import com.clefal.teams.compat.mine_and_slash.property.MNSHealthResource;
+import com.clefal.teams.compat.mine_and_slash.property.MNSMagicShield;
+import com.clefal.teams.compat.mine_and_slash.property.MNSOtherResource;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;

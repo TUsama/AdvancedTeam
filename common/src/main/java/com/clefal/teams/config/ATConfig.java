@@ -32,14 +32,14 @@ public class ATConfig extends Config {
 
         public ConfigGroup statusOption = new ConfigGroup("status");
         public boolean showHunger = false;
-        @ConfigGroup.Pop
         public boolean showHealth = true;
         public ValidatedFloat barAnimationSpeed = new ValidatedFloat(0.3f, 1.0f, 0.1f, ValidatedNumber.WidgetType.SLIDER);
-        public boolean enableTeamOverlay = true;
-        public ConfigGroup TeamOption = new ConfigGroup("team");
         public int originX = 43;
-        @ConfigGroup.Pop
         public int originY = 127;
+        public ValidatedFloat scale = new ValidatedFloat(0.5f, 1.0f, 0.0f);
+        @ConfigGroup.Pop
+        public int entryInterval = 20;
+
 
     }
 

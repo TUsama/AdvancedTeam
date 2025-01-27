@@ -1,4 +1,4 @@
-package com.clefal.teams.compat.property;
+package com.clefal.teams.compat.mine_and_slash.property;
 
 import com.clefal.teams.client.core.property.HealthTemplate;
 import com.robertx22.mine_and_slash.gui.overlays.BarGuiType;

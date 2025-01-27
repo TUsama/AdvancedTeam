@@ -1,7 +1,8 @@
-package com.clefal.teams.compat;
+package com.clefal.teams.compat.mine_and_slash;
 
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import com.clefal.teams.AdvancedTeam;
+import com.clefal.teams.compat.ISubCompatModule;
 import com.clefal.teams.event.server.ServerCreateTeamEvent;
 import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.event.server.ServerKickPlayerEvent;
@@ -13,7 +14,7 @@ import com.robertx22.mine_and_slash.capability.player.data.TeamData;
 import com.robertx22.mine_and_slash.uncommon.datasaving.Load;
 import net.minecraft.server.level.ServerPlayer;
 
-public class MineAndSlashPartyCompat implements ISubCompatModule<MineAndSlashCompatModule>{
+public class MineAndSlashPartyCompat implements ISubCompatModule<MineAndSlashCompatModule> {
     public static final MineAndSlashPartyCompat INSTANCE = new MineAndSlashPartyCompat();
     @Override
     public MineAndSlashCompatModule getMainModule() {
