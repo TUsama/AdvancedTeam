@@ -37,6 +37,7 @@ public class ATConfig extends Config {
         public int originX = 43;
         public int originY = 127;
         public ValidatedFloat scale = new ValidatedFloat(0.5f, 1.0f, 0.0f);
+        public int maxEntryAmount = 5;
         @ConfigGroup.Pop
         public int entryInterval = 20;
 

@@ -92,8 +92,8 @@ dependencies {
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    implementation fg.deobf("curse.maven:library-of-exile-398780:6107923")
-    implementation fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6107937")
+    implementation fg.deobf("curse.maven:library-of-exile-398780:6127946")
+    implementation fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6128432")
     implementation fg.deobf("curse.maven:orbs-of-crafting-1182250:6107927")
     runtimeOnly fg.deobf("curse.maven:playeranimator-658587:4587214")
 

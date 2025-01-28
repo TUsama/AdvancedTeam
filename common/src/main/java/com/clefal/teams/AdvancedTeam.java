@@ -73,7 +73,7 @@ public class AdvancedTeam {
 
     public static void serverInit() {
         for (var han : HandlerManager.INSTANCE.getServerHandlers()) {
-            System.out.println("server register: " + han);
+
             serverBus.register(han);
         }
     }

@@ -14,7 +14,7 @@ public class Packets {
         Services.PLATFORM.registerServerMessage(C2STeamLeavePacket.class, C2STeamLeavePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamInvitePacket.class, C2STeamInvitePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamJoinPacket.class, C2STeamJoinPacket::new);
-
+        Services.PLATFORM.registerServerMessage(C2SPromotePacket.class, C2SPromotePacket::new);
     }
 
     public static void registerClientPackets() {

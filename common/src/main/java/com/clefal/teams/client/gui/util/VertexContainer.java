@@ -26,7 +26,7 @@ public class VertexContainer {
     }
 
     public void draw(MultiBufferSource bufferSource){
-        //System.out.println("map has " + this.map.size());
+        //
         for (Map.Entry<ResourceLocation, Collection<BufferInfo>> entry : this.map.asMap().entrySet()) {
             ResourceLocation key = entry.getKey();
             RenderType statusRenderType = StatusRenderType.getStatusRenderType(key.toString(), key);

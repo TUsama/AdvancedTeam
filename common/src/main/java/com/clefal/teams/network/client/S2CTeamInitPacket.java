@@ -3,29 +3,30 @@ package com.clefal.teams.network.client;
 import com.clefal.teams.client.core.ClientTeam;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.UUID;
+
 public class S2CTeamInitPacket implements S2CModPacket {
 
     private final String name;
-    private final boolean perms;
-
-    public S2CTeamInitPacket(String name, boolean hasPermissions) {
+    private final UUID leader;
+    public S2CTeamInitPacket(String name, UUID leader) {
         this.name = name;
-        this.perms = hasPermissions;
+        this.leader = leader;
     }
 
     public S2CTeamInitPacket(FriendlyByteBuf byteBuf) {
         name = byteBuf.readUtf();
-        perms = byteBuf.readBoolean();
+        leader = byteBuf.readUUID();
     }
 
     @Override
     public void write(FriendlyByteBuf to) {
         to.writeUtf(name);
-        to.writeBoolean(perms);
+        to.writeUUID(leader);
     }
 
     @Override
     public void handleClient() {
-        ClientTeam.INSTANCE.init(name,perms);
+        ClientTeam.INSTANCE.init(name,leader);
     }
 }

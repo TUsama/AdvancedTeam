@@ -1,5 +1,8 @@
 package com.clefal.teams.server;
 
+import com.clefal.teams.AdvancedTeam;
+import com.clefal.teams.event.server.ServerOnPlayerOnlineEvent;
+import com.clefal.teams.event.server.ServerPromoteEvent;
 import com.clefal.teams.network.client.*;
 import com.mojang.authlib.GameProfile;
 import com.clefal.teams.mixin.AdvancementAccessor;
@@ -47,9 +50,9 @@ public class ATServerTeam extends Team {
     }
 
     public void promote(ServerPlayer player){
-        Services.PLATFORM.sendToClient(new S2CPermissionChangePacket(S2CPermissionChangePacket.Action.DEMOTE), this.onlinePlayers.get(this.leader));
         this.leader = player.getUUID();
-        Services.PLATFORM.sendToClient(new S2CPermissionChangePacket(S2CPermissionChangePacket.Action.PROMOTE), this.onlinePlayers.get(this.leader));
+        Services.PLATFORM.sendToClients(new S2CPermissionChangePacket(this.leader), this.onlinePlayers.values());
+        AdvancedTeam.post(new ServerPromoteEvent(player));
     }
 
     public boolean playerHasPermissions(ServerPlayer player) {
@@ -94,7 +97,7 @@ public class ATServerTeam extends Team {
         ((IHasTeam) player).setTeam(this);
         // Packets
         if (sendPackets) {
-            Services.PLATFORM.sendToClient(new S2CTeamInitPacket(name, playerHasPermissions(player)), player);
+            Services.PLATFORM.sendToClient(new S2CTeamInitPacket(name, leader), player);
             if (onlinePlayers.size() == 1) {
                 var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
                 Services.PLATFORM.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, name), players);
@@ -112,6 +115,7 @@ public class ATServerTeam extends Team {
                 player.getAdvancements().award(advancement, criterion);
             }
         }
+        AdvancedTeam.post(new ServerOnPlayerOnlineEvent(player));
     }
 
     public Stream<UUID> getPlayerUuids() {

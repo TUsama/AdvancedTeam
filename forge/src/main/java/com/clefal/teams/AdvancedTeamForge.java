@@ -33,7 +33,6 @@ public class AdvancedTeamForge {
         MinecraftForge.EVENT_BUS.addListener(this::onAdvancement);
 
         CompatManager.compats.add(MineAndSlashCompatModule.INSTANCE);
-        CompatManager.compats.add(MineAndSlashPartyCompat.INSTANCE);
         CompatManager.tryEnableAll();
 
         AdvancedTeam.packetInit();

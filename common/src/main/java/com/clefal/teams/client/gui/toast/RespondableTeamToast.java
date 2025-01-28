@@ -16,6 +16,9 @@ public abstract class RespondableTeamToast extends TeamToast {
     public void respond() {
         responded = true;
     }
+    protected boolean getResponded(){
+        return responded;
+    }
 
     @Override
     public String subTitle() {

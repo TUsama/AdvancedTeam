@@ -2,8 +2,6 @@ package com.clefal.teams.client.core;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
 import com.clefal.teams.client.core.property.ITracking;
-import com.clefal.teams.client.core.property.impl.Health;
-import com.clefal.teams.client.core.property.impl.Hunger;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedHashMap;
@@ -15,9 +13,11 @@ public interface ClientTeam {
 
     ClientTeam INSTANCE = new ClientTeamImpl();
 
-    void init(String name, boolean hasPermissions);
+    void init(String name, UUID leader);
 
     String getName();
+
+    void changeLeader(UUID leader);
 
     boolean hasPermissions();
 

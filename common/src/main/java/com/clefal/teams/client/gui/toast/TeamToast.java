@@ -23,6 +23,9 @@ public abstract class TeamToast implements Toast {
 
     public abstract String subTitle();
 
+    protected long getFirstDrawTime(){
+        return this.firstDrawTime;
+    }
     @Override
     public Visibility render(GuiGraphics graphics, ToastComponent manager, long startTime) {
         if (firstDraw) {
@@ -36,5 +39,6 @@ public abstract class TeamToast implements Toast {
         graphics.drawString(manager.getMinecraft().font, title(), 22, 7, ChatFormatting.WHITE.getColor());
         graphics.drawString(manager.getMinecraft().font, subTitle(), 22, 18, 0xff000000,false);
 
-        return startTime - firstDrawTime < ATConfig.config.info.toastShowSecond.get() * 1000L && team != null ? Visibility.SHOW : Visibility.HIDE;    }
+        return startTime - firstDrawTime < ATConfig.config.info.toastShowSecond.get() * 1000L && team != null ? Visibility.SHOW : Visibility.HIDE;
+    }
 }

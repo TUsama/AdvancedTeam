@@ -3,27 +3,27 @@ package com.clefal.teams.network.client;
 import com.clefal.teams.client.core.ClientTeam;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.UUID;
+
 public class S2CPermissionChangePacket implements S2CModPacket {
-    public enum Action{
-        PROMOTE,
-        DEMOTE
-    }
-    Action action;
-    public S2CPermissionChangePacket(Action action) {
-        this.action = action;
+
+    UUID leader;
+
+    public S2CPermissionChangePacket(UUID leader) {
+        this.leader = leader;
     }
 
     public S2CPermissionChangePacket(FriendlyByteBuf byteBuf) {
-        this.action = byteBuf.readEnum(Action.class);
+        this.leader = byteBuf.readUUID();
     }
 
     @Override
     public void handleClient() {
-        ClientTeam.INSTANCE.changePermission(this.action == Action.PROMOTE);
+        ClientTeam.INSTANCE.changeLeader(this.leader);
     }
 
     @Override
     public void write(FriendlyByteBuf to) {
-        to.writeEnum(this.action);
+        to.writeUUID(this.leader);
     }
 }

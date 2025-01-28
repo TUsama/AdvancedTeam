@@ -14,21 +14,25 @@ class ClientTeamImpl implements ClientTeam {
 
     private Minecraft client = Minecraft.getInstance();
     private Map<UUID, Teammate> teammates = new HashMap<>();
+    private UUID leader;
     private boolean initialized = false;
     private String name = "";
-    private boolean hasPerms = false;
 
     ClientTeamImpl() {
     }
 
     @Override
-    public void init(String name, boolean hasPermissions) {
+    public void init(String name, UUID leader) {
         if (this.initialized) {
             throw new IllegalArgumentException("Cannot initialize already initialized team. Did you clear it first?");
         }
         this.name = name;
-        this.hasPerms = hasPermissions;
         this.initialized = true;
+    }
+
+    @Override
+    public void changeLeader(UUID leader){
+        this.leader = leader;
     }
 
     @Override
@@ -38,7 +42,7 @@ class ClientTeamImpl implements ClientTeam {
 
     @Override
     public boolean hasPermissions() {
-        return hasPerms;
+        return Minecraft.getInstance().player.getUUID().equals(leader);
     }
 
     @Override
@@ -53,7 +57,19 @@ class ClientTeamImpl implements ClientTeam {
 
     @Override
     public List<Teammate> getTeammates() {
-        return ImmutableList.copyOf(teammates.values());
+        ImmutableList.Builder<Teammate> builder = ImmutableList.<Teammate>builder();
+        Optional<Teammate> first = teammates.values().stream().filter(x -> x.id.equals(leader)).findFirst();
+        if (first.isPresent()) {
+            builder.add(first.get());
+            for (Teammate value : teammates.values()) {
+                if (value.id.equals(leader)) continue;
+                builder.add(value);
+
+            }
+            return builder.build();
+        } else {
+            return ImmutableList.copyOf(teammates.values());
+        }
     }
 
     public boolean hasPlayer(UUID player) {
@@ -105,7 +121,7 @@ class ClientTeamImpl implements ClientTeam {
     public void reset() {
         teammates.clear();
         name = "";
-        hasPerms = false;
+        leader = null;
         initialized = false;
         // If in TeamsScreen, go to lonely screen
         if (client.screen instanceof TeamsScreen) {

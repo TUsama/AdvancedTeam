@@ -29,7 +29,8 @@ public class StatusOverlay {
         List<ClientTeam.Teammate> teammates = ClientTeam.INSTANCE.getTeammates();
         int shown = 0;
         graphics.pose().pushPose();
-        for (int i = 0; i < teammates.size() && shown < 4; ++i) {
+
+        for (int i = 0; i < teammates.size() && shown < ATConfig.config.overlays.maxEntryAmount - 1; ++i) {
             if (client.player.getUUID().equals(teammates.get(i).id)) {
                 continue;
             }
@@ -64,7 +65,7 @@ public class StatusOverlay {
 
         {
             for (var handler : this.handlers) {
-                //System.out.println(handler);
+                //
                 handler.onRender(graphics, container, teammate);
             }
         }

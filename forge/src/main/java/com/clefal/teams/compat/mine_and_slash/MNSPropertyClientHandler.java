@@ -3,7 +3,6 @@ package com.clefal.teams.compat.mine_and_slash;
 import com.clefal.nirvana_lib.relocated.io.vavr.Function1;
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
-import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.IProperty;
 import com.clefal.teams.client.core.property.Constants;
@@ -18,9 +17,6 @@ import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
-import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
-import me.fzzyhmstrs.fzzy_config.api.RegisterType;
-import me.fzzyhmstrs.fzzy_config.config.Config;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 
@@ -31,19 +27,12 @@ import static com.clefal.teams.client.core.property.Constants.*;
 public class MNSPropertyClientHandler implements IPropertyClientHandler {
     public static final MNSPropertyClientHandler INSTANCE = new MNSPropertyClientHandler();
 
-    private static MineAndSlashConfig config;
 
-    public static MineAndSlashConfig getConfig() {
-        if (config == null) {
-            config = ConfigApiJava.registerAndLoadConfig(MineAndSlashConfig::new, RegisterType.CLIENT);
-        }
-        return config;
-    }
 
     @Override
     @SubscribeEvent
     public void onReadProperty(ClientReadPropertyEvent event) {
-        if (!config.showModProperty) return;
+        if (!MineAndSlashCompatModule.getClientConfig().showModProperty) return;
         List<String> properties = event.properties;
         CompoundTag tag = event.tag;
 
@@ -115,12 +104,4 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
         }
     }
 
-    public static class MineAndSlashConfig extends Config {
-
-        public boolean showModProperty = true;
-
-        private MineAndSlashConfig() {
-            super(AdvancedTeam.id("mine_and_slash_client_config"));
-        }
-    }
 }

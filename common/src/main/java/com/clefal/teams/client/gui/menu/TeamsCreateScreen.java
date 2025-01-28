@@ -27,7 +27,7 @@ public class TeamsCreateScreen extends TeamsInputScreen {
 
     @Override
     protected boolean submitCondition() {
-        return !ClientTeamData.INSTANCE.containsTeam(inputField.getValue());
+        return !ClientTeamData.INSTANCE.containsTeam(inputField.getValue()) && !inputField.getValue().isBlank();
     }
 
 
