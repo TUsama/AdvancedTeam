@@ -23,7 +23,7 @@ public class TeammateEntry extends AbstractWidget {
     static final int WIDTH = 244;
     static final int HEIGHT = 24;
     private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
-    private final ResourceLocation ARROW = AdvancedTeam.id("textures/gui/arrow.png");
+    private final ResourceLocation FLAG = AdvancedTeam.id("textures/gui/flag.png");
     private final Minecraft client;
     private final ClientTeam.Teammate teammate;
     private final int x;
@@ -48,7 +48,7 @@ public class TeammateEntry extends AbstractWidget {
             this.kickButton.active = false;
         }
         {
-            ImageButton promoteButton = new ImageButton(x + WIDTH - 48, y + 8, 8, 8, 0, 0, ARROW, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id)));
+            ImageButton promoteButton = new ImageButton(x + WIDTH - 48, y + 8, 8, 8, 0, 0, 8, FLAG, 8, 16, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id)));
             promoteButton.setTooltip(Tooltip.create(Component.translatable("teams.button.promote")));
             this.promoteButton = promoteButton;
             this.promoteButton.active = false;
@@ -74,7 +74,7 @@ public class TeammateEntry extends AbstractWidget {
         // Nameplate
         graphics.drawString(client.font, teammate.name, x + 24, y + 12 - (client.font.lineHeight / 2), ChatFormatting.BLACK.getColor(), false);
         // Buttons
-        if (ClientTeam.INSTANCE.hasPermissions() && this.isHovered() && !isLocal) {
+        if (ClientTeam.INSTANCE.hasPermissions() && this.isHovered()) {
             this.kickButton.active = true;
             this.promoteButton.active = true;
             kickButton.render(graphics, mouseX, mouseY, delta);

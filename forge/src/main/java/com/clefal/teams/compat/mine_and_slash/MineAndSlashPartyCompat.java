@@ -97,7 +97,7 @@ public class MineAndSlashPartyCompat {
         TeamData team = Load.player(toKick).team;
         team.leaveTeam();
     }
-    
+
     @SubscribeEvent
     public void onPromotion(ServerPromoteEvent event){
         ServerPlayer promoted = event.promoted;
