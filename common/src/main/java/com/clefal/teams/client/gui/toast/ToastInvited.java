@@ -23,6 +23,6 @@ public class ToastInvited extends RespondableTeamToast {
         if (getResponded()) {
             return Visibility.HIDE;
         }
-        return startTime - getFirstDrawTime() < ATConfig.config.info.toastShowSecond.get() * 1000L * 3 && team != null ? Visibility.SHOW : Visibility.HIDE;
+        return startTime - getFirstDrawTime() < ATConfig.config.info.toastShowSecond.get() * 1000L * 5 && team != null ? Visibility.SHOW : Visibility.HIDE;
     }
 }

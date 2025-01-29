@@ -9,6 +9,6 @@ import net.minecraft.client.gui.GuiGraphics;
 public interface IPropertyClientHandler {
     void onReadProperty(ClientReadPropertyEvent event);
     void onRegisterRenderer(ClientRegisterPropertyRendererEvent event);
-    void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate);
+    void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext);
 
 }

@@ -157,6 +157,7 @@ public class ATServerTeam extends Team {
                 }
             }
         }
+        teamData.setDirty();
     }
 
     private void removePlayer(UUID player) {
@@ -183,6 +184,7 @@ public class ATServerTeam extends Team {
             Services.PLATFORM.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers());
             ((IHasTeam) playerEntity).setTeam(null);
         }
+        teamData.setDirty();
     }
 
     private String getNameFromUUID(UUID id) {
@@ -203,7 +205,12 @@ public class ATServerTeam extends Team {
 
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
         for (var elem : players) {
-            team.addPlayer(NbtUtils.loadUUID(elem));
+            try {
+                UUID uuid = NbtUtils.loadUUID(elem);
+                team.addPlayer(uuid);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         ListTag advancements = compound.getList("advancement", Tag.TAG_STRING);

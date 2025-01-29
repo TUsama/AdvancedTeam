@@ -15,6 +15,7 @@ import com.clefal.teams.compat.mine_and_slash.property.MNSOtherResource;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
+import com.clefal.teams.server.propertyhandler.PositionContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -68,12 +69,12 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
     }
 
     @Override
-    public void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate) {
+    public void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
         Option<IProperty> property = teammate.getProperty(MNSHealthResource.KEY);
         for (IProperty iProperty : property) {
             if (iProperty instanceof MNSHealthResource healthResource) {
                 healthResource.update();
-                healthResource.render(gui, teammate);
+                healthResource.render(gui, container, teammate, positionContext);
             }
         }
         //System.out.println("test!");
@@ -91,7 +92,7 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
             for (IProperty iProperty : teammate.getProperty(identifier)) {
                 if (iProperty instanceof MNSOtherResource otherResource) {
                     if (otherResource.maxValue.equals(0.0f)) continue;
-                    RendererManager.getRenderer(otherResource).render(gui, teammate);
+                    RendererManager.getRenderer(otherResource).render(gui, container, teammate, positionContext);
                     count++;
                     if (count % 2 == 0) {
                         pose.translate(-getRelativeWidth(Constants.barWidth) / 2 * 2, getRelativeHeight(barHeight) / 3, 0);

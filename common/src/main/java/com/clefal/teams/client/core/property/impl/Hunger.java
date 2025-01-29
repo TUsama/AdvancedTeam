@@ -4,13 +4,17 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.core.property.RenderableProperty;
+import com.clefal.teams.client.gui.util.TextureBufferInfo;
+import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.config.ATConfig;
 import com.clefal.teams.server.ModComponents;
+import com.clefal.teams.server.propertyhandler.PositionContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 
@@ -58,14 +62,15 @@ public class Hunger extends RenderableProperty {
         }
 
         @Override
-        public void render(GuiGraphics gui, ClientTeam.Teammate teammate) {
+        public void render(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
             if (ATConfig.config.overlays.showHunger) {
                 PoseStack pose = gui.pose();
-                pose.translate(0, Constants.getRelativeHeight(oneEntryHeight), 0);
+                pose.translate(0, positionContext.oneEntryHeight(), 0);
                 pose.pushPose();
-                gui.blit(property.getResourceLocation(), 0, 0, 0, 0, 9, 9, 9, 9);
+                container.putBliz(property.getResourceLocation(), TextureBufferInfo.of(0, 0, 0, 0, 9, 9, 9, 9, new Matrix4f(pose.last().pose())));
+                //gui.blit(property.getResourceLocation(), 0, 0, 0, 0, 9, 9, 9, 9);
                 //container.map.put(hunger.getResourceLocation(), BufferInfo.of(pos.x, y, 0, 0, 9, 9, 9, 9, gui.pose().last().pose()));
-                pose.translate(getRelativeWidth(iconAndTextInterval), 0, 0);
+                pose.translate(positionContext.iconAndTextInterval(), 0, 0);
                 gui.drawString(Minecraft.getInstance().font, ModComponents.literal(property.getRenderString()), 0, 0, ChatFormatting.WHITE.getColor());
                 pose.popPose();
             }

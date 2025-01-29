@@ -6,11 +6,16 @@ import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.core.property.ITracking;
 import com.clefal.teams.client.core.property.RenderableTrackedProperty;
 import com.clefal.teams.client.core.property.impl.PropertyRenderer;
+import com.clefal.teams.client.gui.util.FillBufferInfo;
+import com.clefal.teams.client.gui.util.FillGradientBufferInfo;
+import com.clefal.teams.client.gui.util.VertexContainer;
+import com.clefal.teams.server.propertyhandler.PositionContext;
 import com.google.common.collect.ImmutableMap;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -98,13 +103,17 @@ public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource
         }
 
         @Override
-        public void render(GuiGraphics gui, ClientTeam.Teammate teammate) {
+        public void render(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
             float factor = property.targetValue / property.maxValue;
             float width = getRelativeWidth(Constants.barWidth) / 2;
             float height = getRelativeHeight(Constants.barHeight) / 3;
+            Matrix4f matrix4f = new Matrix4f(gui.pose().last().pose());
 
-            gui.fill(0, 0, (int) (width * factor), ((int) (height)), colorMap.get(property.getIdentifier()));
-            gui.fillGradient(0, 0, (int) (width * factor), ((int) (height)), Constants.shadowStart, Constants.shadowEnd);
+            container.putFill(FillBufferInfo.fillOf(0, 0, width * factor, height, -0.01f, colorMap.get(property.getIdentifier()), matrix4f));
+            container.putFill(FillGradientBufferInfo.getShadow(0, 0, width * factor, height, matrix4f));
+
+            /*gui.fill(0, 0, (int) (width * factor), ((int) (height)), colorMap.get(property.getIdentifier()));
+            gui.fillGradient(0, 0, (int) (width * factor), ((int) (height)), Constants.shadowStart, Constants.shadowEnd);*/
         }
 
     }

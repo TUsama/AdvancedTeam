@@ -12,6 +12,7 @@ import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 import com.clefal.teams.server.propertyhandler.HandlerManager;
 import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
+import com.clefal.teams.server.propertyhandler.PositionContext;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 
@@ -44,16 +45,16 @@ public class VanillaPropertyClientHandler implements IPropertyClientHandler {
     }
 
     @Override
-    public void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate) {
+    public void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
 
 
         for (IProperty hunger : teammate.getProperty(Hunger.KEY)) {
-            if (hunger instanceof Hunger hunger1) RendererManager.getRenderer(hunger1).render(gui, teammate);
+            if (hunger instanceof Hunger hunger1) RendererManager.getRenderer(hunger1).render(gui, container, teammate, positionContext);
         }
 
 
         for (IProperty health1 : teammate.getProperty(Health.KEY)) {
-            if (health1 instanceof Health health) RendererManager.getRenderer(health).render(gui, teammate);
+            if (health1 instanceof Health health) RendererManager.getRenderer(health).render(gui, container, teammate, positionContext);
         }
 
     }

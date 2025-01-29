@@ -6,11 +6,13 @@ import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.config.ATConfig;
 import com.clefal.teams.server.propertyhandler.HandlerManager;
 import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
+import com.clefal.teams.server.propertyhandler.PositionContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FastColor;
 
 import java.util.List;
 
@@ -29,19 +31,22 @@ public class StatusOverlay {
         List<ClientTeam.Teammate> teammates = ClientTeam.INSTANCE.getTeammates();
         int shown = 0;
         graphics.pose().pushPose();
-
+        PositionContext positionContext = PositionContext.fromFactor(0.03f, 0.025f, 0.15f, 0.026f);
         for (int i = 0; i < teammates.size() && shown < ATConfig.config.overlays.maxEntryAmount - 1; ++i) {
-            if (client.player.getUUID().equals(teammates.get(i).id)) {
+            /*if (client.player.getUUID().equals(teammates.get(i).id)) {
                 continue;
-            }
-           renderStatus(graphics, teammates.get(i));
+            }*/
+           renderStatus(graphics, teammates.get(i), positionContext);
             ++shown;
         }
+        container.draw(graphics.bufferSource());
+        //todo: this fill fix a weird bug that the last upload bufferinfo will ignore the DepthTest. but why?
+        graphics.fill(0, 0, 1, 1, FastColor.ARGB32.color(0, 0, 0, 0));
         graphics.pose().popPose();
 
     }
 
-    private void renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate) {
+    private void renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate, PositionContext positionContext) {
         PoseStack pose = graphics.pose();
         //from left to right
         pose.pushPose();
@@ -65,8 +70,7 @@ public class StatusOverlay {
 
         {
             for (var handler : this.handlers) {
-                //
-                handler.onRender(graphics, container, teammate);
+                handler.onRender(graphics, container, teammate, positionContext);
             }
         }
         pose.popPose();

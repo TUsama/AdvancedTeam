@@ -5,6 +5,7 @@ import com.clefal.teams.server.IHasTeam;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
@@ -32,12 +33,15 @@ public class C2STeamInvitePacket implements C2SModPacket {
         UUID to = player.server.getProfileCache().get(this.to).orElseThrow().getId();
 
         ServerPlayer toPlayer = player.server.getPlayerList().getPlayer(to);
-
+        if (toPlayer == null) {
+            AdvancedTeam.LOGGER.error("Trying to invite a null player: {}", to);
+            return;
+        }
         ATServerTeam team = ((IHasTeam) player).getTeam();
         if (team == null) {
-            AdvancedTeam.LOGGER.error("{} tried inviting {} but they are not in a team..", player.getName().getString(), toPlayer.getName().getString());
+            player.sendSystemMessage(Component.translatable("teams.error.not_in_a_team"));
         } else {
-            ATServerTeamData.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team);
+            if (!ATServerTeamData.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team)) player.sendSystemMessage(Component.translatable("teams.error.alreadyinteam", to));
         }
     }
 }

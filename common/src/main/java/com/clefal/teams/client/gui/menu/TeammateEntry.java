@@ -74,7 +74,7 @@ public class TeammateEntry extends AbstractWidget {
         // Nameplate
         graphics.drawString(client.font, teammate.name, x + 24, y + 12 - (client.font.lineHeight / 2), ChatFormatting.BLACK.getColor(), false);
         // Buttons
-        if (ClientTeam.INSTANCE.hasPermissions() && this.isHovered()) {
+        if (ClientTeam.INSTANCE.hasPermissions() && this.isHovered() && !isLocal) {
             this.kickButton.active = true;
             this.promoteButton.active = true;
             kickButton.render(graphics, mouseX, mouseY, delta);

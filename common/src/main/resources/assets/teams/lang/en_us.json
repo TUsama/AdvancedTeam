@@ -3,6 +3,8 @@
   "teams.error.duplicateteam": "There is already a team called %s",
   "teams.error.notinteam": "%s is not in a team",
   "teams.error.alreadyinteam": "%s is already in a team",
+  "teams.error.you_are_already_in_a_team": "%s is already in a team",
+  "teams.error.not_in_a_team": "You are not in a team",
   "teams.toast.invite": "Team Invite: %s",
   "teams.toast.respond": "'%s' to reject, '%s' to accept",
   "teams.toast.invitesent": "Invite Sent",

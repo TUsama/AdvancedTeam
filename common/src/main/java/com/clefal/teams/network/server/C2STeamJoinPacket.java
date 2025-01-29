@@ -5,6 +5,7 @@ import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class C2STeamJoinPacket implements C2SModPacket {
@@ -25,8 +26,10 @@ public class C2STeamJoinPacket implements C2SModPacket {
     @Override
     public void handleServer(ServerPlayer player) {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(this.team);
-        ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team);
-        AdvancedTeam.post(new ServerJoinTeamEvent(team, player));
-
+        if (!ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team)){
+            player.sendSystemMessage(Component.translatable("teams.error.you_are_already_in_a_team"));
+        } else {
+            AdvancedTeam.post(new ServerJoinTeamEvent(team, player));
+        }
     }
 }

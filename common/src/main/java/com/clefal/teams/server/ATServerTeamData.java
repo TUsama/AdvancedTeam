@@ -98,11 +98,14 @@ public class ATServerTeamData extends SavedData {
 
     }
 
-    public void addPlayerToTeam(ServerPlayer player, ATServerTeam team){
+    public boolean addPlayerToTeam(ServerPlayer player, ATServerTeam team){
         if (((IHasTeam) player).hasTeam()) {
-
+            return false;
+        } else {
+            team.addPlayer(player);
+            return true;
         }
-        team.addPlayer(player);
+
     }
 
     public boolean removePlayerFromTeam(ServerPlayer player) {
