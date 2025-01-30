@@ -2,6 +2,8 @@ package com.clefal.teams.client.gui.util;
 
 import com.clefal.teams.client.core.property.impl.Health;
 import com.google.common.collect.HashMultimap;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -39,10 +41,10 @@ public class VertexContainer {
     }
 
     public void draw(MultiBufferSource bufferSource){
-        //
+        RenderSystem.enableDepthTest();
         for (Map.Entry<ResourceLocation, Collection<TextureBufferInfo>> entry : this.map.asMap().entrySet()) {
             ResourceLocation key = entry.getKey();
-            RenderType statusRenderType = StatusRenderType.getStatusRenderType(key.toString(), key);
+            RenderType statusRenderType = StatusRenderType.getRenderType(key);
             VertexConsumer buffer = bufferSource.getBuffer(statusRenderType);
 
             for (TextureBufferInfo bufferInfo : entry.getValue()) {
@@ -56,7 +58,7 @@ public class VertexContainer {
                 fillBufferInfo.upload(buffer);
             }
         }
-
+        RenderSystem.disableDepthTest();
         refresh();
     }
 

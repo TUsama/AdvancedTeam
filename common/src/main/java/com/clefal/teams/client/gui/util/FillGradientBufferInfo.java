@@ -18,7 +18,7 @@ public record FillGradientBufferInfo(float minX, float minY, float maxX, float m
         float f6 = 0;
         float f7 = 0;
 
-        return new FillGradientBufferInfo(minX, minY, maxX, maxY, 0, f, f1, f2, f3, f4, f5, f6, f7, matrix4f);
+        return new FillGradientBufferInfo(minX, minY, maxX, maxY, 0.003f, f, f1, f2, f3, f4, f5, f6, f7, matrix4f);
     }
 
 

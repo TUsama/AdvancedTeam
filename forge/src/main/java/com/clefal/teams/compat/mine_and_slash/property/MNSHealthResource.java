@@ -12,6 +12,7 @@ import com.clefal.teams.server.propertyhandler.PositionContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
@@ -69,17 +70,21 @@ public class MNSHealthResource extends RenderableCompoundProperty<MNSHealthResou
             pose.translate(positionContext.iconAndTextInterval(), 0, 0);
             Matrix4f matrix4f1 = new Matrix4f(gui.pose().last().pose());
             //health
-            container.putFill(FillBufferInfo.fillOf(0, 0, currentBarLength * healthFactor, positionContext.barHeight(), -0.01f, health.getTrackedBarColor(), matrix4f1));
+
+            container.putFill(FillBufferInfo.fillOf(0, 0, currentBarLength * healthFactor, positionContext.barHeight(), 0.002f, health.getTrackedBarColor(), matrix4f1));
+
+
             //gui.fill(0, 0, (int) (currentBarLength * healthFactor), ((int) getRelativeHeight(barHeight)), health.getTrackedBarColor());
             //magic shield
-            container.putFill(FillBufferInfo.fillOf(currentBarLength * healthFactor, 0, currentBarLength, positionContext.barHeight(), -0.01f, magicShieldColor, matrix4f1));
+            container.putFill(FillBufferInfo.fillOf(currentBarLength * healthFactor, 0, currentBarLength, positionContext.barHeight(), 0.002f, magicShieldColor, matrix4f1));
             //gui.fill((int) (currentBarLength * healthFactor), 0, (int) currentBarLength, ((int) getRelativeHeight(barHeight)), magicShieldColor);
             container.putFill(FillGradientBufferInfo.getShadow(0, 0, currentBarLength, positionContext.barHeight(), matrix4f1));
             //gui.fillGradient(0, 0, (int) (currentBarLength), ((int) getRelativeHeight(barHeight)), Constants.shadowStart, Constants.shadowEnd);
-            pose.translate(0, getRelativeHeight(0.005f), 0);
+
             //System.out.println("2: " + pose);
             if (Screen.hasShiftDown()) {
-                gui.drawString(Minecraft.getInstance().font, ModComponents.literal(this.getRenderString()), 0, 0, ChatFormatting.WHITE.getColor());
+                pose.translate(0, getRelativeHeight(0.005f), 10);
+                Minecraft.getInstance().font.drawInBatch(ModComponents.literal(this.getRenderString()), 0, 0, ChatFormatting.WHITE.getColor(), false, new Matrix4f(pose.last().pose()), gui.bufferSource(), Font.DisplayMode.NORMAL, FastColor.ARGB32.color(0, 255, 255, 255), 15728880);
             }
             pose.popPose();
         }

@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AdvancedTeam {
-
+    public static final boolean IN_DEV = Boolean.getBoolean("at.dev.tool");
     public static final String MODID = "teams";
     public static final String MOD_NAME = "Advanced Team";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);

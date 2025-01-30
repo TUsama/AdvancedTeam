@@ -15,6 +15,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -94,9 +95,10 @@ public final class Health extends HealthTemplate<Health> {
 
                 //gui.fillGradient(0, 0, (int) (getRelativeWidth(barWidth) * property.getTrackedBarLengthFactor()), ((int) getRelativeHeight(barHeight)), shadowStart, shadowEnd);
 
-                pose.translate(0, getRelativeHeight(0.005f), 0);
-
-                gui.drawString(Minecraft.getInstance().font, ModComponents.literal(property.getRenderString()), 0, 0, ChatFormatting.WHITE.getColor());
+                if (Screen.hasShiftDown()){
+                    pose.translate(0, getRelativeHeight(0.005f), 10);
+                    gui.drawString(Minecraft.getInstance().font, ModComponents.literal(property.getRenderString()), 0, 0, ChatFormatting.WHITE.getColor());
+                }
                 RenderSystem.disableBlend();
                 pose.popPose();
             }

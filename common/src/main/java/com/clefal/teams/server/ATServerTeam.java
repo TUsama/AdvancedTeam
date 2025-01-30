@@ -33,7 +33,7 @@ public class ATServerTeam extends Team {
     @Getter
     private UUID leader;
     private Set<UUID> players;
-    private Map<UUID, ServerPlayer> onlinePlayers;
+    private transient Map<UUID, ServerPlayer> onlinePlayers;
     private final Set<Advancement> advancements = new LinkedHashSet<>();
     private PlayerTeam scoreboardTeam;
 

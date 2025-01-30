@@ -14,8 +14,8 @@ import java.util.Map;
 public class ClientRegisterPropertyRendererEvent extends ClientEvent{
     private final Map<String, Function1<IProperty, PropertyRenderer<? extends IProperty>>> gather = new HashMap<>();
 
-    public <T extends IProperty> void register(String identifier, Function1<IProperty, PropertyRenderer<? extends IProperty>> renderer){
-        gather.put(identifier, renderer.memoized());
+    public void register(String identifier, Function1<IProperty, PropertyRenderer<? extends IProperty>> renderer){
+        gather.put(identifier, renderer);
     }
 
     public Map<String, Function1<IProperty, PropertyRenderer<?>>> getResult(){

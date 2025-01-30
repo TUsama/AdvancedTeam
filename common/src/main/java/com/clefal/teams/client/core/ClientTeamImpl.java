@@ -57,7 +57,7 @@ class ClientTeamImpl implements ClientTeam {
 
     @Override
     public List<Teammate> getTeammates() {
-        ImmutableList.Builder<Teammate> builder = ImmutableList.<Teammate>builder();
+        ImmutableList.Builder<Teammate> builder = ImmutableList.builder();
         Optional<Teammate> first = teammates.values().stream().filter(x -> x.id.equals(leader)).findFirst();
         if (first.isPresent()) {
             builder.add(first.get());
@@ -97,7 +97,9 @@ class ClientTeamImpl implements ClientTeam {
             }
 
         } else {
-            AdvancedTeam.LOGGER.warn("Tried updating player with UUID " + player + "but they are not in this clients team");
+            // it means that the update is earlier than the client joins the world.
+            // this should be ignored
+            if (teammates.get(client.player.getUUID()) != null) AdvancedTeam.LOGGER.warn("Tried updating player with UUID " + player + ", but they are not in this client team");
         }
     }
 
