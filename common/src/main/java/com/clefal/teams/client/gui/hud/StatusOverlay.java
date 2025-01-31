@@ -35,7 +35,7 @@ public class StatusOverlay {
         RenderSystem.enableDepthTest();
         graphics.pose().pushPose();
         PositionContext positionContext = PositionContext.fromFactor(0.03f, 0.025f, 0.15f, 0.026f);
-        for (int i = 0; i < teammates.size() && shown < ATConfig.config.overlays.maxEntryAmount - 1; ++i) {
+        for (int i = 0; i < teammates.size() && shown < ATConfig.config.overlays.maxEntryAmount; ++i) {
             if (!AdvancedTeam.IN_DEV){
                 if (client.player.getUUID().equals(teammates.get(i).id)) {
                     continue;

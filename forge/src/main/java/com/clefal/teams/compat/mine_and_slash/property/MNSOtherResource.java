@@ -104,13 +104,13 @@ public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource
 
         @Override
         public void render(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
-            float factor = property.targetValue / property.maxValue;
-            float width = getRelativeWidth(Constants.barWidth) / 2;
-            float height = getRelativeHeight(Constants.barHeight) / 3;
+            float width = positionContext.barWidth() / 2;
+            float height = positionContext.barHeight() / 3;
             Matrix4f matrix4f = new Matrix4f(gui.pose().last().pose());
+            float trackedBarLengthFactor = property.getTrackedBarLengthFactor();
 
-            container.putFill(FillBufferInfo.fillOf(0, 0, width * factor, height, -0.01f, colorMap.get(property.getIdentifier()), matrix4f));
-            container.putFill(FillGradientBufferInfo.getShadow(0, 0, width * factor, height, matrix4f));
+            container.putFill(FillBufferInfo.fillOf(0, 0, width * trackedBarLengthFactor, height, -0.01f, colorMap.get(property.getIdentifier()), matrix4f));
+            container.putFill(FillGradientBufferInfo.getShadow(0, 0, width * trackedBarLengthFactor, height, matrix4f));
 
             /*gui.fill(0, 0, (int) (width * factor), ((int) (height)), colorMap.get(property.getIdentifier()));
             gui.fillGradient(0, 0, (int) (width * factor), ((int) (height)), Constants.shadowStart, Constants.shadowEnd);*/

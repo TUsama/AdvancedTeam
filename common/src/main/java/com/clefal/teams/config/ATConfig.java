@@ -43,6 +43,11 @@ public class ATConfig extends Config {
 
 
     }
+    public Button button = new Button();
+    public static class Button extends ConfigSection{
+        public int inventoryButtonXOffset = 0;
+        public int inventoryButtonYOffset = 0;
+    }
 
 
     public static class Info extends ConfigSection {

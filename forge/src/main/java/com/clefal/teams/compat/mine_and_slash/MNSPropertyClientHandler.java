@@ -81,9 +81,9 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
         int count = 0;
         PoseStack pose = gui.pose();
 
-        pose.translate(0, getRelativeHeight(oneEntryHeight), 0);
+        pose.translate(0, positionContext.oneEntryHeight(), 0);
 
-        pose.translate(getRelativeWidth(iconAndTextInterval), 0, 0);
+        pose.translate(positionContext.iconAndTextInterval(), 0, 0);
 
         for (ResourceType value : ResourceType.values()) {
             if (value == ResourceType.health || value == ResourceType.magic_shield) continue;
