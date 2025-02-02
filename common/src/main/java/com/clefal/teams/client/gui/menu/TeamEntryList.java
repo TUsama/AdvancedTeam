@@ -24,7 +24,7 @@ public class TeamEntryList extends AbstractSelectionList<TeamEntryList.TeammateE
     public TeamEntryList(Minecraft minecraft, int width, int height, int y0, int y1) {
         super(minecraft, width, height, y0, y1, 24);
 
-        int yPos = y0 + 12;
+        int yPos = y0 + 4;
         int xPos = (this.width - TeammateEntry.WIDTH) / 2 + x0;
 
         for (var teammate : ClientTeam.INSTANCE.getTeammates()) {
@@ -56,9 +56,9 @@ public class TeamEntryList extends AbstractSelectionList<TeamEntryList.TeammateE
         private final int x;
         private final int y;
         @Getter
-        private ImageButton kickButton;
-        private ImageButton promoteButton;
-        private boolean isLocal;
+        private final ImageButton kickButton;
+        private final ImageButton promoteButton;
+        private final boolean isLocal;
 
         public TeammateEntry(ClientTeam.Teammate teammate, int x, int y, boolean local) {
             super();
@@ -86,8 +86,6 @@ public class TeamEntryList extends AbstractSelectionList<TeamEntryList.TeammateE
 
 
         private void renderBackground(GuiGraphics graphics) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             graphics.blit(TEXTURE, x, y, 0, 166, WIDTH, HEIGHT);
         }
 
@@ -106,11 +104,20 @@ public class TeamEntryList extends AbstractSelectionList<TeamEntryList.TeammateE
             // Nameplate
             guiGraphics.drawString(client.font, teammate.name, x + 24, y + 12 - (client.font.lineHeight / 2), ChatFormatting.BLACK.getColor(), false);
             // Buttons
-            if (ClientTeam.INSTANCE.hasPermissions() && getHovered() != null && getHovered().equals(this) && !isLocal) {
-                this.kickButton.active = true;
-                this.promoteButton.active = true;
-                kickButton.render(guiGraphics, mouseX, mouseY, partialTick);
-                promoteButton.render(guiGraphics, mouseX, mouseY, partialTick);
+            if (ClientTeam.INSTANCE.hasPermissions() && getHovered() != null && getHovered().equals(this)) {
+                if (isLocal){
+                    if (AdvancedTeam.IN_DEV){
+                        this.kickButton.active = true;
+                        this.promoteButton.active = true;
+                        kickButton.render(guiGraphics, mouseX, mouseY, partialTick);
+                        promoteButton.render(guiGraphics, mouseX, mouseY, partialTick);
+                    }
+                } else {
+                    this.kickButton.active = true;
+                    this.promoteButton.active = true;
+                    kickButton.render(guiGraphics, mouseX, mouseY, partialTick);
+                    promoteButton.render(guiGraphics, mouseX, mouseY, partialTick);
+                }
             } else {
                 this.kickButton.active = false;
                 this.promoteButton.active = false;

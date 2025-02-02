@@ -13,10 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TeamsMainScreen extends TeamsScreen {
 
-    public static final int WIDTH = 256;
-    public static final int HEIGHT = 166;
+    static final int WIDTH = 256;
+    static final int HEIGHT = 166;
     private static final ResourceLocation TEXTURE = new ResourceLocation(AdvancedTeam.MODID, "textures/gui/screen_background.png");
-    private TeamEntryList list;
+    private TeamEntryList entryList;
 
     public TeamsMainScreen(Screen parent) {
         super(parent, ModComponents.TEAMS_MENU_TITLE);
@@ -25,8 +25,10 @@ public class TeamsMainScreen extends TeamsScreen {
     @Override
     protected void init() {
         super.init();
-        list = new TeamEntryList(Minecraft.getInstance(), this.width, this.height, this.y, this.y + this.height);
-        this.addWidget(list);
+        //the y1 is from the two buttons' y
+        this.entryList = new TeamEntryList(Minecraft.getInstance(), this.width, this.height, this.y + 4, y + HEIGHT - 32);
+        this.addRenderableWidget(entryList);
+
         // Add menu buttons
         addRenderableWidget(Button.builder(ModComponents.LEAVE_TEXT,button -> {
             Services.PLATFORM.sendToServer(new C2STeamLeavePacket());
@@ -40,7 +42,6 @@ public class TeamsMainScreen extends TeamsScreen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         super.render(graphics, mouseX, mouseY, delta);
-        list.render(graphics, mouseX, mouseY, delta);
     }
 
     @Override

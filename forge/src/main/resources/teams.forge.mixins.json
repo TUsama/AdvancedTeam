@@ -7,7 +7,6 @@
   "mixins": [
     "mine_and_slash.ResourcesDataMixin",
     "mine_and_slash.TeamCommandMixin",
-    "mine_and_slash.TeamDataMixin"
   ],
   "client": [
   ],

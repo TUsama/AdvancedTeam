@@ -3,6 +3,7 @@ plugins {
     id 'net.minecraftforge.gradle'
     id 'org.spongepowered.mixin'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id "me.modmuss50.mod-publish-plugin"
     id 'org.jetbrains.kotlin.jvm'
     id 'org.jetbrains.kotlin.plugin.serialization'
 }
@@ -93,9 +94,9 @@ dependencies {
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    implementation fg.deobf("curse.maven:library-of-exile-398780:6127946")
-    implementation fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6128432")
-    implementation fg.deobf("curse.maven:orbs-of-crafting-1182250:6107927")
+    implementation fg.deobf("curse.maven:library-of-exile-398780:6139293")
+    implementation fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6143506")
+    implementation fg.deobf("curse.maven:orbs-of-crafting-1182250:6133170")
     runtimeOnly fg.deobf("curse.maven:playeranimator-658587:4587214")
 
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
@@ -121,5 +122,29 @@ processResources {
 }
 
 jar.finalizedBy('reobfJar')
+
+
+publishMods {
+    file = tasks.jar.archiveFile
+    displayName = file.map { it.asFile.name }
+    changelog = file("..\\changelog.md").text.split('\n').collect { string -> {
+        if (!string.isBlank()) {
+            string + "</br>"
+        } else {
+            string
+        }
+    }}.join('\n')
+    type = STABLE
+    modLoaders.add("forge")
+    curseforge {
+        accessToken = file("D:\\curseforge-key.txt").text
+        projectId = "1190555"
+        clientRequired = true
+        serverRequired = true
+        minecraftVersions.add("1.20.1")
+        requires("fzzy-config", "nirvana-library")
+    }
+}
+
 
 

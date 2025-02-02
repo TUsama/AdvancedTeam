@@ -30,8 +30,6 @@ public abstract class TeamsScreen extends Screen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         renderBackground(graphics);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         graphics.pose().pushPose();
         graphics.blit(getBackgroundTexture(), x, y, 0, 0, getWidth(), getHeight());
         graphics.pose().popPose();
