@@ -16,7 +16,7 @@ public class TeamsMainScreen extends TeamsScreen {
     static final int WIDTH = 256;
     static final int HEIGHT = 166;
     private static final ResourceLocation TEXTURE = new ResourceLocation(AdvancedTeam.MODID, "textures/gui/screen_background.png");
-    private TeamEntryList entryList;
+    private TeammateEntryList entryList;
 
     public TeamsMainScreen(Screen parent) {
         super(parent, ModComponents.TEAMS_MENU_TITLE);
@@ -26,7 +26,7 @@ public class TeamsMainScreen extends TeamsScreen {
     protected void init() {
         super.init();
         //the y1 is from the two buttons' y
-        this.entryList = new TeamEntryList(Minecraft.getInstance(), this.width, this.height, this.y + 4, y + HEIGHT - 32);
+        this.entryList = new TeammateEntryList(Minecraft.getInstance(), this.width, this.height, this.y + 4, y + HEIGHT - 32);
         this.addRenderableWidget(entryList);
 
         // Add menu buttons

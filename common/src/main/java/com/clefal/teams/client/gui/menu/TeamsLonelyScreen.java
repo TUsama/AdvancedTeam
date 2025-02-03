@@ -4,6 +4,7 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.server.ModComponents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -15,6 +16,7 @@ public class TeamsLonelyScreen extends TeamsScreen {
     static final int WIDTH = 256;
     static final int HEIGHT = 166;
     private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
+    private TeamEntryList entryList;
 
     public TeamsLonelyScreen(Screen parent) {
         super(parent, ModComponents.LONELY_MENU_TITLE);
@@ -23,15 +25,8 @@ public class TeamsLonelyScreen extends TeamsScreen {
     @Override
     protected void init() {
         super.init();
-        // ModTeam Entries
-        int yPos = y + 12;
-        for (String team : ClientTeamData.INSTANCE.getOnlineTeams()) {
-            var entry = new TeamEntry(team, this.width / 2 - 122, yPos);
-            addRenderableWidget(entry);
-            addWidget(entry.joinButton);
-            yPos += 24;
-        }
         // Menu buttons
+        this.entryList = new TeamEntryList(Minecraft.getInstance(), this.width, this.height, this.y + 4, y + HEIGHT - 32);
         addRenderableWidget(Button.builder(ModComponents.CREATE_TEXT, button -> minecraft.setScreen(new TeamsCreateScreen(this)))
                 .bounds(this.width / 2 - 106, y + HEIGHT - 30, 100, 20).build());
         addRenderableWidget(Button.builder( ModComponents.GO_BACK_TEXT, button -> minecraft.setScreen(parent))
@@ -45,6 +40,8 @@ public class TeamsLonelyScreen extends TeamsScreen {
             int textWidth = font.width(ModComponents.LONELY_TEXT);
             int textHeight   = font.lineHeight;
             graphics.drawString(font, ModComponents.LONELY_TEXT, (this.width - textWidth) / 2, y + 24 - (textHeight / 2), ChatFormatting.BLACK.getColor(),false);
+        } else {
+            this.entryList.render(graphics, mouseX, mouseY, delta);
         }
     }
 

@@ -5,6 +5,7 @@ import com.clefal.teams.client.gui.menu.TeamsLonelyScreen;
 import com.clefal.teams.client.gui.menu.TeamsMainScreen;
 import com.clefal.teams.client.gui.menu.TeamsScreen;
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -27,6 +28,7 @@ class ClientTeamImpl implements ClientTeam {
             throw new IllegalArgumentException("Cannot initialize already initialized team. Did you clear it first?");
         }
         this.name = name;
+        this.leader = leader;
         this.initialized = true;
     }
 
