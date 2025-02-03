@@ -1,5 +1,7 @@
 package com.clefal.teams.mixin.mine_and_slash;
 
+import com.clefal.teams.compat.mine_and_slash.MineAndSlashCompatModule;
+import com.clefal.teams.config.ATConfig;
 import com.mojang.brigadier.CommandDispatcher;
 import com.robertx22.mine_and_slash.vanilla_mc.commands.CommandRefs;
 import com.robertx22.mine_and_slash.vanilla_mc.commands.TeamCommand;
@@ -20,21 +22,23 @@ public abstract class TeamCommandMixin {
 
     @Inject(method = "register", at = @At(value = "HEAD"), remap = false, cancellable = true)
     private static void cancelRegister(CommandDispatcher<CommandSourceStack> commandDispatcher, CallbackInfo ci) {
-        commandDispatcher.register(
-                literal(CommandRefs.ID).requires(x -> true)
-                        .then(literal("teams").requires(e -> true)
-                                .then(literal("help").executes(commandContext -> {
-                                    ServerPlayer player = commandContext.getSource()
-                                            .getPlayerOrException();
-                                    player.sendSystemMessage(Component.translatable("teams.compat.mns_command"));
-                                    return 0;
-                                }))
-                                .then(Commands.literal("list_members").executes((x) -> {
-                                    Player player = x.getSource().getPlayerOrException();
-                                    TeamCommand.listMembers(player);
-                                    return 0;
-                                }))));
-        ci.cancel();
+        if (MineAndSlashCompatModule.getServerConfig().replaceMNSTeam){
+            commandDispatcher.register(
+                    literal(CommandRefs.ID).requires(x -> true)
+                            .then(literal("teams").requires(e -> true)
+                                    .then(literal("help").executes(commandContext -> {
+                                        ServerPlayer player = commandContext.getSource()
+                                                .getPlayerOrException();
+                                        player.sendSystemMessage(Component.translatable("teams.compat.mns_command"));
+                                        return 0;
+                                    }))
+                                    .then(Commands.literal("list_members").executes((x) -> {
+                                        Player player = x.getSource().getPlayerOrException();
+                                        TeamCommand.listMembers(player);
+                                        return 0;
+                                    }))));
+            ci.cancel();
+        }
     }
 
 }
