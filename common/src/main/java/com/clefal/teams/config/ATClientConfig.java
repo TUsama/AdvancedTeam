@@ -2,6 +2,7 @@ package com.clefal.teams.config;
 
 
 import com.clefal.teams.AdvancedTeam;
+import kotlin.ranges.IntRange;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
@@ -11,14 +12,14 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 
-public class ATConfig extends Config {
+public class ATClientConfig extends Config {
 
-    public static ATConfig config = ConfigApiJava.registerAndLoadConfig(ATConfig::new, RegisterType.CLIENT);
+    public static ATClientConfig config = ConfigApiJava.registerAndLoadConfig(ATClientConfig::new, RegisterType.CLIENT);
 
     public Overlays overlays = new Overlays();
     public Info info = new Info();
 
-    public ATConfig() {
+    public ATClientConfig() {
         super(AdvancedTeam.id("config"));
     }
 
@@ -51,7 +52,8 @@ public class ATConfig extends Config {
 
 
     public static class Info extends ConfigSection {
-        public ValidatedInt toastShowSecond = new ValidatedInt(3, 10, 0, ValidatedNumber.WidgetType.SLIDER);
+        public ValidatedInt normalToastShowSecond = new ValidatedInt(3, 30, 0, ValidatedNumber.WidgetType.SLIDER);
+        public ValidatedInt inviteToastShowSecond = new ValidatedInt(60, 1000, 0, ValidatedNumber.WidgetType.TEXTBOX);
     }
 
 

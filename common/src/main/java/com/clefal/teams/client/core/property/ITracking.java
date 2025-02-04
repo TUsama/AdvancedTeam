@@ -1,7 +1,6 @@
 package com.clefal.teams.client.core.property;
 
-import com.clefal.teams.config.ATConfig;
-import net.minecraft.util.Mth;
+import com.clefal.teams.config.ATClientConfig;
 import org.joml.Math;
 
 public interface ITracking<SELF> {
@@ -12,6 +11,6 @@ public interface ITracking<SELF> {
     int getTrackedBarColor();
 
     static float lerpTo(float from, float to){
-        return Math.max((to - from) * ATConfig.config.overlays.barAnimationSpeed.get(), to * 0.01f);
+        return Math.max((to - from) * ATClientConfig.config.overlays.barAnimationSpeed.get(), to * 0.01f);
     }
 }

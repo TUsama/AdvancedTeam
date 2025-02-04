@@ -1,7 +1,6 @@
 package com.clefal.teams.mixin.mine_and_slash;
 
 import com.clefal.teams.compat.mine_and_slash.MineAndSlashCompatModule;
-import com.clefal.teams.config.ATConfig;
 import com.mojang.brigadier.CommandDispatcher;
 import com.robertx22.mine_and_slash.vanilla_mc.commands.CommandRefs;
 import com.robertx22.mine_and_slash.vanilla_mc.commands.TeamCommand;

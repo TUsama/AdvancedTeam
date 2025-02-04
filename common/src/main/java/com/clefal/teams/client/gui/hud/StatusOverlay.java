@@ -2,9 +2,8 @@ package com.clefal.teams.client.gui.hud;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.gui.util.VertexContainer;
-import com.clefal.teams.config.ATConfig;
+import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.server.propertyhandler.HandlerManager;
 import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
 import com.clefal.teams.server.propertyhandler.PositionContext;
@@ -29,13 +28,13 @@ public class StatusOverlay {
     }
 
     public void render(GuiGraphics graphics) {
-        if (!ATConfig.config.overlays.enableStatusOverlay || !enabled) return;
+        if (!ATClientConfig.config.overlays.enableStatusOverlay || !enabled) return;
         List<ClientTeam.Teammate> teammates = ClientTeam.INSTANCE.getTeammates();
         int shown = 0;
         RenderSystem.enableDepthTest();
         graphics.pose().pushPose();
         PositionContext positionContext = PositionContext.fromFactor(0.03f, 0.025f, 0.15f, 0.026f);
-        for (int i = 0; i < teammates.size() && shown < ATConfig.config.overlays.maxEntryAmount; ++i) {
+        for (int i = 0; i < teammates.size() && shown < ATClientConfig.config.overlays.maxEntryAmount; ++i) {
             if (!AdvancedTeam.IN_DEV){
                 if (client.player.getUUID().equals(teammates.get(i).id)) {
                     continue;
@@ -59,10 +58,10 @@ public class StatusOverlay {
 
         // Draw skin
 
-        float scale = ATConfig.config.overlays.scale.get();
+        float scale = ATClientConfig.config.overlays.scale.get();
         pose.scale(scale, scale, 1.0f);
 
-        pose.translate(ATConfig.config.overlays.originX, ATConfig.config.overlays.originY, 0);
+        pose.translate(ATClientConfig.config.overlays.originX, ATClientConfig.config.overlays.originY, 0);
 
         {
             graphics.blit(teammate.skin, 0, 0, 32, 32, 32, 32);
@@ -81,7 +80,7 @@ public class StatusOverlay {
         }
         pose.popPose();
 
-        graphics.pose().translate(0, ATConfig.config.overlays.entryInterval, 0);
+        graphics.pose().translate(0, ATClientConfig.config.overlays.entryInterval, 0);
     }
 
 }

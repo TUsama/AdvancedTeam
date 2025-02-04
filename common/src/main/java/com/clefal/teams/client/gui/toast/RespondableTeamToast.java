@@ -1,9 +1,11 @@
 package com.clefal.teams.client.gui.toast;
 
 import com.clefal.teams.client.keybind.TeamsKeys;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 public abstract class RespondableTeamToast extends TeamToast {
 
@@ -24,7 +26,7 @@ public abstract class RespondableTeamToast extends TeamToast {
     public String subTitle() {
         String rejectKey = TeamsKeys.REJECT.getLocalizedName();
         String acceptKey = TeamsKeys.ACCEPT.getLocalizedName();
-        return I18n.get("teams.toast.respond", rejectKey, acceptKey);
+        return I18n.get("teams.toast.respond", Component.literal(rejectKey).withStyle(ChatFormatting.RED), Component.literal(acceptKey).withStyle(ChatFormatting.RED));
     }
 
     @Override

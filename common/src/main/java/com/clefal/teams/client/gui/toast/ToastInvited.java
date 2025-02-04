@@ -1,6 +1,6 @@
 package com.clefal.teams.client.gui.toast;
 
-import com.clefal.teams.config.ATConfig;
+import com.clefal.teams.config.ATClientConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.resources.language.I18n;
@@ -23,6 +23,6 @@ public class ToastInvited extends RespondableTeamToast {
         if (getResponded()) {
             return Visibility.HIDE;
         }
-        return startTime - getFirstDrawTime() < ATConfig.config.info.toastShowSecond.get() * 1000L * 5 && team != null ? Visibility.SHOW : Visibility.HIDE;
+        return startTime - getFirstDrawTime() < ATClientConfig.config.info.inviteToastShowSecond.get() * 1000L && team != null ? Visibility.SHOW : Visibility.HIDE;
     }
 }

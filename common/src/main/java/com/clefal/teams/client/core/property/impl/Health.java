@@ -7,7 +7,7 @@ import com.clefal.teams.client.gui.util.FillBufferInfo;
 import com.clefal.teams.client.gui.util.FillGradientBufferInfo;
 import com.clefal.teams.client.gui.util.TextureBufferInfo;
 import com.clefal.teams.client.gui.util.VertexContainer;
-import com.clefal.teams.config.ATConfig;
+import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.server.propertyhandler.PositionContext;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -19,7 +19,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 
 import static com.clefal.teams.client.core.property.Constants.*;
 
@@ -67,7 +66,7 @@ public final class Health extends HealthTemplate<Health> {
 
         @Override
         public void render(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
-            if (ATConfig.config.overlays.showHealth) {
+            if (ATClientConfig.config.overlays.showHealth) {
                 RenderSystem.enableBlend();
                 PoseStack pose = gui.pose();
                 pose.translate(0, positionContext.oneEntryHeight(), 0);

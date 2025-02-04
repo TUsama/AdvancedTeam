@@ -2,11 +2,10 @@ package com.clefal.teams.client.core.property.impl;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.core.property.RenderableProperty;
 import com.clefal.teams.client.gui.util.TextureBufferInfo;
 import com.clefal.teams.client.gui.util.VertexContainer;
-import com.clefal.teams.config.ATConfig;
+import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.server.propertyhandler.PositionContext;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -17,8 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
-
-import static com.clefal.teams.client.core.property.Constants.*;
 
 public class Hunger extends RenderableProperty {
     public static final String KEY = "hunger";
@@ -63,7 +60,7 @@ public class Hunger extends RenderableProperty {
 
         @Override
         public void render(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
-            if (ATConfig.config.overlays.showHunger) {
+            if (ATClientConfig.config.overlays.showHunger) {
                 PoseStack pose = gui.pose();
                 pose.translate(0, positionContext.oneEntryHeight(), 0);
                 pose.pushPose();
