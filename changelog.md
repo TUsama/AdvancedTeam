@@ -1,3 +1,7 @@
+### 1.1.7
+fix several bugs of the current entry list
+add a config that allow player to control the achievements share
+
 ### 1.1.6
 fix the toast info
 
