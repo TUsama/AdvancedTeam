@@ -48,6 +48,7 @@
   "key.teams.accept": "Accept Team",
   "key.teams.reject": "Reject Team",
   "key.teams.toggle_hud": "Toggle HUD",
-  "key.category.teams": "Teams"
+  "key.category.teams": "Teams",
+  "teams.menu.team_header": "Avaliable Team"
 
 }

@@ -1,11 +1,10 @@
 package com.clefal.teams.client.core;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.client.gui.menu.TeamsLonelyScreen;
+import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
 import com.clefal.teams.client.gui.menu.TeamsMainScreen;
 import com.clefal.teams.client.gui.menu.TeamsScreen;
 import com.google.common.collect.ImmutableList;
-import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
@@ -115,7 +114,7 @@ class ClientTeamImpl implements ClientTeam {
             } else {
                 screen.refresh();
             }
-        } else if (client.screen instanceof TeamsLonelyScreen screen) {
+        } else if (client.screen instanceof NoTeamScreen screen) {
             screen.refresh();
         }
     }
@@ -129,7 +128,7 @@ class ClientTeamImpl implements ClientTeam {
         initialized = false;
         // If in TeamsScreen, go to lonely screen
         if (client.screen instanceof TeamsScreen) {
-            client.setScreen(new TeamsLonelyScreen(null));
+            client.setScreen(new NoTeamScreen(null));
         }
     }
 

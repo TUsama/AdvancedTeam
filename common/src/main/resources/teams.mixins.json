@@ -10,9 +10,10 @@
     "TeamMessageCommandMixin"
   ],
   "client": [
+    "AbstractSelectionListMixin",
+    "AccessorRenderType",
     "InventoryScreenAccessor",
-    "ScreenMixin",
-    "AccessorRenderType"
+    "ScreenMixin"
   ],
   "server": [
   ],

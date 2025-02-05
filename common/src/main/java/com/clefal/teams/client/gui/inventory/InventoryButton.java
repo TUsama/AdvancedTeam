@@ -2,7 +2,7 @@ package com.clefal.teams.client.gui.inventory;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.gui.menu.TeamsLonelyScreen;
+import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
 import com.clefal.teams.client.gui.menu.TeamsMainScreen;
 import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.mixin.InventoryScreenAccessor;
@@ -24,7 +24,7 @@ public class InventoryButton {
                     minecraft.setScreen(new TeamsMainScreen(minecraft.screen));
 
                 } else {
-                    minecraft.setScreen(new TeamsLonelyScreen(minecraft.screen));
+                    minecraft.setScreen(new NoTeamScreen(minecraft.screen));
                 }
             }){
                 @Override

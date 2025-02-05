@@ -2,6 +2,7 @@ package com.clefal.teams.client.gui.menu;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.network.server.C2SPromotePacket;
 import com.clefal.teams.network.server.C2STeamKickPacket;
 import com.clefal.teams.platform.Services;
@@ -18,57 +19,42 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class TeammateEntryList extends AbstractSelectionList<TeammateEntryList.TeammateEntry> {
+public class TeammateEntryList extends ATEntryList {
 
 
     public TeammateEntryList(Minecraft minecraft, int width, int height, int y0, int y1) {
-        super(minecraft, width, height, y0, y1, TeammateEntry.HEIGHT);
+        super(width, height, y0, y1);
 
-        int yPos = y0 + 4;
-        int xPos = (this.width - TeammateEntry.WIDTH) / 2 + x0;
-
+        int index = 0;
         for (var teammate : ClientTeam.INSTANCE.getTeammates()) {
             boolean local = minecraft.player.getUUID().equals(teammate.id);
-            var entry = new TeammateEntryList.TeammateEntry(teammate, xPos, yPos, local);
+            var entry = new TeammateEntryList.TeammateEntry(teammate, local, index);
             this.addEntry(entry);
-            yPos += 24;
+            index++;
         }
 
-        this.setRenderBackground(false);
-        this.setRenderHeader(false, 0);
-        this.setRenderTopAndBottom(false);
     }
 
 
+    protected class TeammateEntry extends ATEntryList.ATEntry {
 
-    @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-
-    }
-
-    protected class TeammateEntry extends AbstractSelectionList.Entry<TeammateEntry> {
-
-        static final int WIDTH = 244;
-        static final int HEIGHT = 24;
         private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
         private final ResourceLocation FLAG = AdvancedTeam.id("textures/gui/flag.png");
         private final Minecraft client;
         private final ClientTeam.Teammate teammate;
-        private final int x;
-        private final int y;
         @Getter
         private final ImageButton kickButton;
         private final ImageButton promoteButton;
         private final boolean isLocal;
 
-        public TeammateEntry(ClientTeam.Teammate teammate, int x, int y, boolean local) {
+        public TeammateEntry(ClientTeam.Teammate teammate, boolean local, int index) {
             super();
             this.client = Minecraft.getInstance();
             this.teammate = teammate;
-            this.x = x;
-            this.y = y;
+            int rowRight = getRowRight();
+            int rowTop = getRowTop(index);
             {
-                ImageButton kickButton = new ImageButton(x + WIDTH - 24, y + 8, 8, 8, 16, 190, TEXTURE, button -> {
+                ImageButton kickButton = new ImageButton(rowRight - 24, rowTop + 8, 8, 8, 16, 190, TEXTURE, button -> {
                     Services.PLATFORM.sendToServer(new C2STeamKickPacket(ClientTeam.INSTANCE.getName(), teammate.id));
                     ClientTeam.INSTANCE.removePlayer(teammate.id);
                 });
@@ -77,7 +63,7 @@ public class TeammateEntryList extends AbstractSelectionList<TeammateEntryList.T
                 this.kickButton.active = false;
             }
             {
-                ImageButton promoteButton = new ImageButton(x + WIDTH - 48, y + 8, 8, 8, 0, 0, 8, FLAG, 8, 16, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id)));
+                ImageButton promoteButton = new ImageButton(rowRight - 48, rowTop + 8, 8, 8, 0, 0, 8, FLAG, 8, 16, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id)));
                 promoteButton.setTooltip(Tooltip.create(Component.translatable("teams.button.promote")));
                 this.promoteButton = promoteButton;
                 this.promoteButton.active = false;
@@ -86,46 +72,48 @@ public class TeammateEntryList extends AbstractSelectionList<TeammateEntryList.T
         }
 
 
-        private void renderBackground(GuiGraphics graphics) {
-            graphics.blit(TEXTURE, x, y, 0, 166, WIDTH, HEIGHT);
-        }
-
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             return this.kickButton.mouseClicked(mouseX, mouseY, button) || this.promoteButton.mouseClicked(mouseX, mouseY, button);
         }
 
+
+
         @Override
         public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
-            // Background
-            renderBackground(guiGraphics);
             // Head
             float scale = 0.5F;
             guiGraphics.pose().pushPose();
             guiGraphics.pose().scale(scale, scale, scale);
-            guiGraphics.blit(teammate.skin, (int) ((x + 4) / scale), (int) ((y + 4) / scale), 32, 32, 32, 32);
+            guiGraphics.blit(teammate.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32, 32, 32, 32);
             guiGraphics.pose().popPose();
             // Nameplate
-            guiGraphics.drawString(client.font, teammate.name, x + 24, y + 12 - (client.font.lineHeight / 2), ChatFormatting.BLACK.getColor(), false);
+            guiGraphics.drawString(client.font, teammate.name, left + 24, top + 12 - (client.font.lineHeight / 2), ChatFormatting.BLACK.getColor(), false);
             // Buttons
-            if (ClientTeam.INSTANCE.hasPermissions() && getHovered() != null && getHovered().equals(this)) {
+            if (ClientTeam.INSTANCE.hasPermissions() && hovering) {
                 if (isLocal){
                     if (AdvancedTeam.IN_DEV){
-                        this.kickButton.active = true;
-                        this.promoteButton.active = true;
-                        kickButton.render(guiGraphics, mouseX, mouseY, partialTick);
-                        promoteButton.render(guiGraphics, mouseX, mouseY, partialTick);
+                        wakeButtons(guiGraphics, top, left, width, mouseX, mouseY, partialTick);
                     }
                 } else {
-                    this.kickButton.active = true;
-                    this.promoteButton.active = true;
-                    kickButton.render(guiGraphics, mouseX, mouseY, partialTick);
-                    promoteButton.render(guiGraphics, mouseX, mouseY, partialTick);
+                    wakeButtons(guiGraphics, top, left, width, mouseX, mouseY, partialTick);
                 }
             } else {
                 this.kickButton.active = false;
                 this.promoteButton.active = false;
             }
         }
+
+        private void wakeButtons(GuiGraphics guiGraphics, int top, int left, int width, int mouseX, int mouseY, float partialTick) {
+            this.kickButton.active = true;
+            this.promoteButton.active = true;
+            this.kickButton.setX(left + width - ATEntryList.buttonXInterval);
+            this.kickButton.setY(top + ATEntryList.buttonYInterval);
+            this.promoteButton.setX(left + width - ATEntryList.buttonXInterval * 2);
+            this.promoteButton.setY(top + ATEntryList.buttonYInterval);
+            kickButton.render(guiGraphics, mouseX, mouseY, partialTick);
+            promoteButton.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
+
     }
 }
