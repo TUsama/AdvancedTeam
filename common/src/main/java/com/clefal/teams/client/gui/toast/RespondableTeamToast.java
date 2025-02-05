@@ -23,10 +23,10 @@ public abstract class RespondableTeamToast extends TeamToast {
     }
 
     @Override
-    public String subTitle() {
+    public Component subTitle() {
         String rejectKey = TeamsKeys.REJECT.getLocalizedName();
         String acceptKey = TeamsKeys.ACCEPT.getLocalizedName();
-        return I18n.get("teams.toast.respond", Component.literal(rejectKey).withStyle(ChatFormatting.RED), Component.literal(acceptKey).withStyle(ChatFormatting.RED));
+        return Component.translatable("teams.toast.respond", Component.literal(rejectKey).withStyle(ChatFormatting.RED), Component.literal(acceptKey).withStyle(ChatFormatting.RED));
     }
 
     @Override

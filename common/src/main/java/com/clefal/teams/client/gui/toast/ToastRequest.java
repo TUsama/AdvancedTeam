@@ -1,6 +1,7 @@
 package com.clefal.teams.client.gui.toast;
 
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 public class ToastRequest extends TeamToast {
 
@@ -9,12 +10,12 @@ public class ToastRequest extends TeamToast {
     }
 
     @Override
-    public String title() {
-        return I18n.get("teams.toast.request");
+    public Component title() {
+        return Component.translatable("teams.toast.request");
     }
 
     @Override
-    public String subTitle() {
-        return I18n.get("teams.toast.request.details", team);
+    public Component subTitle() {
+        return Component.translatable("teams.toast.request.details", team);
     }
 }

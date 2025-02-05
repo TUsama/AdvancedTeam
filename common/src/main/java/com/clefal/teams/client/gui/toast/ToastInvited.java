@@ -4,6 +4,7 @@ import com.clefal.teams.config.ATClientConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 public class ToastInvited extends RespondableTeamToast {
 
@@ -12,8 +13,8 @@ public class ToastInvited extends RespondableTeamToast {
     }
 
     @Override
-    public String title() {
-        return I18n.get("teams.toast.invite", team);
+    public Component title() {
+        return Component.translatable("teams.toast.invite", team);
     }
 
     @Override

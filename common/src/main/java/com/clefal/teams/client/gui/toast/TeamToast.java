@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 
 
 public abstract class TeamToast implements Toast {
@@ -19,9 +20,9 @@ public abstract class TeamToast implements Toast {
         this.team = team;
     }
 
-    public abstract String title();
+    public abstract Component title();
 
-    public abstract String subTitle();
+    public abstract Component subTitle();
 
     protected long getFirstDrawTime(){
         return this.firstDrawTime;

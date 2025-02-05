@@ -1,6 +1,7 @@
 package com.clefal.teams.client.gui.toast;
 
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 public class ToastLeave extends TeamToast {
 
@@ -14,12 +15,12 @@ public class ToastLeave extends TeamToast {
     }
 
     @Override
-    public String title() {
-        return local ? I18n.get("teams.toast.leave") : I18n.get("teams.toast.left");
+    public Component title() {
+        return local ? Component.translatable("teams.toast.leave") : Component.translatable("teams.toast.left");
     }
 
     @Override
-    public String subTitle() {
-        return local ? I18n.get("teams.toast.leave.details", team) : I18n.get("teams.toast.left.details", name);
+    public Component subTitle() {
+        return local ? Component.translatable("teams.toast.leave.details", team) : Component.translatable("teams.toast.left.details", name);
     }
 }

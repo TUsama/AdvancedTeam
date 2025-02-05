@@ -1,6 +1,7 @@
 package com.clefal.teams.client.gui.toast;
 
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class ToastRequested extends RespondableTeamToast {
     }
 
     @Override
-    public String title() {
-        return I18n.get("teams.toast.requested", name);
+    public Component title() {
+        return Component.translatable("teams.toast.requested", name);
     }
 }
