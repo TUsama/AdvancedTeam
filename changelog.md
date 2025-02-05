@@ -1,3 +1,6 @@
+### 1.1.6
+fix the toast info
+
 ### 1.1.5
 don't disable the command if the config set to false
 extend invitation time, make it more clear to see
