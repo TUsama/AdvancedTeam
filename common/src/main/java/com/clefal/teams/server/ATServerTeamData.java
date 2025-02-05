@@ -127,7 +127,9 @@ public class ATServerTeamData extends SavedData {
             teams.put(atServerTeam.getName(), atServerTeam);
             names.add(atServerTeam.getName());
         }
-        announceUpdate(S2CTeamDataUpdatePacket.Type.ADD, serverLevel.getServer().getPlayerList().getPlayers(), names.toArray(String[]::new));
+        if (!list.isEmpty()){
+            announceUpdate(S2CTeamDataUpdatePacket.Type.ADD, serverLevel.getServer().getPlayerList().getPlayers(), names.toArray(String[]::new));
+        }
     }
 
     public void toNBT(CompoundTag compound) {
