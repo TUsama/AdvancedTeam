@@ -1,6 +1,7 @@
 package com.clefal.teams.server;
 
 import com.clefal.teams.AdvancedTeam;
+import com.clefal.teams.config.ATServerConfig;
 import com.clefal.teams.event.server.ServerOnPlayerOnlineEvent;
 import com.clefal.teams.event.server.ServerPromoteEvent;
 import com.clefal.teams.network.client.*;
@@ -109,12 +110,15 @@ public class ATServerTeam extends Team {
             }
         }
         // Advancement Sync
-        for (Advancement advancement : advancements) {
-            AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
-            for (String criterion : progress.getRemainingCriteria()) {
-                player.getAdvancements().award(advancement, criterion);
+        if (ATServerConfig.config.shareAchievements){
+            for (Advancement advancement : advancements) {
+                AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
+                for (String criterion : progress.getRemainingCriteria()) {
+                    player.getAdvancements().award(advancement, criterion);
+                }
             }
         }
+
         AdvancedTeam.post(new ServerOnPlayerOnlineEvent(player));
     }
 

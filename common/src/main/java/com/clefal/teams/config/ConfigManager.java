@@ -4,5 +4,6 @@ public class ConfigManager {
 
     public static void init(){
         ATClientConfig.init();
+        ATServerConfig.init();
     }
 }

@@ -20,7 +20,7 @@ public class ATClientConfig extends Config {
     public Info info = new Info();
 
     public ATClientConfig() {
-        super(AdvancedTeam.id("config"));
+        super(AdvancedTeam.id("client_config"));
     }
 
     public static void init() {

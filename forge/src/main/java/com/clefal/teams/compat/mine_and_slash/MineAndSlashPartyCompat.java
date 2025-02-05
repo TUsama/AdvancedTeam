@@ -77,8 +77,6 @@ public class MineAndSlashPartyCompat {
         TeamData team = Load.player(joiner).team;
         team.team_id = event.team.name;
         team.isLeader = false;
-
-
     }
 
     @SubscribeEvent
@@ -86,14 +84,14 @@ public class MineAndSlashPartyCompat {
         ServerPlayer player = event.leaver;
         TeamData team = Load.player(player).team;
         team.leaveTeam();
+        team.isLeader = false;
     }
 
     @SubscribeEvent
     public void onKick(ServerKickPlayerEvent event) {
-        ServerPlayer player = event.kicker;
-        ServerPlayer toKick = player.getServer().getPlayerList().getPlayer(event.toKick);
-        TeamData team = Load.player(toKick).team;
+        TeamData team = Load.player(event.toKick).team;
         team.leaveTeam();
+        team.isLeader = false;
     }
 
     @SubscribeEvent
