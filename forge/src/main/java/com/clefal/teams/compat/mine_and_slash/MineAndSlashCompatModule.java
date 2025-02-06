@@ -61,6 +61,7 @@ public class MineAndSlashCompatModule implements ICompatModule {
         }
     }
 
+    @WithPerms(opLevel = 2)
     public static class MineAndSlashServerConfig extends Config{
 
         private static MineAndSlashServerConfig serverConfig;
@@ -70,7 +71,6 @@ public class MineAndSlashCompatModule implements ICompatModule {
         }
 
         @RequiresAction(action = Action.RESTART)
-        @WithPerms(opLevel = 2)
         public boolean replaceMNSTeam = true;
     }
 }

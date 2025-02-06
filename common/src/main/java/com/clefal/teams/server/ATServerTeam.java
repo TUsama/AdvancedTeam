@@ -44,9 +44,11 @@ public class ATServerTeam extends Team {
         this.leader = leader;
         players = new HashSet<>();
         onlinePlayers = new LinkedHashMap<>();
-        scoreboardTeam = scoreboard.getPlayerTeam(name);
-        if (scoreboardTeam == null) {
-            scoreboardTeam = scoreboard.addPlayerTeam(name);
+        if (ATServerConfig.config.enableVanillaTeamCompat){
+            scoreboardTeam = scoreboard.getPlayerTeam(name);
+            if (scoreboardTeam == null) {
+                scoreboardTeam = scoreboard.addPlayerTeam(name);
+            }
         }
     }
 
@@ -143,9 +145,11 @@ public class ATServerTeam extends Team {
         players.add(player);
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
-        if (playerScoreboardTeam == null || !playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
-            teamData.scoreboard.addPlayerToTeam(playerName, scoreboardTeam);
+        if (ATServerConfig.config.enableVanillaTeamCompat){
+            var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
+            if (playerScoreboardTeam == null || !playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
+                teamData.scoreboard.addPlayerToTeam(playerName, scoreboardTeam);
+            }
         }
         var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
@@ -175,9 +179,11 @@ public class ATServerTeam extends Team {
         }
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
-        if (playerScoreboardTeam != null && playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
-            teamData.scoreboard.removePlayerFromTeam(playerName, scoreboardTeam);
+        if (ATServerConfig.config.enableVanillaTeamCompat){
+            var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
+            if (playerScoreboardTeam != null && playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
+                teamData.scoreboard.removePlayerFromTeam(playerName, scoreboardTeam);
+            }
         }
         // Packets
         var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
@@ -198,14 +204,16 @@ public class ATServerTeam extends Team {
     static ATServerTeam fromNBT(CompoundTag compound, ATServerTeamData teamData) {
         ATServerTeam team = new Builder(compound.getString("name"))
                 .complete(teamData, compound.getUUID("leader"));
-        val vanillaTeam = team.scoreboardTeam;
-        vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
-        vanillaTeam.setCollisionRule(CollisionRule.byName(compound.getString("collision")));
-        vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
-        vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
-        vanillaTeam.setDeathMessageVisibility(Visibility.byName(compound.getString("deathMessages")));
-        vanillaTeam.setNameTagVisibility(Visibility.byName(compound.getString("nameTags")));
+        if (ATServerConfig.config.enableVanillaTeamCompat){
+            val vanillaTeam = team.scoreboardTeam;
+            vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
+            vanillaTeam.setCollisionRule(Team.CollisionRule.byName(compound.getString("collision")));
+            vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
+            vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
+            vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(compound.getString("deathMessages")));
+            vanillaTeam.setNameTagVisibility(Team.Visibility.byName(compound.getString("nameTags")));
 
+        }
 
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
         for (var elem : players) {
@@ -230,12 +238,15 @@ public class ATServerTeam extends Team {
         CompoundTag compound = new CompoundTag();
         compound.putString("name", name);
         compound.putUUID("leader", leader);
-        compound.putString("colour", scoreboardTeam.getColor().getName());
-        compound.putString("collision", scoreboardTeam.getCollisionRule().name);
-        compound.putString("deathMessages", scoreboardTeam.getDeathMessageVisibility().name);
-        compound.putString("nameTags", scoreboardTeam.getNameTagVisibility().name);
-        compound.putBoolean("friendlyFire", scoreboardTeam.isAllowFriendlyFire());
-        compound.putBoolean("showInvisible", scoreboardTeam.canSeeFriendlyInvisibles());
+        if (ATServerConfig.config.enableVanillaTeamCompat){
+            compound.putString("colour", scoreboardTeam.getColor().getName());
+            compound.putString("collision", scoreboardTeam.getCollisionRule().name);
+            compound.putString("deathMessages", scoreboardTeam.getDeathMessageVisibility().name);
+            compound.putString("nameTags", scoreboardTeam.getNameTagVisibility().name);
+            compound.putBoolean("friendlyFire", scoreboardTeam.isAllowFriendlyFire());
+            compound.putBoolean("showInvisible", scoreboardTeam.canSeeFriendlyInvisibles());
+        }
+
 
         ListTag playerList = new ListTag();
         for (var player : players) {
@@ -324,7 +335,7 @@ public class ATServerTeam extends Team {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ATServerTeam team && Objects.equals(team.getName(), this.name);
+        return obj instanceof ATServerTeam team && Objects.equals(team.name, this.name);
     }
 
     @Override

@@ -18,4 +18,6 @@ public class ATServerConfig extends Config {
     }
 
     public boolean shareAchievements = false;
+
+    public boolean enableVanillaTeamCompat = true;
 }
