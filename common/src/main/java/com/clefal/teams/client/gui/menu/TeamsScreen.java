@@ -1,5 +1,6 @@
 package com.clefal.teams.client.gui.menu;
 
+import com.clefal.teams.AdvancedTeam;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.clefal.teams.client.core.ClientTeam;
 import net.minecraft.client.gui.GuiGraphics;
@@ -9,7 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class TeamsScreen extends Screen {
-
+    protected static final int WIDTH = 256;
+    protected static final int HEIGHT = 166;
+    protected static final ResourceLocation TEXTURE = new ResourceLocation(AdvancedTeam.MODID, "textures/gui/screen_background.png");
     public final Screen parent;
     protected int x;
     protected int y;

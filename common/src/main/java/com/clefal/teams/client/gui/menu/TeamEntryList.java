@@ -29,7 +29,6 @@ public class TeamEntryList extends ATEntryList {
     }
 
 
-
     @Override
     protected void renderHeader(GuiGraphics guiGraphics, int x, int y) {
         PoseStack pose = guiGraphics.pose();

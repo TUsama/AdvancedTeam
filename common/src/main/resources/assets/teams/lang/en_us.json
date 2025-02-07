@@ -49,6 +49,8 @@
   "key.teams.reject": "Reject Team",
   "key.teams.toggle_hud": "Toggle HUD",
   "key.category.teams": "Teams",
-  "teams.menu.team_header": "Avaliable Team"
+  "teams.menu.team_header": "Avaliable Team",
+  "teams.menu.invite.need_update": "Loading...",
+  "teams.menu.invite.no_available_players": "No available players"
 
 }

@@ -44,12 +44,11 @@ public class ATServerTeam extends Team {
         this.leader = leader;
         players = new HashSet<>();
         onlinePlayers = new LinkedHashMap<>();
-        if (ATServerConfig.config.enableVanillaTeamCompat){
-            scoreboardTeam = scoreboard.getPlayerTeam(name);
-            if (scoreboardTeam == null) {
-                scoreboardTeam = scoreboard.addPlayerTeam(name);
-            }
+        scoreboardTeam = scoreboard.getPlayerTeam(name);
+        if (scoreboardTeam == null) {
+            scoreboardTeam = scoreboard.addPlayerTeam(name);
         }
+
     }
 
     public void promote(ServerPlayer player){
@@ -58,11 +57,15 @@ public class ATServerTeam extends Team {
         AdvancedTeam.post(new ServerPromoteEvent(player));
     }
 
+    public void invite(ServerPlayer player){
+
+    }
+
     public boolean playerHasPermissions(ServerPlayer player) {
         return getLeader().equals(player.getUUID()) || player.hasPermissions(2);
     }
-    public Collection<ServerPlayer> getOnlinePlayers() {
-        return onlinePlayers.values();
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<ServerPlayer> getOnlinePlayers() {
+        return com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(onlinePlayers.values());
     }
 
     public boolean isEmpty() {
@@ -105,7 +108,7 @@ public class ATServerTeam extends Team {
                 var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
                 Services.PLATFORM.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, name), players);
             }
-            var players = getOnlinePlayers();
+            var players = getOnlinePlayers().toJavaList();
             Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.ADD), players);
             for (var teammate : players) {
                 Services.PLATFORM.sendToClient(new S2CTeamPlayerDataPacket(teammate, S2CTeamPlayerDataPacket.Type.ADD), player);
@@ -137,7 +140,7 @@ public class ATServerTeam extends Team {
                 Services.PLATFORM.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.OFFLINE, name), players);
             }
             var players = getOnlinePlayers();
-            Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.REMOVE), players);
+            Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.REMOVE), players.toJavaList());
         }
     }
 
@@ -155,7 +158,7 @@ public class ATServerTeam extends Team {
         if (playerEntity != null) {
             // Packets
             Services.PLATFORM.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, true), playerEntity);
-            Services.PLATFORM.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, false), getOnlinePlayers());
+            Services.PLATFORM.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, false), getOnlinePlayers().toJavaList());
             onPlayerOnline(playerEntity, true);
             // Advancement Sync
             Set<Advancement> advancements = ((AdvancementAccessor) playerEntity.getAdvancements()).getVisibleAdvancements();
@@ -191,7 +194,7 @@ public class ATServerTeam extends Team {
             onPlayerOffline(playerEntity, true);
             Services.PLATFORM.sendToClient(new S2CTeamClearPacket(), playerEntity);
             Services.PLATFORM.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);
-            Services.PLATFORM.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers());
+            Services.PLATFORM.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers().toJavaList());
             ((IHasTeam) playerEntity).setTeam(null);
         }
         teamData.setDirty();
@@ -204,16 +207,16 @@ public class ATServerTeam extends Team {
     static ATServerTeam fromNBT(CompoundTag compound, ATServerTeamData teamData) {
         ATServerTeam team = new Builder(compound.getString("name"))
                 .complete(teamData, compound.getUUID("leader"));
-        if (ATServerConfig.config.enableVanillaTeamCompat){
-            val vanillaTeam = team.scoreboardTeam;
-            vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
-            vanillaTeam.setCollisionRule(Team.CollisionRule.byName(compound.getString("collision")));
-            vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
-            vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
-            vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(compound.getString("deathMessages")));
-            vanillaTeam.setNameTagVisibility(Team.Visibility.byName(compound.getString("nameTags")));
 
-        }
+        val vanillaTeam = team.scoreboardTeam;
+        vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
+        vanillaTeam.setCollisionRule(Team.CollisionRule.byName(compound.getString("collision")));
+        vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
+        vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
+        vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(compound.getString("deathMessages")));
+        vanillaTeam.setNameTagVisibility(Team.Visibility.byName(compound.getString("nameTags")));
+
+
 
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
         for (var elem : players) {
@@ -238,14 +241,14 @@ public class ATServerTeam extends Team {
         CompoundTag compound = new CompoundTag();
         compound.putString("name", name);
         compound.putUUID("leader", leader);
-        if (ATServerConfig.config.enableVanillaTeamCompat){
-            compound.putString("colour", scoreboardTeam.getColor().getName());
-            compound.putString("collision", scoreboardTeam.getCollisionRule().name);
-            compound.putString("deathMessages", scoreboardTeam.getDeathMessageVisibility().name);
-            compound.putString("nameTags", scoreboardTeam.getNameTagVisibility().name);
-            compound.putBoolean("friendlyFire", scoreboardTeam.isAllowFriendlyFire());
-            compound.putBoolean("showInvisible", scoreboardTeam.canSeeFriendlyInvisibles());
-        }
+
+        compound.putString("colour", scoreboardTeam.getColor().getName());
+        compound.putString("collision", scoreboardTeam.getCollisionRule().name);
+        compound.putString("deathMessages", scoreboardTeam.getDeathMessageVisibility().name);
+        compound.putString("nameTags", scoreboardTeam.getNameTagVisibility().name);
+        compound.putBoolean("friendlyFire", scoreboardTeam.isAllowFriendlyFire());
+        compound.putBoolean("showInvisible", scoreboardTeam.canSeeFriendlyInvisibles());
+
 
 
         ListTag playerList = new ListTag();

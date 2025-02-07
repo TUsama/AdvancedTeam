@@ -17,6 +17,7 @@ public class InventoryButton {
     public static final ResourceLocation TEAMS_BUTTON_TEXTURE = AdvancedTeam.id("textures/gui/buttonsmall.png");
 
     public static void afterScreenInit(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight){
+        if (!ATClientConfig.config.button.enableInventoryButton) return;
         if (screen instanceof InventoryScreen inventoryScreen && minecraft.gameMode != null && !minecraft.gameMode.hasInfiniteItems()) {
             InventoryScreenAccessor screenAccessor = ((InventoryScreenAccessor) screen);
             ((ScreenDuck)inventoryScreen).$addButton(new ImageButton(screenAccessor.getX() + screenAccessor.getBackgroundWidth() - 19 + ATClientConfig.config.button.inventoryButtonXOffset, screenAccessor.getY() + 4 + ATClientConfig.config.button.inventoryButtonYOffset, 15, 14, 0, 0, 13, TEAMS_BUTTON_TEXTURE, (button) -> {

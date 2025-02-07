@@ -2,6 +2,8 @@ package com.clefal.teams.server;
 
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.List;
+
 public interface IHasTeam {
 
     // Returns whether target is in team
@@ -13,4 +15,6 @@ public interface IHasTeam {
     void setTeam(ATServerTeam team);
 
     boolean isTeammate(ServerPlayer other);
+
+    List<Invitation> getInvitations();
 }

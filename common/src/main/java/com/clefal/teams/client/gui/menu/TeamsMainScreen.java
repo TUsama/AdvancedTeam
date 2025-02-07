@@ -2,6 +2,7 @@ package com.clefal.teams.client.gui.menu;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.client.gui.menu.invite.TeamsInvitePlayerScreen;
 import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamLeavePacket;
@@ -35,7 +36,7 @@ public class TeamsMainScreen extends TeamsScreen {
             Services.PLATFORM.sendToServer(new C2STeamLeavePacket());
             minecraft.setScreen(new NoTeamScreen(parent));
         }).bounds(this.width / 2  - 125, y + HEIGHT - 30, 80, 20).build());
-        addRenderableWidget(Button.builder(ModComponents.INVITE_TEXT,button -> minecraft.setScreen(new TeamsInviteScreen(this)))
+        addRenderableWidget(Button.builder(ModComponents.INVITE_TEXT,button -> minecraft.setScreen(new TeamsInvitePlayerScreen(this)))
                 .bounds(this.width / 2  - 40, y + HEIGHT - 30, 80, 20).build());
         addRenderableWidget(Button.builder(ModComponents.GO_BACK_TEXT, button -> minecraft.setScreen(parent)).bounds(this.width / 2  + 45, y + HEIGHT - 30, 80, 20).build());
     }

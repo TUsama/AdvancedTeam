@@ -15,7 +15,7 @@ public class Hooker {
     public static void UpdatePropertyInfoForEveryone(ServerPlayer player){
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(player);
         if (team != null) {
-            List<ServerPlayer> players = new ArrayList<>(team.getOnlinePlayers());
+            List<ServerPlayer> players = team.getOnlinePlayers().asJava();
             Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.UPDATE), players);
         }
     }

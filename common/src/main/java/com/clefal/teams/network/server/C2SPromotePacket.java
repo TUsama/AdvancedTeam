@@ -22,7 +22,7 @@ public class C2SPromotePacket implements C2SModPacket{
     public void handleServer(ServerPlayer player) {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(player);
         if (team.hasPlayer(this.promoted)){
-            team.getOnlinePlayers().stream().filter(x -> x.getUUID().equals(this.promoted)).findFirst().ifPresent(team::promote);
+            team.getOnlinePlayers().find(x -> x.getUUID().equals(this.promoted)).forEach(team::promote);
         }
 
     }

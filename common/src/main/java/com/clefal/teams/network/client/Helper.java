@@ -1,6 +1,9 @@
 package com.clefal.teams.network.client;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import com.clefal.teams.client.gui.menu.invite.TeamsInvitePlayerScreen;
 import com.clefal.teams.client.gui.toast.*;
+import com.clefal.teams.client.gui.util.PlayerWithSkin;
 import lombok.experimental.UtilityClass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
@@ -35,5 +38,12 @@ public class Helper {
 
     public void addInviteSentToast(String team, String player){
         addToast(new ToastInviteSent(team, player));
+    }
+
+
+    public void tryInitScreenEntryList(List<PlayerWithSkin> names){
+        if (Minecraft.getInstance().screen instanceof TeamsInvitePlayerScreen screen) {
+            screen.entryList.updateList(names.toJavaList());
+        }
     }
 }

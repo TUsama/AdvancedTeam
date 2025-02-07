@@ -5,6 +5,7 @@ import me.fzzyhmstrs.fzzy_config.annotations.WithPerms;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 
 @WithPerms(opLevel = 2)
 public class ATServerConfig extends Config {
@@ -20,4 +21,6 @@ public class ATServerConfig extends Config {
     public boolean shareAchievements = false;
 
     public boolean enableVanillaTeamCompat = true;
+
+    public ValidatedInt invitationExpireTime = new ValidatedInt(120);
 }

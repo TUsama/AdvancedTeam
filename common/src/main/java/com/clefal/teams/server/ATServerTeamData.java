@@ -36,8 +36,8 @@ public class ATServerTeamData extends SavedData {
         return compoundTag;
     }
 
-    public Stream<ATServerTeam> getTeams() {
-        return teams.values().stream();
+    public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<ATServerTeam> getTeams() {
+        return com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(teams.values());
     }
 
     private void announceUpdate(S2CTeamDataUpdatePacket.Type type, Collection<ServerPlayer> players, String... name){

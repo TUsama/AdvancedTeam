@@ -15,6 +15,8 @@ public class Packets {
         Services.PLATFORM.registerServerMessage(C2STeamInvitePacket.class, C2STeamInvitePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamJoinPacket.class, C2STeamJoinPacket::new);
         Services.PLATFORM.registerServerMessage(C2SPromotePacket.class, C2SPromotePacket::new);
+        Services.PLATFORM.registerServerMessage(C2SInviteScreenAskPacket.class, C2SInviteScreenAskPacket::new);
+
     }
 
     public static void registerClientPackets() {
@@ -27,5 +29,7 @@ public class Packets {
         Services.PLATFORM.registerClientMessage(S2CTeamUpdatePacket.class, S2CTeamUpdatePacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamInitPacket.class, S2CTeamInitPacket::new);
         Services.PLATFORM.registerClientMessage(S2CPermissionChangePacket.class, S2CPermissionChangePacket::new);
+        Services.PLATFORM.registerClientMessage(S2CInvitationPacket.class, S2CInvitationPacket::new);
+        Services.PLATFORM.registerClientMessage(S2CInviteScreenReturnPacket.class, S2CInviteScreenReturnPacket::new);
     }
 }

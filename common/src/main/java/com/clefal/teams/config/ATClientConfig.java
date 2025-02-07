@@ -46,6 +46,7 @@ public class ATClientConfig extends Config {
     }
     public Button button = new Button();
     public static class Button extends ConfigSection{
+        public boolean enableInventoryButton = true;
         public int inventoryButtonXOffset = 0;
         public int inventoryButtonYOffset = 0;
     }
