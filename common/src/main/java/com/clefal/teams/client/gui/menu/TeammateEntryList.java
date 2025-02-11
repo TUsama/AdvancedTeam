@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -85,7 +86,7 @@ public class TeammateEntryList extends ATEntryListTemplate {
             float scale = 0.5F;
             guiGraphics.pose().pushPose();
             guiGraphics.pose().scale(scale, scale, scale);
-            guiGraphics.blit(teammate.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32, 32, 32, 32);
+            PlayerFaceRenderer.draw(guiGraphics, teammate.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32);
             guiGraphics.pose().popPose();
             // Nameplate
             guiGraphics.drawString(client.font, teammate.name, left + 24, top + 12 - (client.font.lineHeight / 2), ChatFormatting.BLACK.getColor(), false);

@@ -1,7 +1,6 @@
 package com.clefal.teams.client.gui.menu.invite;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.client.gui.components.ATCheckBox;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.clefal.teams.client.gui.menu.TeamsScreen;
@@ -15,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -121,7 +121,7 @@ public class AvailablePlayersList extends ATEntryListTemplate {
             pose.pushPose();
             pose.scale(scale, scale, 1.0f);
             this.selected.render(guiGraphics, mouseX, mouseY, partialTick);
-            guiGraphics.blit(this.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32, 32, 32, 32);
+            PlayerFaceRenderer.draw(guiGraphics, this.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32);
             pose.popPose();
             this.selected.setFocused(hovering);
 
