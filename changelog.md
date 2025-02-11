@@ -1,3 +1,7 @@
+### 1.2.0
+implement invite screen
+add a config that allow server op to control if the mod take over the vanilla team function
+
 ### 1.1.7
 fix several bugs of the current entry list
 add a config that allow player to control the achievements share
