@@ -31,6 +31,7 @@
   "teams.title.team": "Team Management: %s",
   "teams.menu.title": "Teams Menu",
   "teams.menu.invite": "Invite Players",
+  "teams.menu.batch_invite": "Invite",
   "teams.menu.leave": "Leave Team",
   "teams.menu.return": "Go Back",
   "teams.menu.invite.title": "Invite Player",
@@ -51,6 +52,11 @@
   "key.category.teams": "Teams",
   "teams.menu.team_header": "Avaliable Team",
   "teams.menu.invite.need_update": "Loading...",
-  "teams.menu.invite.no_available_players": "No available players"
+  "teams.menu.invite.no_available_players": "No available players",
+  "teams.menu.invitation.accept": "Accept",
+  "teams.error.already_invite": "Your team has already invited this player.",
+  "teams.menu.invitation.reject": "Reject",
+  "teams.menu.check_invitation": "Check Invitation",
+  "teams.menu.invitation_expired": "This invitation is expired"
 
 }

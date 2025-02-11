@@ -1,9 +1,11 @@
 package com.clefal.teams.network.server;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.control.Either;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.server.IHasTeam;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
+import com.clefal.teams.utils.Failure;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,7 +45,8 @@ public class C2STeamInvitePacket implements C2SModPacket {
             if (team == null) {
                 player.sendSystemMessage(Component.translatable("teams.error.not_in_a_team"));
             } else {
-                if (!ATServerTeamData.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team)) player.sendSystemMessage(Component.translatable("teams.error.alreadyinteam", to));
+                Either<Failure, Boolean> booleans = ATServerTeamData.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team);
+                if (!booleans.isRight()) booleans.getLeft().announce(player, toPlayer.getName());
             }
         }
 

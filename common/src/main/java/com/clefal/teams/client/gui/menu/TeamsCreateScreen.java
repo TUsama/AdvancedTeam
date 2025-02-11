@@ -21,7 +21,7 @@ public class TeamsCreateScreen extends TeamsInputScreen {
 
     @Override
     protected void onSubmit(Button widget) {
-        minecraft.setScreen(new TeamsMainScreen(null));
+        minecraft.setScreen(new HasTeamScreen(null));
         Services.PLATFORM.sendToServer(new C2STeamCreatePacket(inputField.getValue()));
     }
 

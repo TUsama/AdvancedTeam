@@ -16,7 +16,7 @@ public class S2CInviteScreenReturnPacket implements S2CModPacket {
 
     public S2CInviteScreenReturnPacket(FriendlyByteBuf byteBuf) {
         java.util.List<PlayerWithSkin> objects = byteBuf.readCollection(x -> new ArrayList<>(), buf -> new PlayerWithSkin(
-                buf.readUtf(), buf.readUtf(), buf.readUtf()
+                buf.readUtf(), buf.readUUID(), buf.readUtf(), buf.readUtf()
         ));
         playersName = List.ofAll(objects);
     }
@@ -31,6 +31,7 @@ public class S2CInviteScreenReturnPacket implements S2CModPacket {
     public void write(FriendlyByteBuf to) {
         to.writeCollection(playersName.toJavaList(), (buf, playerWithSkin) -> {
             buf.writeUtf(playerWithSkin.name());
+            buf.writeUUID(playerWithSkin.uuid());
             buf.writeUtf(playerWithSkin.value());
             buf.writeUtf(playerWithSkin.signature());
         });

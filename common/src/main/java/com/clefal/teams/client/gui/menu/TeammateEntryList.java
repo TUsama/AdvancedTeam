@@ -3,6 +3,7 @@ package com.clefal.teams.client.gui.menu;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.components.ATEntryList;
+import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.clefal.teams.network.server.C2SPromotePacket;
 import com.clefal.teams.network.server.C2STeamKickPacket;
 import com.clefal.teams.platform.Services;
@@ -19,12 +20,11 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class TeammateEntryList extends ATEntryList {
+public class TeammateEntryList extends ATEntryListTemplate {
 
 
-    public TeammateEntryList(Minecraft minecraft, int width, int height, int y0, int y1) {
-        super(width, height, y0, y1);
-
+    public TeammateEntryList(TeamsScreen screen) {
+        super(screen);
         int index = 0;
         for (var teammate : ClientTeam.INSTANCE.getTeammates()) {
             boolean local = minecraft.player.getUUID().equals(teammate.id);

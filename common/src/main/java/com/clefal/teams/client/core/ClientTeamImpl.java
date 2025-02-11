@@ -2,7 +2,7 @@ package com.clefal.teams.client.core;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
-import com.clefal.teams.client.gui.menu.TeamsMainScreen;
+import com.clefal.teams.client.gui.menu.HasTeamScreen;
 import com.clefal.teams.client.gui.menu.TeamsScreen;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
@@ -17,6 +17,7 @@ class ClientTeamImpl implements ClientTeam {
     private UUID leader;
     private boolean initialized = false;
     private String name = "";
+    private boolean hasPermission;
 
     ClientTeamImpl() {
     }
@@ -34,6 +35,11 @@ class ClientTeamImpl implements ClientTeam {
     @Override
     public void changeLeader(UUID leader){
         this.leader = leader;
+    }
+
+    @Override
+    public void updatePermission(boolean hasPermission) {
+        this.hasPermission = hasPermission;
     }
 
     @Override
@@ -81,7 +87,7 @@ class ClientTeamImpl implements ClientTeam {
     public void addPlayer(UUID player, String name, ResourceLocation skin, IProperty... others) {
         teammates.put(player, new Teammate(player, name, skin, others));
         // Refresh TeamsMainScreen if open
-        if (client.screen instanceof TeamsMainScreen screen) {
+        if (client.screen instanceof HasTeamScreen screen) {
             screen.refresh();
         } // Close TeamsScreens if we join a team
         else if (player.equals(client.player.getUUID()) && client.screen instanceof TeamsScreen) {
@@ -108,7 +114,7 @@ class ClientTeamImpl implements ClientTeam {
     public void removePlayer(UUID player) {
         teammates.remove(player);
         // Refresh TeamsMainScreen if open, or close it if we were kicked
-        if (client.screen instanceof TeamsMainScreen screen) {
+        if (client.screen instanceof HasTeamScreen screen) {
             if (teammates.isEmpty() || player.equals(client.player.getUUID())) {
                 client.setScreen(screen.parent);
             } else {

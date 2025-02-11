@@ -1,8 +1,10 @@
 package com.clefal.teams.server;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.control.Either;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.network.client.S2CTeamInvitedPacket;
 import com.clefal.teams.platform.Services;
+import com.clefal.teams.utils.Failure;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -88,14 +90,18 @@ public class ATServerTeamData extends SavedData {
         return teams.get(name);
     }
 
-    public boolean invitePlayerToTeam(ServerPlayer player, ATServerTeam team) {
-        if (((IHasTeam) player).hasTeam()) {
-            return false;
+    public Either<Failure, Boolean> invitePlayerToTeam(ServerPlayer player, ATServerTeam team) {
+        IHasTeam player1 = (IHasTeam) player;
+        if (player1.hasTeam()) {
+            return Either.left(Failure.in_a_team);
         } else {
-            Services.PLATFORM.sendToClient(new S2CTeamInvitedPacket(team), player);
-            return true;
+            if (!player1.getInvitations().contains(new Invitation(team.getName()))) {
+                Services.PLATFORM.sendToClient(new S2CTeamInvitedPacket(team), player);
+                return Either.right(true);
+            } else {
+                return Either.left(Failure.already_invite);
+            }
         }
-
     }
 
     public boolean addPlayerToTeam(ServerPlayer player, ATServerTeam team){

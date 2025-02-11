@@ -22,7 +22,6 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.scores.Team;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -53,13 +52,12 @@ public class ATServerTeam extends Team {
 
     public void promote(ServerPlayer player){
         this.leader = player.getUUID();
-        Services.PLATFORM.sendToClients(new S2CPermissionChangePacket(this.leader), this.onlinePlayers.values());
+        for (ServerPlayer value : this.onlinePlayers.values()) {
+            Services.PLATFORM.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(value), this.leader), value);
+        }
         AdvancedTeam.post(new ServerPromoteEvent(player));
     }
 
-    public void invite(ServerPlayer player){
-
-    }
 
     public boolean playerHasPermissions(ServerPlayer player) {
         return getLeader().equals(player.getUUID()) || player.hasPermissions(2);

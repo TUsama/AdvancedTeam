@@ -19,7 +19,7 @@ public class Invitation {
     }
 
     public boolean update(){
-        lifetime++;
+        lifetime += 1;
         return lifetime >= maxLifeTime;
     }
 

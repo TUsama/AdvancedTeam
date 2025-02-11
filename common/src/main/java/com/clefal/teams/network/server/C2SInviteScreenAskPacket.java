@@ -28,7 +28,7 @@ public class C2SInviteScreenAskPacket implements C2SModPacket {
                     if (properties.containsKey("textures")) {
                         skin = properties.get("textures").iterator().next();
                     }
-                    return new PlayerWithSkin(x.getName().getString(), skin != null ? skin.getValue() : "", skin != null ?
+                    return new PlayerWithSkin(x.getName().getString(), x.getUUID(), skin != null ? skin.getValue() : "", skin != null ?
                             skin.getSignature() != null ? skin.getSignature() : "" : "");
                 })), player);
     }

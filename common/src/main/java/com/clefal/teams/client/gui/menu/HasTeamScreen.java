@@ -7,20 +7,17 @@ import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamLeavePacket;
 import com.clefal.teams.platform.Services;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 
-public class TeamsMainScreen extends TeamsScreen {
+public class HasTeamScreen extends TeamsScreen {
 
-    static final int WIDTH = 256;
-    static final int HEIGHT = 166;
     private static final ResourceLocation TEXTURE = new ResourceLocation(AdvancedTeam.MODID, "textures/gui/screen_background.png");
     private TeammateEntryList entryList;
 
-    public TeamsMainScreen(Screen parent) {
+    public HasTeamScreen(Screen parent) {
         super(parent, ModComponents.TEAMS_MENU_TITLE);
     }
 
@@ -28,7 +25,7 @@ public class TeamsMainScreen extends TeamsScreen {
     protected void init() {
         super.init();
         //the y1 is from the two buttons' y
-        this.entryList = new TeammateEntryList(Minecraft.getInstance(), this.width, this.height, this.y + 4, y + HEIGHT - 32);
+        this.entryList = new TeammateEntryList(this);
         this.addRenderableWidget(entryList);
 
         // Add menu buttons
@@ -38,7 +35,8 @@ public class TeamsMainScreen extends TeamsScreen {
         }).bounds(this.width / 2  - 125, y + HEIGHT - 30, 80, 20).build());
         addRenderableWidget(Button.builder(ModComponents.INVITE_TEXT,button -> minecraft.setScreen(new TeamsInvitePlayerScreen(this)))
                 .bounds(this.width / 2  - 40, y + HEIGHT - 30, 80, 20).build());
-        addRenderableWidget(Button.builder(ModComponents.GO_BACK_TEXT, button -> minecraft.setScreen(parent)).bounds(this.width / 2  + 45, y + HEIGHT - 30, 80, 20).build());
+        GO_BACK.setPosition(this.width / 2  + 45, y + HEIGHT - 30);
+        addRenderableWidget(GO_BACK);
     }
 
     @Override
@@ -65,7 +63,7 @@ public class TeamsMainScreen extends TeamsScreen {
         if (!ClientTeam.INSTANCE.isInTeam()) {
             minecraft.setScreen(parent);
         } else {
-            minecraft.setScreen(new TeamsMainScreen(parent));
+            minecraft.setScreen(new HasTeamScreen(parent));
         }
     }
 

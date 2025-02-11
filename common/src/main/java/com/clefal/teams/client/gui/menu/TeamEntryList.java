@@ -4,6 +4,7 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATEntryList;
+import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -14,10 +15,9 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class TeamEntryList extends ATEntryList {
-    public TeamEntryList(int width, int height, int y0, int y1) {
-        super(width, height, y0, y1);
-
+public class TeamEntryList extends ATEntryListTemplate {
+    public TeamEntryList(TeamsScreen screen) {
+        super(screen);
         int index = 0;
         for (String team : ClientTeamData.INSTANCE.getOnlineTeams()) {
             var entry = new TeamEntryList.TeamEntry(team, index);

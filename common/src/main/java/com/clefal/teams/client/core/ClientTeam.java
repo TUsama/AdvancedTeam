@@ -19,6 +19,8 @@ public interface ClientTeam {
 
     void changeLeader(UUID leader);
 
+    void updatePermission(boolean has);
+
     boolean hasPermissions();
 
     boolean isInTeam();

@@ -28,7 +28,7 @@ public class Packets {
         Services.PLATFORM.registerClientMessage(S2CTeamInviteSentPacket.class, S2CTeamInviteSentPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamUpdatePacket.class, S2CTeamUpdatePacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamInitPacket.class, S2CTeamInitPacket::new);
-        Services.PLATFORM.registerClientMessage(S2CPermissionChangePacket.class, S2CPermissionChangePacket::new);
+        Services.PLATFORM.registerClientMessage(S2CPermissionUpdatePacket.class, S2CPermissionUpdatePacket::new);
         Services.PLATFORM.registerClientMessage(S2CInvitationPacket.class, S2CInvitationPacket::new);
         Services.PLATFORM.registerClientMessage(S2CInviteScreenReturnPacket.class, S2CInviteScreenReturnPacket::new);
     }
