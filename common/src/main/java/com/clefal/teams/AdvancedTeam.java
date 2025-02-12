@@ -94,8 +94,8 @@ public class AdvancedTeam {
             team.onPlayerOnline(player, true);
         }
         // Send packets
-        var teams = teamData.getTeams().map(t -> t.name).toArray().toJavaArray(String[]::new);
-        var onlineTeams = teamData.getTeams().filter(t -> !t.getOnlinePlayers().isEmpty()).map(t -> t.name).toArray().toJavaArray(String[]::new);
+        var teams = teamData.getTeams().map(ATServerTeam::getName).toJavaArray(String[]::new);
+        var onlineTeams = teamData.getTeams().filter(t -> !t.getOnlinePlayers().isEmpty()).map(ATServerTeam::getName).toJavaArray(String[]::new);
         Services.PLATFORM.sendToClient(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ADD, teams), player);
         Services.PLATFORM.sendToClient(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, onlineTeams), player);
     }

@@ -1,14 +1,22 @@
 package com.clefal.teams.client.gui.menu;
 
 import com.clefal.teams.client.core.ClientTeamData;
+import com.clefal.teams.client.gui.components.ATCheckBox;
+import com.clefal.teams.client.gui.menu.hasteam.HasTeamScreen;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamCreatePacket;
 import com.clefal.teams.platform.Services;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public class TeamsCreateScreen extends TeamsInputScreen {
+    ATCheckBox isPublic;
+    float scale = 0.5f;
 
     public TeamsCreateScreen(Screen parent) {
         super(parent, ModComponents.CREATE_TITLE);
@@ -17,6 +25,23 @@ public class TeamsCreateScreen extends TeamsInputScreen {
     @Override
     protected Component getSubmitText() {
         return ModComponents.CREATE_TEXT2;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        this.isPublic = new ATCheckBox((int) (x + (float) (getWidth() - 100) / 2), y + 35, 10, 10, Component.translatable("teams.menu.create.public"), false, false);
+        isPublic.setTooltip(Tooltip.create(Component.translatable("teams.menu.create.public_desc")));
+        addWidget(this.isPublic);
+    }
+
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        super.render(graphics, mouseX, mouseY, delta);
+
+        graphics.drawString(Minecraft.getInstance().font, Component.translatable("teams.menu.create.public"), (int) (x + (float) (getWidth() - 100) / 2) + 13, y + 36, ChatFormatting.WHITE.getColor());
+        this.isPublic.render(graphics, mouseX, mouseY, delta);
     }
 
     @Override

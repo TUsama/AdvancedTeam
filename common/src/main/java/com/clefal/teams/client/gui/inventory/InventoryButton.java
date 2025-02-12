@@ -2,7 +2,7 @@ package com.clefal.teams.client.gui.inventory;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.gui.menu.HasTeamScreen;
+import com.clefal.teams.client.gui.menu.hasteam.HasTeamScreen;
 import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
 import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.mixin.InventoryScreenAccessor;

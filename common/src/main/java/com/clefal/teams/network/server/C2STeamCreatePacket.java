@@ -26,7 +26,6 @@ public class C2STeamCreatePacket implements C2SModPacket {
     @Override
     public void handleServer(ServerPlayer player) {
         ATServerTeamData.getOrMakeDefault(player.server).createTeam(team, player);
-        //System.out.println("post!");
         AdvancedTeam.post(new ServerCreateTeamEvent(team, player));
     }
 }

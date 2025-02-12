@@ -1,11 +1,13 @@
-package com.clefal.teams.client.gui.menu;
+package com.clefal.teams.client.gui.menu.noteam;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
-import com.google.common.collect.ImmutableList;
+import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.toast.ToastRequest;
+import com.clefal.teams.network.server.C2STeamRequestPacket;
+import com.clefal.teams.platform.Services;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -18,11 +20,10 @@ import net.minecraft.resources.ResourceLocation;
 public class TeamEntryList extends ATEntryListTemplate {
     public TeamEntryList(TeamsScreen screen) {
         super(screen);
-        int index = 0;
         for (String team : ClientTeamData.INSTANCE.getOnlineTeams()) {
-            var entry = new TeamEntryList.TeamEntry(team, index);
+            if (!ClientTeamData.INSTANCE.isAllowToJoin(team)) continue;
+            var entry = new TeamEntryList.TeamEntry(team);
             this.addEntry(entry);
-            index++;
         }
         this.setRenderHeader(false, 10);
 
@@ -47,16 +48,15 @@ public class TeamEntryList extends ATEntryListTemplate {
         private String team;
 
 
-        public TeamEntry(String team, int index) {
+        public TeamEntry(String team) {
             super();
             this.client = Minecraft.getInstance();
             this.team = team;
 
-            var button = new ImageButton(getRowRight() - 24, getRowTop(index) + 8, 8, 8, 24, 190, TEXTURE, button1 -> {
-                return;
-                /*Services.PLATFORM.sendToServer(new C2STeamRequestPacket(team));
+            var button = new ImageButton(0, 0, 8, 8, 24, 190, TEXTURE, button1 -> {
+                Services.PLATFORM.sendToServer(new C2STeamRequestPacket(team));
                 client.getToasts().addToast(new ToastRequest(team));
-                client.setScreen(null);*/
+                client.setScreen(null);
             });
             button.setTooltip(Tooltip.create(Component.literal("request(not available)")));
             this.joinButton = button;
@@ -67,6 +67,7 @@ public class TeamEntryList extends ATEntryListTemplate {
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             return this.joinButton.mouseClicked(mouseX, mouseY, button);
         }
+
 
 
         @Override

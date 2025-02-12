@@ -2,7 +2,7 @@ package com.clefal.teams.client.core;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
-import com.clefal.teams.client.gui.menu.HasTeamScreen;
+import com.clefal.teams.client.gui.menu.hasteam.HasTeamScreen;
 import com.clefal.teams.client.gui.menu.TeamsScreen;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
@@ -18,6 +18,7 @@ class ClientTeamImpl implements ClientTeam {
     private boolean initialized = false;
     private String name = "";
     private boolean hasPermission;
+    private boolean canInvite;
 
     ClientTeamImpl() {
     }
@@ -48,8 +49,18 @@ class ClientTeamImpl implements ClientTeam {
     }
 
     @Override
+    public boolean canInvite() {
+        return canInvite;
+    }
+
+    @Override
+    public void setCanInvite(boolean canInvite) {
+        this.canInvite = canInvite;
+    }
+
+    @Override
     public boolean hasPermissions() {
-        return Minecraft.getInstance().player.getUUID().equals(leader);
+        return hasPermission;
     }
 
     @Override

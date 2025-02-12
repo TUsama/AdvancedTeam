@@ -5,10 +5,12 @@ import com.clefal.teams.config.ATServerConfig;
 import com.clefal.teams.event.server.ServerOnPlayerOnlineEvent;
 import com.clefal.teams.event.server.ServerPromoteEvent;
 import com.clefal.teams.network.client.*;
+import com.clefal.teams.network.client.config.S2CTeamConfigChangePacket;
 import com.mojang.authlib.GameProfile;
 import com.clefal.teams.mixin.AdvancementAccessor;
 import com.clefal.teams.platform.Services;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
@@ -33,9 +35,16 @@ public class ATServerTeam extends Team {
     @Getter
     private UUID leader;
     private Set<UUID> players;
-    private transient Map<UUID, ServerPlayer> onlinePlayers;
+    private Map<UUID, ServerPlayer> onlinePlayers;
     private final Set<Advancement> advancements = new LinkedHashSet<>();
     private PlayerTeam scoreboardTeam;
+    @Getter
+    @Setter
+    private boolean isPublic = false;
+    @Getter
+    @Setter
+    private boolean allowEveryoneInvite = false;
+
 
     private ATServerTeam(Scoreboard scoreboard, String name, ATServerTeamData teamData, UUID leader) {
         this.name = name;
@@ -47,6 +56,13 @@ public class ATServerTeam extends Team {
         if (scoreboardTeam == null) {
             scoreboardTeam = scoreboard.addPlayerTeam(name);
         }
+
+    }
+
+    public void announceConfigChangeToClient(){
+        List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
+        Services.PLATFORM.sendToClients(new S2CTeamConfigChangePacket.Public(name, isPublic), players1);
+        Services.PLATFORM.sendToClients(new S2CTeamConfigChangePacket.EveryoneCanInvite((name), allowEveryoneInvite), onlinePlayers.values());
 
     }
 
@@ -62,6 +78,7 @@ public class ATServerTeam extends Team {
     public boolean playerHasPermissions(ServerPlayer player) {
         return getLeader().equals(player.getUUID()) || player.hasPermissions(2);
     }
+
     public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<ServerPlayer> getOnlinePlayers() {
         return com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(onlinePlayers.values());
     }
@@ -214,7 +231,8 @@ public class ATServerTeam extends Team {
         vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(compound.getString("deathMessages")));
         vanillaTeam.setNameTagVisibility(Team.Visibility.byName(compound.getString("nameTags")));
 
-
+        team.setPublic(compound.getBoolean("public"));
+        team.setAllowEveryoneInvite(compound.getBoolean("allowEveryoneInvite"));
 
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
         for (var elem : players) {
@@ -247,7 +265,8 @@ public class ATServerTeam extends Team {
         compound.putBoolean("friendlyFire", scoreboardTeam.isAllowFriendlyFire());
         compound.putBoolean("showInvisible", scoreboardTeam.canSeeFriendlyInvisibles());
 
-
+        compound.putBoolean("public", isPublic);
+        compound.putBoolean("allowEveryoneInvite", allowEveryoneInvite);
 
         ListTag playerList = new ListTag();
         for (var player : players) {

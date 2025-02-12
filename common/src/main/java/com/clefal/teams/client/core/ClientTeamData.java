@@ -1,27 +1,43 @@
 package com.clefal.teams.client.core;
 
-import java.util.HashSet;
-import java.util.List;
+
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ClientTeamData {
 
     public static ClientTeamData INSTANCE = new ClientTeamData();
 
-    private Set<String> teams;
-    private Set<String> onlineTeams;
+    private final Set<String> teams;
+    private final Set<String> onlineTeams;
+    private final Set<String> publicTeams;
 
     private ClientTeamData() {
-        teams = new HashSet<>();
-        onlineTeams = new HashSet<>();
+        teams = new LinkedHashSet<>();
+        onlineTeams = new LinkedHashSet<>();
+        this.publicTeams = new LinkedHashSet<>();
     }
 
     public List<String> getTeams() {
-        return teams.stream().toList();
+        return List.ofAll(teams);
     }
 
     public List<String> getOnlineTeams() {
-        return onlineTeams.stream().toList();
+        return List.ofAll(onlineTeams);
+    }
+
+    public void addPublicTeam(String team){
+        this.publicTeams.add(team);
+    }
+
+    public void removePublicTeam(String team){
+        this.publicTeams.remove(team);
+    }
+
+    public boolean isAllowToJoin(String team){
+        return  publicTeams.contains(team);
     }
 
     public void addTeam(String team) {

@@ -5,7 +5,6 @@ import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.network.client.S2CTeamInvitedPacket;
 import com.clefal.teams.platform.Services;
 import com.clefal.teams.utils.Failure;
-import me.fzzyhmstrs.fzzy_config.config.Config;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -17,7 +16,6 @@ import net.minecraft.world.scores.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class ATServerTeamData extends SavedData {
 
@@ -47,6 +45,7 @@ public class ATServerTeamData extends SavedData {
         setDirty();
     }
 
+
     public ATServerTeam createTeam(@NotNull String name,@NotNull ServerPlayer creator) {
         ATServerTeam team;
         if (((IHasTeam) creator).hasTeam()) {
@@ -59,7 +58,7 @@ public class ATServerTeamData extends SavedData {
             team.promote(creator);
 
             List<ServerPlayer> players = creator.getServer().getPlayerList().getPlayers();
-            announceUpdate(S2CTeamDataUpdatePacket.Type.ONLINE, players, team.name);
+            announceUpdate(S2CTeamDataUpdatePacket.Type.ONLINE, players, team.getName());
         }
 
         return team;
@@ -127,14 +126,14 @@ public class ATServerTeamData extends SavedData {
     public void fromNBT(CompoundTag compound) {
         teams.clear();
         ListTag list = compound.getList(TEAMS_KEY, Tag.TAG_COMPOUND);
-        List<String> names = new ArrayList<>();
+        List<String> add = new ArrayList<>();
         for (var tag : list) {
             ATServerTeam atServerTeam = ATServerTeam.fromNBT((CompoundTag) tag, this);
             teams.put(atServerTeam.getName(), atServerTeam);
-            names.add(atServerTeam.getName());
+            add.add(atServerTeam.getName());
         }
         if (!list.isEmpty()){
-            announceUpdate(S2CTeamDataUpdatePacket.Type.ADD, serverLevel.getServer().getPlayerList().getPlayers(), names.toArray(String[]::new));
+            announceUpdate(S2CTeamDataUpdatePacket.Type.ADD, serverLevel.getServer().getPlayerList().getPlayers(), add.toArray(String[]::new));
         }
     }
 

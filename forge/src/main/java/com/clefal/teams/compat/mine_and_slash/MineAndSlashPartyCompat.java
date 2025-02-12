@@ -52,9 +52,6 @@ public class MineAndSlashPartyCompat {
         ServerPlayer player = event.player;
         TeamData team = Load.player(player).team;
         ATServerTeamData data = ATServerTeamData.getOrMakeDefault(player.getServer());
-        if (!((IHasTeam) player).hasTeam()) {
-            data.createTeam(team.team_id, (event.player));
-        }
         ATServerTeam atServerTeam = data.getTeam(team.team_id);
 
         team.team_id = event.teamReadableName;

@@ -1,23 +1,20 @@
-package com.clefal.teams.client.gui.menu;
+package com.clefal.teams.client.gui.menu.hasteam;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
+import com.clefal.teams.client.gui.menu.TeamsScreen;
 import com.clefal.teams.network.server.C2SPromotePacket;
 import com.clefal.teams.network.server.C2STeamKickPacket;
 import com.clefal.teams.platform.Services;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 

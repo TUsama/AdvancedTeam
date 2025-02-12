@@ -1,7 +1,8 @@
-package com.clefal.teams.client.gui.menu;
+package com.clefal.teams.client.gui.menu.hasteam;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.client.gui.menu.TeamsScreen;
 import com.clefal.teams.client.gui.menu.invite.TeamsInvitePlayerScreen;
 import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
 import com.clefal.teams.server.ModComponents;
