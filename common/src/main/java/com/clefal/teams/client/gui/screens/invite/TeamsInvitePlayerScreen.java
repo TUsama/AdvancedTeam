@@ -1,7 +1,7 @@
-package com.clefal.teams.client.gui.menu.invite;
+package com.clefal.teams.client.gui.screens.invite;
 
-import com.clefal.teams.client.gui.menu.TeamsScreen;
-import com.clefal.teams.network.server.C2SInviteScreenAskPacket;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
+import com.clefal.teams.network.server.C2SAskNoTeamPlayerWithSkinPacket;
 import com.clefal.teams.network.server.C2STeamInvitePacket;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.platform.Services;
@@ -27,7 +27,7 @@ public class TeamsInvitePlayerScreen extends TeamsScreen {
         super.init();
         this.entryList = new AvailablePlayersList(this, List.of());
         addRenderableWidget(this.entryList);
-        Services.PLATFORM.sendToServer(new C2SInviteScreenAskPacket());
+        Services.PLATFORM.sendToServer(new C2SAskNoTeamPlayerWithSkinPacket());
         addRenderableWidget(Button.builder(Component.translatable("teams.menu.batch_invite"), button -> {
             Services.PLATFORM.sendToServer(new C2STeamInvitePacket(this.entryList.getAllSelection()));
             Minecraft.getInstance().setScreen(parent);

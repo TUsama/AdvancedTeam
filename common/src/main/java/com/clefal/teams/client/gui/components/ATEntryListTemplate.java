@@ -1,6 +1,6 @@
 package com.clefal.teams.client.gui.components;
 
-import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
 
 public class ATEntryListTemplate extends ATEntryList{
     public ATEntryListTemplate(TeamsScreen screen) {

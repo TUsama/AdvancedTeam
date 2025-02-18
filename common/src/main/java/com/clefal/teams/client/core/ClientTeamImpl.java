@@ -1,9 +1,9 @@
 package com.clefal.teams.client.core;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.client.gui.menu.noteam.NoTeamScreen;
-import com.clefal.teams.client.gui.menu.hasteam.HasTeamScreen;
-import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.screens.noteam.NoTeamScreen;
+import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;

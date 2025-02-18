@@ -5,22 +5,12 @@ import com.google.common.base.Objects;
 
 import java.util.UUID;
 
-public class Invitation {
+public class Invitation extends ExpirableObject{
     public final String teamName;
-    private int lifetime;
-    private static int maxLifeTime;
 
     public Invitation(String teamName) {
         this.teamName = teamName;
-        lifetime = 0;
-        if (maxLifeTime != ATServerConfig.config.invitationExpireTime.get()){
-            maxLifeTime = ATServerConfig.config.invitationExpireTime.get();
-        }
-    }
 
-    public boolean update(){
-        lifetime += 1;
-        return lifetime >= maxLifeTime;
     }
 
     @Override

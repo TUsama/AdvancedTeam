@@ -1,13 +1,12 @@
-package com.clefal.teams.client.gui.menu.invite;
+package com.clefal.teams.client.gui.screens.invite;
 
-import com.clefal.teams.client.core.ClientInvitation;
+import com.clefal.teams.client.core.ClientRenderPersistentData;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.clefal.teams.client.gui.components.ComponentButton;
-import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2STeamJoinPacket;
 import com.clefal.teams.platform.Services;
-import com.clefal.teams.server.Invitation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,7 +19,7 @@ public class InvitationEntryList extends ATEntryListTemplate {
 
     public InvitationEntryList(TeamsScreen screen) {
         super(screen);
-        for (String invitation : ClientInvitation.INSTANCE.invitations) {
+        for (String invitation : ClientRenderPersistentData.getInstance().invitations) {
             this.addEntry(new InvitationEntry(invitation));
         }
     }
@@ -35,9 +34,9 @@ public class InvitationEntryList extends ATEntryListTemplate {
         public InvitationEntry(String invitation) {
             Invitation = invitation;
             this.accept = ComponentButton.builder(Component.translatable("teams.menu.invitation.accept"), button -> {
-                if (ClientInvitation.INSTANCE.invitations.contains(Invitation)){
+                if (ClientRenderPersistentData.getInstance().invitations.contains(Invitation)){
                     Services.PLATFORM.sendToServer(new C2STeamJoinPacket(Invitation));
-                    ClientInvitation.INSTANCE.invitations.remove(invitation);
+                    ClientRenderPersistentData.getInstance().invitations.remove(invitation);
                 } else {
                     Minecraft.getInstance().player.sendSystemMessage(Component.translatable("teams.menu.invitation_expired"));
                     removeEntry(this);
@@ -47,7 +46,7 @@ public class InvitationEntryList extends ATEntryListTemplate {
                     .size(8, 8)
                     .tooltip(Tooltip.create(Component.translatable("teams.menu.invitation.accept")))
                     .build();
-            this.reject = ComponentButton.builder(Component.translatable("teams.menu.invitation.reject"), button -> ClientInvitation.INSTANCE.invitations.remove(Invitation), Component.literal("×").withStyle(ChatFormatting.RED))
+            this.reject = ComponentButton.builder(Component.translatable("teams.menu.invitation.reject"), button -> ClientRenderPersistentData.getInstance().invitations.remove(Invitation), Component.literal("×").withStyle(ChatFormatting.RED))
                     .size(8, 8)
                     .tooltip(Tooltip.create(Component.translatable("teams.menu.invitation.reject")))
                     .build();

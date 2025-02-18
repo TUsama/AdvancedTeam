@@ -1,9 +1,9 @@
-package com.clefal.teams.client.gui.menu.invite;
+package com.clefal.teams.client.gui.screens.invite;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
-import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.client.gui.util.PlayerWithSkin;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -36,8 +36,8 @@ public class AvailablePlayersList extends ATEntryListTemplate {
 
     public AvailablePlayersList(TeamsScreen screen, List<String> players) {
         super(screen);
-        for (int i = 0; i < players.size(); i++) {
-            this.addEntry(new PlayerEntry(players.get(i), fail));
+        for (String player : players) {
+            this.addEntry(new PlayerEntry(player, fail));
         }
     }
 
@@ -47,23 +47,8 @@ public class AvailablePlayersList extends ATEntryListTemplate {
 
     public void updateList(List<PlayerWithSkin> players) {
         if (this.updated) AdvancedTeam.LOGGER.warn("already update the invite screen!");
-        ArrayList<ResourceLocation> resourceLocations = new ArrayList<>();
-        players.forEach(x -> {
-            if (!x.value().isEmpty()){
-                GameProfile dummy = new GameProfile(UUID.randomUUID(), "");
-                dummy.getProperties().put("textures", new Property("textures", x.value(), x.signature()));
-                Minecraft.getInstance().getSkinManager().registerSkins(dummy, (type, id, texture) -> {
-                    if (type == MinecraftProfileTexture.Type.SKIN) {
-                        resourceLocations.add(id);
-                    } else {
-                        resourceLocations.add(DefaultPlayerSkin.getDefaultSkin(x.uuid()));
-                    }
-                }, false);
-            } else {
-                resourceLocations.add(DefaultPlayerSkin.getDefaultSkin(x.uuid()));
-            }
+        List<ResourceLocation> resourceLocations = players.stream().map(PlayerWithSkin::getSkin).toList();
 
-        });
         this.clearEntries();
         if (resourceLocations.isEmpty()){
             this.updated = true;

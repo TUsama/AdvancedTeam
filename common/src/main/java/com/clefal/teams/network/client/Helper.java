@@ -1,7 +1,8 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
-import com.clefal.teams.client.gui.menu.invite.TeamsInvitePlayerScreen;
+import com.clefal.teams.client.gui.screens.invite.TeamsInvitePlayerScreen;
+import com.clefal.teams.client.gui.screens.request.TeamApplicationScreen;
 import com.clefal.teams.client.gui.toast.*;
 import com.clefal.teams.client.gui.util.PlayerWithSkin;
 import lombok.experimental.UtilityClass;
@@ -41,8 +42,14 @@ public class Helper {
     }
 
 
-    public void tryInitScreenEntryList(List<PlayerWithSkin> names){
+    public void tryUpdateInvitationScreenEntryList(List<PlayerWithSkin> names){
         if (Minecraft.getInstance().screen instanceof TeamsInvitePlayerScreen screen) {
+            screen.entryList.updateList(names.toJavaList());
+        }
+    }
+
+    public void tryUpdateApplicationScreenEntryList(List<PlayerWithSkin> names){
+        if (Minecraft.getInstance().screen instanceof TeamApplicationScreen screen) {
             screen.entryList.updateList(names.toJavaList());
         }
     }

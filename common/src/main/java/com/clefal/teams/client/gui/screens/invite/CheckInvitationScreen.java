@@ -1,6 +1,6 @@
-package com.clefal.teams.client.gui.menu.invite;
+package com.clefal.teams.client.gui.screens.invite;
 
-import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,9 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin implements IHasTeam {
@@ -62,6 +61,7 @@ public abstract class ServerPlayerMixin implements IHasTeam {
 		return invitations;
 	}
 
+
 	@Inject(at = @At(value = "TAIL"), method = "addAdditionalSaveData")
 	private void writeCustomDataToNbt(CompoundTag nbt, CallbackInfo info) {
 		if (team != null) {
@@ -87,13 +87,15 @@ public abstract class ServerPlayerMixin implements IHasTeam {
 	@Inject(at = @At(value  = "TAIL"), method = "tick")
 	private void tickJob(CallbackInfo ci){
 		ListIterator<Invitation> invitationListIterator = getInvitations().listIterator();
+		ServerPlayer serverPlayer = (ServerPlayer) ((Object) this);
 		while (invitationListIterator.hasNext()){
 			Invitation next = invitationListIterator.next();
 			if (next.update()) {
 				invitationListIterator.remove();
-				Services.PLATFORM.sendToClient(new S2CInvitationPacket(next.teamName, S2CInvitationPacket.Type.REMOVE), ((ServerPlayer)(Object) this));
+				Services.PLATFORM.sendToClient(new S2CInvitationPacket(next.teamName, S2CInvitationPacket.Type.REMOVE), serverPlayer);
 			}
 		}
-	}
+
+    }
 
 }

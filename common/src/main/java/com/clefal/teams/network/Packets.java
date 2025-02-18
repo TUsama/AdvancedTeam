@@ -1,7 +1,9 @@
 package com.clefal.teams.network;
 
 import com.clefal.teams.network.client.*;
+import com.clefal.teams.network.client.config.S2CTeamConfigBooleanPacket;
 import com.clefal.teams.network.server.*;
+import com.clefal.teams.network.server.config.C2STeamConfigSavePacket;
 import com.clefal.teams.platform.Services;
 
 public class Packets {
@@ -15,8 +17,9 @@ public class Packets {
         Services.PLATFORM.registerServerMessage(C2STeamInvitePacket.class, C2STeamInvitePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamJoinPacket.class, C2STeamJoinPacket::new);
         Services.PLATFORM.registerServerMessage(C2SPromotePacket.class, C2SPromotePacket::new);
-        Services.PLATFORM.registerServerMessage(C2SInviteScreenAskPacket.class, C2SInviteScreenAskPacket::new);
-
+        Services.PLATFORM.registerServerMessage(C2SAskNoTeamPlayerWithSkinPacket.class, C2SAskNoTeamPlayerWithSkinPacket::new);
+        Services.PLATFORM.registerServerMessage(C2STeamConfigSavePacket.class, C2STeamConfigSavePacket::new);
+        Services.PLATFORM.registerServerMessage(C2SAskRequestPlayerWithSkinPacket.class, C2SAskRequestPlayerWithSkinPacket::new);
     }
 
     public static void registerClientPackets() {
@@ -30,6 +33,8 @@ public class Packets {
         Services.PLATFORM.registerClientMessage(S2CTeamInitPacket.class, S2CTeamInitPacket::new);
         Services.PLATFORM.registerClientMessage(S2CPermissionUpdatePacket.class, S2CPermissionUpdatePacket::new);
         Services.PLATFORM.registerClientMessage(S2CInvitationPacket.class, S2CInvitationPacket::new);
-        Services.PLATFORM.registerClientMessage(S2CInviteScreenReturnPacket.class, S2CInviteScreenReturnPacket::new);
+        Services.PLATFORM.registerClientMessage(S2CReturnPlayerWithSkinPacket.class, S2CReturnPlayerWithSkinPacket::new);
+        Services.PLATFORM.registerClientMessage(S2CTeamConfigBooleanPacket.Public.class, S2CTeamConfigBooleanPacket.Public::new);
+        Services.PLATFORM.registerClientMessage(S2CTeamConfigBooleanPacket.EveryoneCanInvite.class, S2CTeamConfigBooleanPacket.EveryoneCanInvite::new);
     }
 }

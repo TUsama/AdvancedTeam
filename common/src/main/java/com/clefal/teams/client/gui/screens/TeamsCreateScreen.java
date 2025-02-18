@@ -1,8 +1,8 @@
-package com.clefal.teams.client.gui.menu;
+package com.clefal.teams.client.gui.screens;
 
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATCheckBox;
-import com.clefal.teams.client.gui.menu.hasteam.HasTeamScreen;
+import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamCreatePacket;
 import com.clefal.teams.platform.Services;

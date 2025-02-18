@@ -1,4 +1,4 @@
-package com.clefal.teams.client.gui.menu.noteam;
+package com.clefal.teams.client.gui.screens.noteam;
 
 import net.minecraft.client.gui.GuiGraphics;
 

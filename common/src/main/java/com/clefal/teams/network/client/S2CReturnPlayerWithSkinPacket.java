@@ -6,25 +6,37 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
 
-public class S2CInviteScreenReturnPacket implements S2CModPacket {
+public class S2CReturnPlayerWithSkinPacket implements S2CModPacket {
 
-    List<PlayerWithSkin> playersName;
-
-    public S2CInviteScreenReturnPacket(List<PlayerWithSkin> playersName) {
-        this.playersName = playersName;
+    public enum Usage{
+        INVITATION,
+        REQUEST
     }
 
-    public S2CInviteScreenReturnPacket(FriendlyByteBuf byteBuf) {
+    List<PlayerWithSkin> playersName;
+    Usage usage;
+
+    public S2CReturnPlayerWithSkinPacket(List<PlayerWithSkin> playersName, Usage usage) {
+        this.playersName = playersName;
+        this.usage = usage;
+    }
+
+    public S2CReturnPlayerWithSkinPacket(FriendlyByteBuf byteBuf) {
         java.util.List<PlayerWithSkin> objects = byteBuf.readCollection(x -> new ArrayList<>(), buf -> new PlayerWithSkin(
                 buf.readUtf(), buf.readUUID(), buf.readUtf(), buf.readUtf()
         ));
         playersName = List.ofAll(objects);
+        usage = byteBuf.readEnum(Usage.class);
     }
 
 
     @Override
     public void handleClient() {
-        Helper.tryInitScreenEntryList(playersName);
+        switch (usage){
+            case INVITATION -> Helper.tryUpdateInvitationScreenEntryList(playersName);
+            case REQUEST -> Helper.tryUpdateApplicationScreenEntryList(playersName);
+        }
+
     }
 
     @Override
@@ -35,5 +47,6 @@ public class S2CInviteScreenReturnPacket implements S2CModPacket {
             buf.writeUtf(playerWithSkin.value());
             buf.writeUtf(playerWithSkin.signature());
         });
+        to.writeEnum(usage);
     }
 }

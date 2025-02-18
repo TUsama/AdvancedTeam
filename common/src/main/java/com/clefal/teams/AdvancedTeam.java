@@ -16,6 +16,7 @@ import com.clefal.teams.server.propertyhandler.HandlerManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +85,14 @@ public class AdvancedTeam {
         ATServerTeam team = teamData.getTeam(player);
         if (team != null) {
             team.addAdvancement(advancement);
+        }
+    }
+
+    public static void whenServerTick(MinecraftServer server){
+        for (ATServerTeam team : ATServerTeamData.getOrMakeDefault(server).getTeams()) {
+            if (team.getOnlinePlayers().find(team::playerHasPermissions).isDefined()){
+                team.tickApplication();
+            }
         }
     }
 

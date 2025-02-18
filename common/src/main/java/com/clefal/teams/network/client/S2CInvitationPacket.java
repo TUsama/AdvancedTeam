@@ -1,7 +1,7 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
-import com.clefal.teams.client.core.ClientInvitation;
+import com.clefal.teams.client.core.ClientRenderPersistentData;
 import net.minecraft.network.FriendlyByteBuf;
 
 import static com.clefal.nirvana_lib.relocated.io.vavr.API.$;
@@ -31,8 +31,8 @@ public class S2CInvitationPacket implements S2CModPacket{
     @Override
     public void handleClient() {
         API.Match(type).of(
-                Case($(is(Type.REMOVE)), ClientInvitation.INSTANCE.invitations.removeIf(x -> x.equals(teamName))),
-                Case($(), ClientInvitation.INSTANCE.invitations.add(teamName))
+                Case($(is(Type.REMOVE)), ClientRenderPersistentData.getInstance().invitations.removeIf(x -> x.equals(teamName))),
+                Case($(), ClientRenderPersistentData.getInstance().invitations.add(teamName))
         );
 
     }

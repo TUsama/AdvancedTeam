@@ -5,10 +5,11 @@ import com.clefal.teams.config.ATServerConfig;
 import com.clefal.teams.event.server.ServerOnPlayerOnlineEvent;
 import com.clefal.teams.event.server.ServerPromoteEvent;
 import com.clefal.teams.network.client.*;
-import com.clefal.teams.network.client.config.S2CTeamConfigChangePacket;
+import com.clefal.teams.network.client.config.S2CTeamConfigBooleanPacket;
 import com.mojang.authlib.GameProfile;
 import com.clefal.teams.mixin.AdvancementAccessor;
 import com.clefal.teams.platform.Services;
+import com.mojang.datafixers.kinds.App;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -34,6 +35,7 @@ public class ATServerTeam extends Team {
     private final ATServerTeamData teamData;
     @Getter
     private UUID leader;
+    private Set<Application> applications;
     private Set<UUID> players;
     private Map<UUID, ServerPlayer> onlinePlayers;
     private final Set<Advancement> advancements = new LinkedHashSet<>();
@@ -51,6 +53,7 @@ public class ATServerTeam extends Team {
         this.teamData = teamData;
         this.leader = leader;
         players = new HashSet<>();
+        applications = new LinkedHashSet<>();
         onlinePlayers = new LinkedHashMap<>();
         scoreboardTeam = scoreboard.getPlayerTeam(name);
         if (scoreboardTeam == null) {
@@ -61,8 +64,8 @@ public class ATServerTeam extends Team {
 
     public void announceConfigChangeToClient(){
         List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
-        Services.PLATFORM.sendToClients(new S2CTeamConfigChangePacket.Public(name, isPublic), players1);
-        Services.PLATFORM.sendToClients(new S2CTeamConfigChangePacket.EveryoneCanInvite((name), allowEveryoneInvite), onlinePlayers.values());
+        Services.PLATFORM.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), players1);
+        Services.PLATFORM.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite((name), allowEveryoneInvite), onlinePlayers.values());
 
     }
 
@@ -74,6 +77,13 @@ public class ATServerTeam extends Team {
         AdvancedTeam.post(new ServerPromoteEvent(player));
     }
 
+    public boolean isApplying(ServerPlayer player){
+        return applications.contains(new Application(player.getUUID()));
+    }
+
+    public void tickApplication(){
+        applications.removeIf(ExpirableObject::update);
+    }
 
     public boolean playerHasPermissions(ServerPlayer player) {
         return getLeader().equals(player.getUUID()) || player.hasPermissions(2);
@@ -125,8 +135,10 @@ public class ATServerTeam extends Team {
             }
             var players = getOnlinePlayers().toJavaList();
             Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.ADD), players);
+
             for (var teammate : players) {
                 Services.PLATFORM.sendToClient(new S2CTeamPlayerDataPacket(teammate, S2CTeamPlayerDataPacket.Type.ADD), player);
+                Services.PLATFORM.sendToClient(new S2CPermissionUpdatePacket(playerHasPermissions(teammate), leader), player);
             }
         }
         // Advancement Sync
@@ -234,6 +246,15 @@ public class ATServerTeam extends Team {
         team.setPublic(compound.getBoolean("public"));
         team.setAllowEveryoneInvite(compound.getBoolean("allowEveryoneInvite"));
 
+        for (Tag application : compound.getList("applications", Tag.TAG_INT_ARRAY)) {
+            try {
+                UUID uuid = NbtUtils.loadUUID(application);
+                team.applications.add(new Application(uuid));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
         for (var elem : players) {
             try {
@@ -267,6 +288,12 @@ public class ATServerTeam extends Team {
 
         compound.putBoolean("public", isPublic);
         compound.putBoolean("allowEveryoneInvite", allowEveryoneInvite);
+
+        ListTag applicationList = new ListTag();
+        for (var application : applications) {
+            applicationList.add(NbtUtils.createUUID(application.applicant));
+        }
+        compound.put("applications", applicationList);
 
         ListTag playerList = new ListTag();
         for (var player : players) {

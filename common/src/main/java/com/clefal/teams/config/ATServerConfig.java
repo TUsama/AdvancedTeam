@@ -22,5 +22,5 @@ public class ATServerConfig extends Config {
 
     public boolean enableVanillaTeamCompat = true;
 
-    public ValidatedInt invitationExpireTime = new ValidatedInt(120);
+    public ValidatedInt invitationAndApplicationExpireTick = new ValidatedInt(20 * 60 * 2);
 }

@@ -1,15 +1,13 @@
-package com.clefal.teams.client.gui.menu;
+package com.clefal.teams.client.gui.screens;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.server.ModComponents;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.clefal.teams.client.core.ClientTeam;
+import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,11 +38,15 @@ public abstract class TeamsScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        renderBackground(graphics);
-        graphics.pose().pushPose();
-        graphics.blit(getBackgroundTexture(), x, y, 0, 0, getWidth(), getHeight());
-        graphics.pose().popPose();
+        RenderSystem.enableDepthTest();
         super.render(graphics, mouseX, mouseY, delta);
+        graphics.pose().pushPose();
+
+        graphics.blit(getBackgroundTexture(), x, y, -10, 0, 0, getWidth(), getHeight(), 256, 256);
+        graphics.pose().translate(0, 0, -11);
+        renderBackground(graphics);
+        graphics.pose().popPose();
+
     }
 
     protected abstract int getWidth();

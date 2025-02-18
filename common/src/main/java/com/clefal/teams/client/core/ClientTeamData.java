@@ -36,7 +36,7 @@ public class ClientTeamData {
         this.publicTeams.remove(team);
     }
 
-    public boolean isAllowToJoin(String team){
+    public boolean isPublicTeam(String team){
         return  publicTeams.contains(team);
     }
 

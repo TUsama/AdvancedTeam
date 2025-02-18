@@ -1,10 +1,10 @@
-package com.clefal.teams.client.gui.menu.hasteam;
+package com.clefal.teams.client.gui.screens.hasteam;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
-import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2SPromotePacket;
 import com.clefal.teams.network.server.C2STeamKickPacket;
 import com.clefal.teams.platform.Services;
@@ -30,7 +30,9 @@ public class TeammateEntryList extends ATEntryListTemplate {
             this.addEntry(entry);
             index++;
         }
-
+        setRenderBackground(false);
+        updateSize(this.width, this.height, this.y0, screen.getY() + TeamsScreen.HEIGHT - 32);
+        setLeftPos(-10);
     }
 
 
@@ -82,7 +84,7 @@ public class TeammateEntryList extends ATEntryListTemplate {
             // Head
             float scale = 0.5F;
             guiGraphics.pose().pushPose();
-            guiGraphics.pose().scale(scale, scale, scale);
+            guiGraphics.pose().scale(scale, scale, 1.0f);
             PlayerFaceRenderer.draw(guiGraphics, teammate.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32);
             guiGraphics.pose().popPose();
             // Nameplate

@@ -1,10 +1,10 @@
-package com.clefal.teams.client.gui.menu.noteam;
+package com.clefal.teams.client.gui.screens.noteam;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
-import com.clefal.teams.client.gui.menu.TeamsScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.client.gui.toast.ToastRequest;
 import com.clefal.teams.network.server.C2STeamRequestPacket;
 import com.clefal.teams.platform.Services;
@@ -21,7 +21,7 @@ public class TeamEntryList extends ATEntryListTemplate {
     public TeamEntryList(TeamsScreen screen) {
         super(screen);
         for (String team : ClientTeamData.INSTANCE.getOnlineTeams()) {
-            if (!ClientTeamData.INSTANCE.isAllowToJoin(team)) continue;
+            if (!ClientTeamData.INSTANCE.isPublicTeam(team)) continue;
             var entry = new TeamEntryList.TeamEntry(team);
             this.addEntry(entry);
         }

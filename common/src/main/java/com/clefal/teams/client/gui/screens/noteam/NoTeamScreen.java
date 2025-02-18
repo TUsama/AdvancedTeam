@@ -1,11 +1,11 @@
-package com.clefal.teams.client.gui.menu.noteam;
+package com.clefal.teams.client.gui.screens.noteam;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.client.core.ClientInvitation;
+import com.clefal.teams.client.core.ClientRenderPersistentData;
 import com.clefal.teams.client.core.ClientTeamData;
-import com.clefal.teams.client.gui.menu.TeamsCreateScreen;
-import com.clefal.teams.client.gui.menu.TeamsScreen;
-import com.clefal.teams.client.gui.menu.invite.CheckInvitationScreen;
+import com.clefal.teams.client.gui.screens.TeamsCreateScreen;
+import com.clefal.teams.client.gui.screens.TeamsScreen;
+import com.clefal.teams.client.gui.screens.invite.CheckInvitationScreen;
 import com.clefal.teams.server.ModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,7 +29,7 @@ public class NoTeamScreen extends TeamsScreen {
     protected void init() {
         super.init();
         // Menu buttons
-        if (!ClientInvitation.INSTANCE.invitations.isEmpty() || AdvancedTeam.IN_DEV){
+        if (!ClientRenderPersistentData.getInstance().invitations.isEmpty() || AdvancedTeam.IN_DEV){
 
             addRenderableWidget(Button.builder(ModComponents.CREATE_TEXT, button -> minecraft.setScreen(new TeamsCreateScreen(this)))
                     .bounds(this.width / 2  - 125, y + HEIGHT - 30, 80, 20).build());

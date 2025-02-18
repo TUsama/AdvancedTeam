@@ -7,6 +7,7 @@ import com.clefal.teams.compat.mine_and_slash.MineAndSlashPartyCompat;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -31,6 +32,7 @@ public class AdvancedTeamForge {
         MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStopped);
         MinecraftForge.EVENT_BUS.addListener(this::onAdvancement);
+        MinecraftForge.EVENT_BUS.addListener(this::serverTick);
 
         CompatManager.compats.add(MineAndSlashCompatModule.INSTANCE);
         CompatManager.tryEnableAll();
@@ -69,6 +71,10 @@ public class AdvancedTeamForge {
 
     private void logout(PlayerEvent.PlayerLoggedOutEvent event) {
         AdvancedTeam.whenPlayerOffline((ServerPlayer) event.getEntity());
+    }
+
+    private void serverTick(TickEvent.ServerTickEvent event){
+        AdvancedTeam.whenServerTick(event.getServer());
     }
 
     private void playerClone(PlayerEvent.Clone event) {
