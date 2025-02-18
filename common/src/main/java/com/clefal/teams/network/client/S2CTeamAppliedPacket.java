@@ -7,17 +7,17 @@ import net.minecraft.network.FriendlyByteBuf;
 import java.util.UUID;
 
 
-public class S2CTeamRequestedPacket implements S2CModPacket {
+public class S2CTeamAppliedPacket implements S2CModPacket {
 
 
     CompoundTag tag = new CompoundTag();
 
-    public S2CTeamRequestedPacket(String name, UUID id) {
+    public S2CTeamAppliedPacket(String name, UUID id) {
         tag.putString(S2CTeamPlayerDataPacket.NAME_KEY, name);
         tag.putUUID(S2CTeamPlayerDataPacket.ID_KEY, id);
     }
 
-    public S2CTeamRequestedPacket(FriendlyByteBuf byteBuf) {
+    public S2CTeamAppliedPacket(FriendlyByteBuf byteBuf) {
         tag = byteBuf.readNbt();
     }
 

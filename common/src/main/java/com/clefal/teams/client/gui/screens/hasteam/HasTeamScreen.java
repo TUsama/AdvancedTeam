@@ -2,6 +2,7 @@ package com.clefal.teams.client.gui.screens.hasteam;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.teams.AdvancedTeam;
+import com.clefal.teams.client.PlaceUtils;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATCheckBox;
@@ -9,6 +10,8 @@ import com.clefal.teams.client.gui.screens.ITeamMenu;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.client.gui.screens.invite.TeamsInvitePlayerScreen;
 import com.clefal.teams.client.gui.screens.noteam.NoTeamScreen;
+import com.clefal.teams.client.gui.screens.request.TeamApplicationScreen;
+import com.clefal.teams.client.gui.toast.ToastConfigSave;
 import com.clefal.teams.network.server.C2STeamLeavePacket;
 import com.clefal.teams.network.server.config.C2STeamConfigSavePacket;
 import com.clefal.teams.platform.Services;
@@ -47,7 +50,6 @@ public class HasTeamScreen extends TeamsScreen {
     protected void init() {
         super.init();
         List<HasTeamMenu> menus = List.of(new TeammateMenu(this));
-
 
 
         if (ClientTeam.INSTANCE.hasPermissions() || AdvancedTeam.IN_DEV) {
@@ -110,9 +112,10 @@ public class HasTeamScreen extends TeamsScreen {
         public void registerAll() {
             screen.addRenderableWidget(entryList);
             screen.addRenderableWidget(leaveTeamButton);
-            screen.addRenderableWidget(inviteButton);
+            if (ClientTeam.INSTANCE.canInvite()){
+                screen.addRenderableWidget(inviteButton);
+            }
             screen.addRenderableWidget(checkRequest);
-            screen.GO_BACK.setPosition(screen.width / 2 + 45, screen.y + HEIGHT - 30);
         }
 
         @Override
@@ -159,8 +162,14 @@ public class HasTeamScreen extends TeamsScreen {
             this.inviteButton = Button.builder(ModComponents.INVITE_TEXT, button -> minecraft.setScreen(new TeamsInvitePlayerScreen(screen)))
                     .bounds(screen.width / 2 - 40, screen.y + HEIGHT - 30, 80, 20).build();
 
-            this.checkRequest = Button.builder(Component.translatable("teams.menu.teammates.check_request"), button -> minecraft.setScreen(new TeamsInvitePlayerScreen(screen)))
+            this.checkRequest = Button.builder(Component.translatable("teams.menu.teammates.check_request"), button -> minecraft.setScreen(new TeamApplicationScreen(screen)))
                     .bounds(screen.width / 2 + 45, screen.y + HEIGHT - 30, 80, 20).build();
+
+            if (ClientTeam.INSTANCE.canInvite()){
+                PlaceUtils.placeThreeButton(screen, leaveTeamButton, inviteButton, checkRequest);
+            } else {
+                PlaceUtils.placeTwoButton(screen, leaveTeamButton, checkRequest);
+            }
 
         }
 
@@ -198,6 +207,8 @@ public class HasTeamScreen extends TeamsScreen {
         @Override
         public HasTeamMenuTab getTab() {
             return new HasTeamMenuTab(Component.translatable("teams.menu.tab.team_config"), screen, ICON) {
+
+
                 @Override
                 public void onPress() {
                     TeamConfigMenu teamConfigMenu1 = new TeamConfigMenu(screen);
@@ -222,11 +233,15 @@ public class HasTeamScreen extends TeamsScreen {
 
             this.isPublic = new ATCheckBox(screen.x + 20, screen.y + 10, 10, 10, Component.translatable("teams.menu.team_config.is_public"), ClientTeamData.INSTANCE.isPublicTeam(ClientTeam.INSTANCE.getName()));
 
-            this.everyoneInvite = new ATCheckBox(screen.x + 30, screen.y + 20, 10, 10, Component.translatable("teams.menu.team_config.everyone_can_invite"), ClientTeam.INSTANCE.canInvite());
+            this.everyoneInvite = new ATCheckBox(screen.x + 20, screen.y + 30, 10, 10, Component.translatable("teams.menu.team_config.everyone_can_invite"), ClientTeam.INSTANCE.canInvite());
 
-            this.saveButton = Button.builder(Component.translatable("teams.menu.team_config.save"), button -> Services.PLATFORM.sendToServer(new C2STeamConfigSavePacket(isPublic.selected(), everyoneInvite.selected()))).build();
+            this.saveButton = Button.builder(Component.translatable("teams.menu.team_config.save"), button -> {
+                Services.PLATFORM.sendToServer(new C2STeamConfigSavePacket(isPublic.selected(), everyoneInvite.selected()));
+                new TeammateMenu(screen).getTab().onPress();
+                Minecraft.getInstance().getToasts().addToast(new ToastConfigSave(ClientTeam.INSTANCE.getName()));
+            }).build();
 
-
+            PlaceUtils.placeOneButton(screen, this.saveButton);
         }
 
         @Override

@@ -1,11 +1,10 @@
 package com.clefal.teams.client.gui.toast;
 
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 
-public class ToastRequest extends TeamToast {
+public class ToastApplying extends TeamToast {
 
-    public ToastRequest(String team) {
+    public ToastApplying(String team) {
         super(team);
     }
 

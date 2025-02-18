@@ -30,7 +30,7 @@ public class TeamsCreateScreen extends TeamsInputScreen {
     @Override
     protected void init() {
         super.init();
-        this.isPublic = new ATCheckBox((int) (x + (float) (getWidth() - 100) / 2), y + 35, 10, 10, Component.translatable("teams.menu.create.public"), false, false);
+        this.isPublic = new ATCheckBox((int) (x + (float) (getWidth() - 100) / 2), y + 35, 10, 10, Component.translatable("teams.menu.team_config.is_public"), false, false);
         isPublic.setTooltip(Tooltip.create(Component.translatable("teams.menu.create.public_desc")));
         addWidget(this.isPublic);
     }

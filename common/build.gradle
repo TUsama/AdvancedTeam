@@ -10,13 +10,13 @@ base {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
      compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
      implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-$minecraft_version:$parch_mapping@zip")
+        parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parch_mapping}@zip")
     }
 
     compileOnly 'org.projectlombok:lombok:1.18.34'

@@ -28,8 +28,6 @@ public class C2STeamJoinPacket implements C2SModPacket {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(this.team);
         if (!ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team)){
             player.sendSystemMessage(Component.translatable("teams.error.you_are_already_in_a_team"));
-        } else {
-            AdvancedTeam.post(new ServerJoinTeamEvent(team, player));
         }
     }
 }

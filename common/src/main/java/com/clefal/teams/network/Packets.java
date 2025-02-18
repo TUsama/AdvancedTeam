@@ -11,7 +11,7 @@ public class Packets {
 
     public static void registerServerPackets() {
         Services.PLATFORM.registerServerMessage(C2STeamCreatePacket.class, C2STeamCreatePacket::new);
-        Services.PLATFORM.registerServerMessage(C2STeamRequestPacket.class, C2STeamRequestPacket::new);
+        Services.PLATFORM.registerServerMessage(C2STeamApplyingPacket.class, C2STeamApplyingPacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamKickPacket.class, C2STeamKickPacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamLeavePacket.class, C2STeamLeavePacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamInvitePacket.class, C2STeamInvitePacket::new);
@@ -20,12 +20,14 @@ public class Packets {
         Services.PLATFORM.registerServerMessage(C2SAskNoTeamPlayerWithSkinPacket.class, C2SAskNoTeamPlayerWithSkinPacket::new);
         Services.PLATFORM.registerServerMessage(C2STeamConfigSavePacket.class, C2STeamConfigSavePacket::new);
         Services.PLATFORM.registerServerMessage(C2SAskRequestPlayerWithSkinPacket.class, C2SAskRequestPlayerWithSkinPacket::new);
+        Services.PLATFORM.registerServerMessage(C2SAcceptApplicationPacket.class, C2SAcceptApplicationPacket::new);
+
     }
 
     public static void registerClientPackets() {
         Services.PLATFORM.registerClientMessage(S2CTeamPlayerDataPacket.class, S2CTeamPlayerDataPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamDataUpdatePacket.class, S2CTeamDataUpdatePacket::new);
-        Services.PLATFORM.registerClientMessage(S2CTeamRequestedPacket.class, S2CTeamRequestedPacket::new);
+        Services.PLATFORM.registerClientMessage(S2CTeamAppliedPacket.class, S2CTeamAppliedPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamClearPacket.class, S2CTeamClearPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamInvitedPacket.class, S2CTeamInvitedPacket::new);
         Services.PLATFORM.registerClientMessage(S2CTeamInviteSentPacket.class, S2CTeamInviteSentPacket::new);

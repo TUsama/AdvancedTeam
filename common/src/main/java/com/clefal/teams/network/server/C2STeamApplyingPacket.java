@@ -2,21 +2,22 @@ package com.clefal.teams.network.server;
 
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
-import com.clefal.teams.network.client.S2CTeamRequestedPacket;
+import com.clefal.teams.network.client.S2CTeamAppliedPacket;
 import com.clefal.teams.platform.Services;
+import com.clefal.teams.server.Application;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-public class C2STeamRequestPacket implements C2SModPacket {
+public class C2STeamApplyingPacket implements C2SModPacket {
 
 
     String name;
-    public C2STeamRequestPacket(String name) {
+    public C2STeamApplyingPacket(String name) {
         this.name = name;
     }
 
-    public C2STeamRequestPacket(FriendlyByteBuf byteBuf) {
+    public C2STeamApplyingPacket(FriendlyByteBuf byteBuf) {
         name = byteBuf.readUtf();
     }
 
@@ -31,10 +32,10 @@ public class C2STeamRequestPacket implements C2SModPacket {
         if (team == null) {
             player.sendSystemMessage(Component.literal("Team doesn't exist"));
         } else {
-            // Get first online player in list of seniority
             var list = player.server.getPlayerList();
             ServerPlayer seniorPlayer = list.getPlayer(team.getLeader());
-            Services.PLATFORM.sendToClient(new S2CTeamRequestedPacket(name, player.getUUID()), seniorPlayer);
+            team.addApplication(new Application(player.getUUID()));
+            Services.PLATFORM.sendToClient(new S2CTeamAppliedPacket(name, player.getUUID()), seniorPlayer);
         }
     }
 }

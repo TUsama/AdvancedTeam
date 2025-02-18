@@ -1,6 +1,7 @@
 package com.clefal.teams.client.gui.screens.noteam;
 
 import com.clefal.teams.AdvancedTeam;
+import com.clefal.teams.client.PlaceUtils;
 import com.clefal.teams.client.core.ClientRenderPersistentData;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.screens.TeamsCreateScreen;
@@ -30,19 +31,16 @@ public class NoTeamScreen extends TeamsScreen {
         super.init();
         // Menu buttons
         if (!ClientRenderPersistentData.getInstance().invitations.isEmpty() || AdvancedTeam.IN_DEV){
+            for (Button button : PlaceUtils.placeTwoButton(this, Button.builder(ModComponents.CREATE_TEXT, button -> minecraft.setScreen(new TeamsCreateScreen(this)))
+                    .bounds(this.width / 2 - 125, y + HEIGHT - 30, 80, 20).build(), Button.builder(Component.translatable("teams.menu.check_invitation"), button -> minecraft.setScreen(new CheckInvitationScreen(this))).bounds(this.width / 2 - 40, y + HEIGHT - 30, 80, 20).build())) {
+                addRenderableWidget(button);
+            }
 
-            addRenderableWidget(Button.builder(ModComponents.CREATE_TEXT, button -> minecraft.setScreen(new TeamsCreateScreen(this)))
-                    .bounds(this.width / 2  - 125, y + HEIGHT - 30, 80, 20).build());
-            addRenderableWidget(Button.builder(Component.translatable("teams.menu.check_invitation"), button -> minecraft.setScreen(new CheckInvitationScreen(this))).bounds(this.width / 2  - 40, y + HEIGHT - 30, 80, 20).build());
-            GO_BACK.setPosition(this.width / 2  + 45, y + HEIGHT - 30);
-            GO_BACK.setWidth(80);
-            addRenderableWidget(GO_BACK);
+
         } else {
-            addRenderableWidget(Button.builder(ModComponents.CREATE_TEXT, button -> minecraft.setScreen(new TeamsCreateScreen(this)))
-                    .bounds(this.width / 2 - 106, y + HEIGHT - 30, 100, 20).build());
-            GO_BACK.setPosition(this.width / 2 + 6, y + HEIGHT - 30);
-            GO_BACK.setWidth(100);
-            addRenderableWidget(GO_BACK);
+            addRenderableWidget(PlaceUtils.placeOneButton(this, Button.builder(ModComponents.CREATE_TEXT, button -> minecraft.setScreen(new TeamsCreateScreen(this)))
+                    .bounds(this.width / 2 - 106, y + HEIGHT - 30, 100, 20).build()));
+
         }
         this.entryList = new TeamEntryList(this);
         addWidget(this.entryList);

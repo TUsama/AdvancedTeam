@@ -62,7 +62,7 @@ public class ApplicationsList extends ATEntryListTemplate {
             guiGraphics.drawString(font, Component.translatable("teams.menu.invite.need_update"), (this.width - getWidth.apply(Component.translatable("teams.menu.invite.need_update"))) / 2, height - (textHeight / 2), ChatFormatting.BLACK.getColor(), false);
         } else {
             if (this.getItemCount() == 0) {
-                guiGraphics.drawString(font, Component.translatable("teams.menu.invite.no_available_players"), (this.width - getWidth.apply(Component.translatable("teams.menu.invite.no_available_players"))) / 2, height - (textHeight / 2), ChatFormatting.BLACK.getColor(), false);
+                guiGraphics.drawString(font, Component.translatable("teams.menu.apply.no_available_application"), (this.width - getWidth.apply(Component.translatable("teams.menu.apply.no_available_application"))) / 2, height - (textHeight / 2), ChatFormatting.BLACK.getColor(), false);
             }
         }
     }

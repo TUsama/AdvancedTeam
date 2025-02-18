@@ -20,8 +20,6 @@ public class CheckInvitationScreen extends TeamsScreen {
         super.init();
         this.entryList = new InvitationEntryList(this);
         addRenderableWidget(entryList);
-        GO_BACK.setX(this.width / 2);
-        addRenderableWidget(GO_BACK);
     }
 
     public void update(){

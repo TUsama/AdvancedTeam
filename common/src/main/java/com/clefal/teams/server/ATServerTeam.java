@@ -77,6 +77,10 @@ public class ATServerTeam extends Team {
         AdvancedTeam.post(new ServerPromoteEvent(player));
     }
 
+    public void addApplication(Application application){
+        applications.add(application);
+    }
+
     public boolean isApplying(ServerPlayer player){
         return applications.contains(new Application(player.getUUID()));
     }

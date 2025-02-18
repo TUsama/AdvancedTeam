@@ -1,6 +1,8 @@
 package com.clefal.teams.server;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Either;
+import com.clefal.teams.AdvancedTeam;
+import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.network.client.S2CTeamInvitedPacket;
 import com.clefal.teams.platform.Services;
@@ -108,6 +110,7 @@ public class ATServerTeamData extends SavedData {
             return false;
         } else {
             team.addPlayer(player);
+            AdvancedTeam.post(new ServerJoinTeamEvent(team, player));
             return true;
         }
 

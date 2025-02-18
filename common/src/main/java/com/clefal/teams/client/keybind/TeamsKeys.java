@@ -2,10 +2,10 @@ package com.clefal.teams.client.keybind;
 
 import com.clefal.teams.client.gui.hud.CompassOverlay;
 import com.clefal.teams.client.gui.hud.StatusOverlay;
+import com.clefal.teams.network.server.C2SAcceptApplicationPacket;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.toast.ToastInvited;
-import com.clefal.teams.client.gui.toast.ToastRequested;
+import com.clefal.teams.client.gui.toast.ToastApplied;
 import com.clefal.teams.network.server.C2STeamJoinPacket;
 import com.clefal.teams.platform.Services;
 import net.minecraft.client.KeyMapping;
@@ -66,10 +66,10 @@ public class TeamsKeys {
             invited.respond();
             Services.PLATFORM.sendToServer(new C2STeamJoinPacket(invited.team));
         } else {
-            ToastRequested requested = toastManager.getToast(ToastRequested.class, Toast.NO_TOKEN);
+            ToastApplied requested = toastManager.getToast(ToastApplied.class, Toast.NO_TOKEN);
             if (requested != null) {
                 requested.respond();
-                Services.PLATFORM.sendToServer(new C2STeamJoinPacket(ClientTeam.INSTANCE.getName()));//todo?
+                Services.PLATFORM.sendToServer(new C2SAcceptApplicationPacket(requested.id));
             }
         }
     });
@@ -80,7 +80,7 @@ public class TeamsKeys {
         if (toast != null) {
             toast.respond();
         } else {
-            ToastRequested requested = toastManager.getToast(ToastRequested.class, Toast.NO_TOKEN);
+            ToastApplied requested = toastManager.getToast(ToastApplied.class, Toast.NO_TOKEN);
             if (requested != null) {
                 requested.respond();
             }

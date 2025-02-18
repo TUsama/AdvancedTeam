@@ -10,20 +10,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 @UtilityClass
 public class Helper {
 
-    public void addToast(Supplier<Toast> toast){
-        Minecraft.getInstance().getToasts().addToast(toast.get());
-    }
     public void addToast(Toast toast){
         Minecraft.getInstance().getToasts().addToast(toast);
     }
 
     public void addRequestToast(String team, String name, UUID id){
-        addToast(ToastRequested.of(team, name, id));
+        addToast(ToastApplied.of(team, name, id));
     }
 
     public void addInviteToast(String team){

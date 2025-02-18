@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 public class TeamApplicationScreen extends TeamsScreen {
     public ApplicationsList entryList;
 
-    public TeamApplicationScreen(Screen parent, Component title) {
-        super(parent, title);
+    public TeamApplicationScreen(Screen parent) {
+        super(parent, Component.literal(""));
     }
 
     @Override
@@ -21,9 +21,6 @@ public class TeamApplicationScreen extends TeamsScreen {
         this.entryList = new ApplicationsList(this);
         Services.PLATFORM.sendToServer(new C2SAskRequestPlayerWithSkinPacket());
         addRenderableOnly(entryList);
-        GO_BACK.setX(this.width / 2);
-        addRenderableWidget(GO_BACK);
-
     }
 
     @Override

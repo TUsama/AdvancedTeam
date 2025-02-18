@@ -5,8 +5,8 @@ import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
-import com.clefal.teams.client.gui.toast.ToastRequest;
-import com.clefal.teams.network.server.C2STeamRequestPacket;
+import com.clefal.teams.client.gui.toast.ToastApplying;
+import com.clefal.teams.network.server.C2STeamApplyingPacket;
 import com.clefal.teams.platform.Services;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -54,8 +54,8 @@ public class TeamEntryList extends ATEntryListTemplate {
             this.team = team;
 
             var button = new ImageButton(0, 0, 8, 8, 24, 190, TEXTURE, button1 -> {
-                Services.PLATFORM.sendToServer(new C2STeamRequestPacket(team));
-                client.getToasts().addToast(new ToastRequest(team));
+                Services.PLATFORM.sendToServer(new C2STeamApplyingPacket(team));
+                client.getToasts().addToast(new ToastApplying(team));
                 client.setScreen(null);
             });
             button.setTooltip(Tooltip.create(Component.literal("request(not available)")));
