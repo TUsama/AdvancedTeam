@@ -55,6 +55,7 @@ public class ATClientConfig extends Config {
     public static class Info extends ConfigSection {
         public ValidatedInt normalToastShowSecond = new ValidatedInt(3, 30, 0, ValidatedNumber.WidgetType.SLIDER);
         public ValidatedInt inviteToastShowSecond = new ValidatedInt(60, 1000, 0, ValidatedNumber.WidgetType.TEXTBOX);
+        public ValidatedInt applicationToastShowSecond = new ValidatedInt(60, 1000, 0, ValidatedNumber.WidgetType.TEXTBOX);
     }
 
 

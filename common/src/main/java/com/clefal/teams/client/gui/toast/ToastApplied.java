@@ -25,7 +25,7 @@ public class ToastApplied extends RespondableTeamToast {
         if (getResponded()) {
             return Visibility.HIDE;
         }
-        return startTime - getFirstDrawTime() < ATClientConfig.config.info.inviteToastShowSecond.get() * 1000L && team != null ? Visibility.SHOW : Visibility.HIDE;
+        return startTime - getFirstDrawTime() < ATClientConfig.config.info.applicationToastShowSecond.get() * 1000L && team != null ? Visibility.SHOW : Visibility.HIDE;
     }
 
     public static ToastApplied of(String team, String name, UUID id){
