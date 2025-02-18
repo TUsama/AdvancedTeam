@@ -1,3 +1,8 @@
+### 1.3.0
+implement team config, now leader or server op can control if the team can be applied by no-team players, and can control if any teammates can invite no-team players.
+rework old screens a bit.
+implement application and team config screens
+
 ### 1.2.0
 implement invite screen
 add a config that allow server op to control if the mod take over the vanilla team function
