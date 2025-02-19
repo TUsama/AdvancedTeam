@@ -12,13 +12,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
 import java.util.List;
 
 public class StatusOverlay {
     public static final StatusOverlay INSTANCE = new StatusOverlay();
+    private final ResourceLocation FLAG = AdvancedTeam.id("textures/gui/flags.png");
     public boolean enabled = true;
     private final Minecraft client = Minecraft.getInstance();
     private final List<IPropertyClientHandler> handlers = HandlerManager.INSTANCE.getClientHandlers();
@@ -64,13 +67,21 @@ public class StatusOverlay {
         pose.translate(ATClientConfig.config.overlays.originX, ATClientConfig.config.overlays.originY, 0);
 
         {
-            graphics.blit(teammate.skin, 0, 0, 32, 32, 32, 32);
+            PlayerFaceRenderer.draw(graphics, teammate.skin, 0, 0, 32);
         }
 
         // Draw name
         {
             pose.translate(40, 0, 0);
             graphics.drawString(client.font, Component.literal(teammate.name), 0, 0, ChatFormatting.WHITE.getColor());
+
+            if (ClientTeam.INSTANCE.isLeader(teammate.id)){
+                pose.pushPose();
+                pose.translate(0, 0, 1);
+                pose.translate(client.font.width(Component.literal(teammate.name)) + 10, 0, 0);
+                graphics.blit(FLAG, 0, 0, 10, 10, 0, 0, 64, 64, 64, 128);
+                pose.popPose();
+            }
         }
 
         {

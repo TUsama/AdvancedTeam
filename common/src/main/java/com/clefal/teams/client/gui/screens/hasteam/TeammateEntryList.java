@@ -8,6 +8,7 @@ import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2SPromotePacket;
 import com.clefal.teams.network.server.C2STeamKickPacket;
 import com.clefal.teams.platform.Services;
+import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -39,7 +40,7 @@ public class TeammateEntryList extends ATEntryListTemplate {
     protected class TeammateEntry extends ATEntryList.ATEntry {
 
         private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
-        private final ResourceLocation FLAG = AdvancedTeam.id("textures/gui/flag.png");
+        private final ResourceLocation FLAG = AdvancedTeam.id("textures/gui/flags.png");
         private final Minecraft client;
         private final ClientTeam.Teammate teammate;
         @Getter
@@ -63,7 +64,21 @@ public class TeammateEntryList extends ATEntryListTemplate {
                 this.kickButton.active = false;
             }
             {
-                ImageButton promoteButton = new ImageButton(rowRight - 48, rowTop + 8, 8, 8, 0, 0, 8, FLAG, 8, 16, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id)));
+                ImageButton promoteButton = new ImageButton(rowRight - 48, rowTop + 8, 8, 8, 0, 0, 64, FLAG, 64, 128, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id))){
+                    @Override
+                    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                        RenderSystem.disableBlend();
+                        int i = 0;
+                        if (!this.isActive()) {
+                            i += 64 * 2;
+                        } else if (this.isHoveredOrFocused()) {
+                            i += 64;
+                        }
+
+                        RenderSystem.enableDepthTest();
+                        guiGraphics.blit(FLAG, getX(), getY(), 8, 8, 0, i, 64, 64, 64, 128);
+                    }
+                };
                 promoteButton.setTooltip(Tooltip.create(Component.translatable("teams.button.promote")));
                 this.promoteButton = promoteButton;
                 this.promoteButton.active = false;

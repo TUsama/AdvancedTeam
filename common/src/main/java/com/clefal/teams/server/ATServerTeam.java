@@ -204,7 +204,7 @@ public class ATServerTeam extends Team {
 
     private void removePlayer(UUID player) {
         players.remove(player);
-        if (this.leader == player) {
+        if (this.leader.equals(player)) {
             Iterator<ServerPlayer> iterator = onlinePlayers.values().iterator();
             if (iterator.hasNext()){
                 this.promote(iterator.next());

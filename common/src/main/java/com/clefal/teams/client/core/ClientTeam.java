@@ -21,6 +21,7 @@ public interface ClientTeam {
     void setCanInvite(boolean canInvite);
 
     void changeLeader(UUID leader);
+    boolean isLeader(UUID id);
 
     void updatePermission(boolean has);
 

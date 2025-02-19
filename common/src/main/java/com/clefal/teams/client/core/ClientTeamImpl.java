@@ -39,6 +39,11 @@ class ClientTeamImpl implements ClientTeam {
     }
 
     @Override
+    public boolean isLeader(UUID id) {
+        return leader.equals(id);
+    }
+
+    @Override
     public void updatePermission(boolean hasPermission) {
         this.hasPermission = hasPermission;
     }
