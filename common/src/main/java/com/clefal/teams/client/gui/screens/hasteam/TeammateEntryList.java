@@ -67,7 +67,6 @@ public class TeammateEntryList extends ATEntryListTemplate {
                 ImageButton promoteButton = new ImageButton(rowRight - 48, rowTop + 8, 8, 8, 0, 0, 64, FLAG, 64, 128, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id))){
                     @Override
                     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                        RenderSystem.disableBlend();
                         int i = 0;
                         if (!this.isActive()) {
                             i += 64 * 2;
@@ -76,7 +75,8 @@ public class TeammateEntryList extends ATEntryListTemplate {
                         }
 
                         RenderSystem.enableDepthTest();
-                        guiGraphics.blit(FLAG, getX(), getY(), 8, 8, 0, i, 64, 64, 64, 128);
+                        RenderSystem.enableBlend();
+                        guiGraphics.blit(FLAG, getX(), getY(), 8, 8, 0, i, 32, 32, 32, 64);
                     }
                 };
                 promoteButton.setTooltip(Tooltip.create(Component.translatable("teams.button.promote")));

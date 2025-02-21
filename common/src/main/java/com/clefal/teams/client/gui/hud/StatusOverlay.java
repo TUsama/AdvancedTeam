@@ -36,6 +36,7 @@ public class StatusOverlay {
         int shown = 0;
         RenderSystem.enableDepthTest();
         graphics.pose().pushPose();
+        RenderSystem.enableBlend();
         PositionContext positionContext = PositionContext.fromFactor(0.03f, 0.025f, 0.15f, 0.026f);
         for (int i = 0; i < teammates.size() && shown < ATClientConfig.config.overlays.maxEntryAmount; ++i) {
             if (!AdvancedTeam.IN_DEV){
@@ -50,6 +51,7 @@ public class StatusOverlay {
         //todo: this fill fix a weird bug that the last upload bufferinfo will ignore the DepthTest. but why?
         graphics.fill(0, 0, 1, 1, FastColor.ARGB32.color(0, 0, 0, 0));
         RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
         graphics.pose().popPose();
 
     }
@@ -79,7 +81,7 @@ public class StatusOverlay {
                 pose.pushPose();
                 pose.translate(0, 0, 1);
                 pose.translate(client.font.width(Component.literal(teammate.name)) + 10, 0, 0);
-                graphics.blit(FLAG, 0, 0, 10, 10, 0, 0, 64, 64, 64, 128);
+                graphics.blit(FLAG, 0, 0, 10, 10, 0, 0, 32, 32, 32, 64);
                 pose.popPose();
             }
         }
