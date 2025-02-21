@@ -69,9 +69,9 @@ public class TeammateEntryList extends ATEntryListTemplate {
                     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                         int i = 0;
                         if (!this.isActive()) {
-                            i += 64 * 2;
+                            i += 32 * 2;
                         } else if (this.isHoveredOrFocused()) {
-                            i += 64;
+                            i += 32;
                         }
 
                         RenderSystem.enableDepthTest();

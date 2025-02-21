@@ -70,6 +70,13 @@ public class StatusOverlay {
 
         {
             PlayerFaceRenderer.draw(graphics, teammate.skin, 0, 0, 32);
+
+            if (ClientTeam.INSTANCE.isLeader(teammate.id)){
+                pose.pushPose();
+                pose.translate(24, -3, 0);
+                graphics.blit(FLAG, 0, 0, 12, 12, 0, 0, 32, 32, 32, 64);
+                pose.popPose();
+            }
         }
 
         // Draw name
@@ -77,13 +84,7 @@ public class StatusOverlay {
             pose.translate(40, 0, 0);
             graphics.drawString(client.font, Component.literal(teammate.name), 0, 0, ChatFormatting.WHITE.getColor());
 
-            if (ClientTeam.INSTANCE.isLeader(teammate.id)){
-                pose.pushPose();
-                pose.translate(0, 0, 1);
-                pose.translate(client.font.width(Component.literal(teammate.name)) + 10, 0, 0);
-                graphics.blit(FLAG, 0, 0, 10, 10, 0, 0, 32, 32, 32, 64);
-                pose.popPose();
-            }
+
         }
 
         {
