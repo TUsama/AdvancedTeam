@@ -1,3 +1,6 @@
+### 1.3.1
+fix flag texture
+
 ### 1.3.0
 implement team config, now leader or server op can control if the team can be applied by no-team players, and can control if any teammates can invite no-team players.
 rework old screens a bit.
