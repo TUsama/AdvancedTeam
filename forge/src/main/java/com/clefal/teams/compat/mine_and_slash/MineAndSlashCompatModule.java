@@ -10,9 +10,14 @@ import me.fzzyhmstrs.fzzy_config.annotations.WithPerms;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
+import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 
 public class MineAndSlashCompatModule implements ICompatModule {
     public static final MineAndSlashCompatModule INSTANCE = new MineAndSlashCompatModule();
+    public boolean isModuleEnabled = false;
 
 
     private static MineAndSlashServerConfig serverConfig;
@@ -46,6 +51,7 @@ public class MineAndSlashCompatModule implements ICompatModule {
         }
         getClientConfig();
         getServerConfig();
+        isModuleEnabled = true;
     }
 
 
@@ -54,6 +60,9 @@ public class MineAndSlashCompatModule implements ICompatModule {
         private static MineAndSlashClientConfig clientConfig;
 
         public boolean showModProperty = true;
+        public boolean renderTeammateDamageParticle = true;
+        public ConfigGroup statusOption = new ConfigGroup("teammates_particle");
+        public ValidatedFloat renderWhenWithinRange = new ValidatedFloat(10);
 
 
         private MineAndSlashClientConfig() {
