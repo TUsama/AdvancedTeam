@@ -20,7 +20,7 @@ public abstract class HealthTemplate<SELF> extends RenderableTrackedFloatPropert
     @Override
     public void update() {
         if (currentValue < targetValue) {
-            currentValue = Math.min(currentValue + ITracking.lerpTo(currentValue, targetValue), maxValue);
+            currentValue = Math.min(currentValue + INumberTracking.lerpTo(currentValue, targetValue), maxValue);
         } else {
             currentValue = targetValue;
         }

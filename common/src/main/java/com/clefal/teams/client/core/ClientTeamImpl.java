@@ -4,6 +4,7 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.gui.screens.noteam.NoTeamScreen;
 import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;

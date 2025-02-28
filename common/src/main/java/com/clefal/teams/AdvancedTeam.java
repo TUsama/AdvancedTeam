@@ -12,7 +12,7 @@ import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.platform.Services;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
-import com.clefal.teams.server.propertyhandler.HandlerManager;
+import com.clefal.teams.modules.internal.HandlerManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;

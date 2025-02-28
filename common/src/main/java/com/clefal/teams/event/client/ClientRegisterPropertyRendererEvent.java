@@ -1,14 +1,11 @@
 package com.clefal.teams.event.client;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.Function1;
-import com.clefal.nirvana_lib.relocated.io.vavr.Lazy;
-import com.clefal.teams.client.core.IProperty;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.clefal.teams.client.core.property.impl.PropertyRenderer;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ClientRegisterPropertyRendererEvent extends ClientEvent{

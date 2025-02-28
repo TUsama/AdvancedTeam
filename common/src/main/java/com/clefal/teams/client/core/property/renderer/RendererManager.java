@@ -1,9 +1,8 @@
 package com.clefal.teams.client.core.property.renderer;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.Function1;
-import com.clefal.nirvana_lib.relocated.io.vavr.Lazy;
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.client.core.IProperty;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.clefal.teams.client.core.property.impl.PropertyRenderer;
 import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 

@@ -1,6 +1,7 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
@@ -31,6 +32,7 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     public static final String SKIN_SIG_KEY = "playerSkinSignature";
     public static final String TYPE_KEY = "actionType";
     public List<String> propertiesName = new ArrayList<>();
+    public HashSet<String> keys;
 
     public enum Type {
         ADD,
@@ -40,10 +42,10 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
 
     CompoundTag tag = new CompoundTag();
 // health and hunger should be merged into the event system.
-    public S2CTeamPlayerDataPacket(ServerPlayer player, Type type) {
+    public S2CTeamPlayerDataPacket(ServerPlayer player, Type type, HashSet<String> keys) {
         tag.putUUID(ID_KEY, player.getUUID());
         tag.putString(TYPE_KEY, type.toString());
-        Runnable gather = () -> this.postAndDo(new ServerGatherPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
+        Runnable gather = () -> this.postAndDo(new ServerGatherPropertyEvent.ServerGatherAllPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
             tuple2._2().accept(tuple2._1(), tag);
             this.propertiesName.add(tuple2._1().getIdentifier());
         }));
@@ -60,11 +62,23 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                         skin.getSignature() != null ? skin.getSignature() : ""
                         : "");
                 //System.out.println("try run!");
-                gather.run();
+                this.postAndDo(new ServerGatherPropertyEvent.ServerGatherAllPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
+                    tuple2._2().accept(tuple2._1(), tag);
+                    this.propertiesName.add(tuple2._1().getIdentifier());
+                }));
             }
-            case UPDATE -> gather.run();
+            case UPDATE -> this.postAndDo(new ServerGatherPropertyEvent(player, keys), event -> API.For(event.gather).yield().forEach(tuple2 -> {
+                tuple2._2().accept(tuple2._1(), tag);
+                this.propertiesName.add(tuple2._1().getIdentifier());
+            }));
         }
     }
+
+    public S2CTeamPlayerDataPacket(ServerPlayer player, Type type){
+        this(player, type, HashSet.empty());
+    }
+
+
 
     public S2CTeamPlayerDataPacket(FriendlyByteBuf byteBuf) {
         tag = byteBuf.readNbt();

@@ -1,4 +1,4 @@
-package com.clefal.teams.server.propertyhandler;
+package com.clefal.teams.modules.internal.propertyhandler;
 
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.util.VertexContainer;

@@ -1,7 +1,11 @@
-package com.clefal.teams.server.propertyhandler;
+package com.clefal.teams.modules.internal;
 
-import com.clefal.teams.server.propertyhandler.vanilla.VanillaPropertyClientHandler;
-import com.clefal.teams.server.propertyhandler.vanilla.VanillaPropertyServerHandler;
+import com.clefal.teams.modules.internal.effect.handlers.VanillaPotionEffectPropertyClientHandler;
+import com.clefal.teams.modules.internal.effect.handlers.VanillaPotionEffectPropertyServerHandler;
+import com.clefal.teams.modules.internal.propertyhandler.IPropertyClientHandler;
+import com.clefal.teams.modules.internal.propertyhandler.IPropertyServerHandler;
+import com.clefal.teams.modules.internal.propertyhandler.vanilla.VanillaPropertyClientHandler;
+import com.clefal.teams.modules.internal.propertyhandler.vanilla.VanillaPropertyServerHandler;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -14,6 +18,7 @@ public class HandlerManager {
 
     static {
         INSTANCE.registerHandlerPair(VanillaPropertyServerHandler.INSTANCE, VanillaPropertyClientHandler.INSTANCE);
+        INSTANCE.registerHandlerPair(VanillaPotionEffectPropertyServerHandler.INSTANCE, VanillaPotionEffectPropertyClientHandler.INSTANCE);
     }
 
 

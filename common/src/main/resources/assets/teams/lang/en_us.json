@@ -69,6 +69,8 @@
   "teams.menu.apply.no_available_application": "No available applications",
   "teams.error.no_player": "Can't find the player that send application.",
   "teams.menu.team_config.save.success_toast.title": "Config Saved",
-  "teams.menu.team_config.save.success_toast.subtitle": "Successfully save config!"
+  "teams.menu.team_config.save.success_toast.subtitle": "Successfully save config!",
+  "teams.effect_format.minute": "%s m",
+  "teams.effect_format.second": "%s"
 
 }

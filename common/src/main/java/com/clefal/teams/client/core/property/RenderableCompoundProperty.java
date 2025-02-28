@@ -2,10 +2,10 @@ package com.clefal.teams.client.core.property;
 
 import java.util.Map;
 
-public abstract class RenderableCompoundProperty<SELF> extends Property implements IPropertyRenderer, ITracking<SELF> {
-    public Map<String, ITracking<?>> propertyMap;
+public abstract class RenderableCompoundProperty<SELF> extends Property implements IPropertyRenderer, INumberTracking<SELF> {
+    public Map<String, INumberTracking<?>> propertyMap;
 
-    public RenderableCompoundProperty(Map<String, ITracking<?>> propertyMap) {
+    public RenderableCompoundProperty(Map<String, INumberTracking<?>> propertyMap) {
         this.propertyMap = propertyMap;
     }
 
@@ -27,9 +27,9 @@ public abstract class RenderableCompoundProperty<SELF> extends Property implemen
         } else {
             propertyMap.entrySet().forEach(stringIPropertyEntry -> {
 
-                ITracking value = stringIPropertyEntry.getValue();
-                ITracking iTracking = ((RenderableCompoundProperty<?>) old).propertyMap.get(stringIPropertyEntry.getKey());
-                ITracking o = (ITracking) value.mergeWith(iTracking);
+                INumberTracking value = stringIPropertyEntry.getValue();
+                INumberTracking iTracking = ((RenderableCompoundProperty<?>) old).propertyMap.get(stringIPropertyEntry.getKey());
+                INumberTracking o = (INumberTracking) value.mergeWith(iTracking);
                 ((RenderableCompoundProperty<?>) old).propertyMap.put(stringIPropertyEntry.getKey(), o);
 
 

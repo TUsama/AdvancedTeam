@@ -8,7 +8,7 @@ import com.clefal.teams.client.gui.util.FillGradientBufferInfo;
 import com.clefal.teams.client.gui.util.TextureBufferInfo;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.server.ModComponents;
-import com.clefal.teams.server.propertyhandler.PositionContext;
+import com.clefal.teams.modules.internal.propertyhandler.PositionContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
