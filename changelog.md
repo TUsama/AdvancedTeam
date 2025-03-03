@@ -1,3 +1,9 @@
+### 1.4.0
+now teammate overlay can see potion effects
+(Forge) add MNS compat for effect.
+(Forge) MNS teammate now can see dmg particle for each other.
+
+
 ### 1.3.1
 fix flag texture
 
