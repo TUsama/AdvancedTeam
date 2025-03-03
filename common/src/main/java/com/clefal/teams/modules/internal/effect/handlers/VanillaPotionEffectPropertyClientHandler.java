@@ -61,12 +61,11 @@ public class VanillaPotionEffectPropertyClientHandler implements IPropertyClient
                 PoseStack pose = gui.pose();
                 pose.pushPose();
                 positionContext.setupEffectPosition(pose);
-                //System.out.println("vanilla: " + positionContext.finalEffectPosition());
-                int interval = PositionContext.interval;
+
                 int i = 0;
                 int iconSize = PositionContext.iconSize;
                 MobEffectTextureManager mobEffectTextureManager = Minecraft.getInstance().getMobEffectTextures();
-                for(Iterator var8 = property.getMobEffectInstance().iterator(); var8.hasNext(); i += iconSize + interval) {
+                for(Iterator var8 = property.getMobEffectInstance().iterator(); var8.hasNext(); i += iconSize + PositionContext.interval) {
                     MobEffectInstance mobEffectInstance = (MobEffectInstance)var8.next();
 
                     MobEffect mobEffect = mobEffectInstance.getEffect();

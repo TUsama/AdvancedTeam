@@ -12,7 +12,7 @@ import java.util.Objects;
 @UtilityClass
 public class GuiUtils {
 
-    public static void renderDuration(GuiGraphics gui, int duration, PoseStack pose, int i, int iconSize) {
+    public void renderDuration(GuiGraphics gui, int duration, PoseStack pose, int i, int iconSize) {
         Component formatDuration;
         if (duration >= 20 * 60){
             formatDuration =  Component.translatable("teams.effect_format.minute", duration / (20 * 60));
