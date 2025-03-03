@@ -19,6 +19,7 @@ public interface ClientTeam {
     String getName();
 
     boolean canInvite();
+    boolean allowEveryoneInvite();
     void setCanInvite(boolean canInvite);
 
     void changeLeader(UUID leader);

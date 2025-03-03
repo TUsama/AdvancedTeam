@@ -233,7 +233,7 @@ public class HasTeamScreen extends TeamsScreen {
 
             this.isPublic = new ATCheckBox(screen.x + 20, screen.y + 10, 10, 10, Component.translatable("teams.menu.team_config.is_public"), ClientTeamData.INSTANCE.isPublicTeam(ClientTeam.INSTANCE.getName()));
 
-            this.everyoneInvite = new ATCheckBox(screen.x + 20, screen.y + 30, 10, 10, Component.translatable("teams.menu.team_config.everyone_can_invite"), ClientTeam.INSTANCE.canInvite());
+            this.everyoneInvite = new ATCheckBox(screen.x + 20, screen.y + 30, 10, 10, Component.translatable("teams.menu.team_config.everyone_can_invite"), ClientTeam.INSTANCE.allowEveryoneInvite());
 
             this.saveButton = Button.builder(Component.translatable("teams.menu.team_config.save"), button -> {
                 Services.PLATFORM.sendToServer(new C2STeamConfigSavePacket(isPublic.selected(), everyoneInvite.selected()));
