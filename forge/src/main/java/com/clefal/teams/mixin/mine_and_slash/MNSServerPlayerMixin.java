@@ -1,6 +1,6 @@
 package com.clefal.teams.mixin.mine_and_slash;
 
-import com.clefal.teams.compat.mine_and_slash.MixinHelper;
+import com.clefal.teams.utils.MixinHelper;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

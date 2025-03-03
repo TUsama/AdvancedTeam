@@ -39,6 +39,7 @@ public class StatusOverlay {
         graphics.pose().pushPose();
         RenderSystem.enableBlend();
         PositionContext positionContext = PositionContext.fromOrigin(new Vector2f(ATClientConfig.config.overlays.originX, ATClientConfig.config.overlays.originY));
+
         for (int i = 0; i < teammates.size() && shown < ATClientConfig.config.overlays.maxEntryAmount; ++i) {
             ClientTeam.Teammate teammate = teammates.get(i);
             if (!AdvancedTeam.IN_DEV){
@@ -57,8 +58,9 @@ public class StatusOverlay {
                 PlayerFaceRenderer.draw(graphics, teammate.skin, 0, 0, positionContext.getPlayerHeadIconSize());
                 if (ClientTeam.INSTANCE.isLeader(teammate.id)){
                 pose.pushPose();
-                pose.translate(24, -3, 0);
-                graphics.blit(FLAG, 0, 0, 12, 12, 0, 0, 32, 32, 32, 64);
+                int size = 14;
+                pose.translate(positionContext.getPlayerHeadIconSize() - size, -3, 0);
+                graphics.blit(FLAG, 0, 0, size, size, 0, 0, 32, 32, 32, 64);
                 pose.popPose();
             }
 
@@ -76,7 +78,7 @@ public class StatusOverlay {
                     handler.onRender(graphics, container, teammate, positionContext);
                 }
             }
-            positionContext = positionContext.updateOrigin(positionContext.origin().add(0, ATClientConfig.config.overlays.entryInterval));
+            positionContext = positionContext.updateOrigin(positionContext.origin().add(0, positionContext.getPlayerHeadIconSize() + ATClientConfig.config.overlays.entryInterval));
             pose.popPose();
 
             ++shown;

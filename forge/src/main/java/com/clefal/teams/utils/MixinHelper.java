@@ -1,17 +1,20 @@
 package com.clefal.teams.utils;
 
 import com.clefal.teams.compat.mine_and_slash.MineAndSlashCompatModule;
+import com.clefal.teams.compat.mine_and_slash.property.MNSStatusEffect;
 import com.clefal.teams.server.IHasTeam;
+import com.clefal.teams.server.IPropertySender;
 import com.robertx22.library_of_exile.main.Packets;
+import com.robertx22.mine_and_slash.uncommon.datasaving.Load;
 import com.robertx22.mine_and_slash.vanilla_mc.packets.interaction.ExileInteractionResultPacket;
 import com.robertx22.mine_and_slash.vanilla_mc.packets.interaction.IParticleSpawnMaterial;
-import jogamp.common.util.locks.SingletonInstanceServerSocket;
+import lombok.experimental.UtilityClass;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-
+@UtilityClass
 public class MixinHelper {
 
-    public static void sendDMGParticleToTeammates(IParticleSpawnMaterial notifier, ServerPlayer source, LivingEntity target){
+    public void sendDMGParticleToTeammates(IParticleSpawnMaterial notifier, ServerPlayer source, LivingEntity target){
         if (MineAndSlashCompatModule.INSTANCE.isModuleEnabled && MineAndSlashCompatModule.getClientConfig().renderTeammateDamageParticle){
             IHasTeam player = (IHasTeam) source;
             if (player.hasTeam()) {
@@ -21,5 +24,15 @@ public class MixinHelper {
             }
         }
 
+    }
+
+    public void updateStatusEffects(ServerPlayer player){
+        if (MineAndSlashCompatModule.INSTANCE.isModuleEnabled){
+            IPropertySender propertySender = (IPropertySender) player;
+            IHasTeam hasTeam = (IHasTeam) player;
+            if (hasTeam.hasTeam() && !Load.Unit(player).getStatusEffectsData().exileMap.isEmpty()){
+                propertySender.addUpdate(MNSStatusEffect.KEY);
+            }
+        }
     }
 }

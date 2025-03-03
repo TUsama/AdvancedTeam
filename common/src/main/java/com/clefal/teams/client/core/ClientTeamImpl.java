@@ -15,16 +15,19 @@ class ClientTeamImpl implements ClientTeam {
 
     private Minecraft client = Minecraft.getInstance();
     private UUID leader;
-    private Map<UUID, Teammate> teammates = new TreeMap<>(new Comparator<UUID>() {
+    private Map<UUID, Teammate> teammates = new TreeMap<>(new Comparator<>() {
         @Override
         public int compare(UUID uuid, UUID t1) {
+            if (uuid.equals(t1)) return 0;
+            int value;
             if (uuid.equals(leader)) {
-                return -1;
+                value = -1;
             } else if (t1.equals(leader)) {
-                return 1;
+                value = 1;
             } else {
-                return uuid.compareTo(t1);
+                value = uuid.compareTo(t1);
             }
+            return value;
         }
 
     });

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InteractionNotifier.class)
 public class InteractionNotifierMixin {
 
-    @Inject(method = "notifyClient", at = @At(value = "RETURN"))
+    @Inject(method = "notifyClient", at = @At(value = "RETURN"), remap = false)
     private static void alsoSendToTeammate(IParticleSpawnMaterial notifier, ServerPlayer source, LivingEntity target, CallbackInfo ci){
         if (((IHasTeam) source).hasTeam()){
             MixinHelper.sendDMGParticleToTeammates(notifier, source, target);
