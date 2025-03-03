@@ -1,4 +1,4 @@
-package com.clefal.teams.compat;
+package com.clefal.teams.modules.compat;
 
 import java.util.ArrayList;
 import java.util.Arrays;

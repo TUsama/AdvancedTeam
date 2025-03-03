@@ -1,13 +1,9 @@
 package com.clefal.teams.client.core.property;
 
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.gui.hud.StatusOverlay;
 import com.clefal.teams.client.gui.util.VertexContainer;
-import com.clefal.teams.server.propertyhandler.PositionContext;
+import com.clefal.teams.modules.internal.propertyhandler.PositionContext;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.FastColor;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public interface IPropertyRenderer {
 

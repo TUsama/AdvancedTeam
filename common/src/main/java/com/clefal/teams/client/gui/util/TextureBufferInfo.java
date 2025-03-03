@@ -1,6 +1,7 @@
 package com.clefal.teams.client.gui.util;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 public record TextureBufferInfo(float pX1, float pX2, float pY1, float pY2, float pBlitOffset, float pMinU, float pMaxU, float pMinV, float pMaxV, Matrix4f matrix4f, RenderInfo renderInfo) implements IBufferInfo{
@@ -33,6 +34,7 @@ public record TextureBufferInfo(float pX1, float pX2, float pY1, float pY2, floa
     public static TextureBufferInfo of(float pX, float pY, float pUOffset, float pVOffset, int pWidth, int pHeight, float pBlitOffset, int pTextureWidth, int pTextureHeight, Matrix4f matrix4f) {
         return of(pX, pY, pWidth, pHeight, pUOffset, pVOffset, pWidth, pHeight, pTextureWidth, pTextureHeight, matrix4f);
     }
+
 
     public static TextureBufferInfo of(float pX1, float pX2, float pY1, float pY2, float pBlitOffset, int pUWidth, int pVHeight, float pUOffset, float pVOffset, int pTextureWidth, int pTextureHeight, Matrix4f matrix4f) {
         return new TextureBufferInfo(pX1, pX2, pY1, pY2, pBlitOffset, (pUOffset + 0.0F) / (float) pTextureWidth, (pUOffset + (float) pUWidth) / (float) pTextureWidth, (pVOffset + 0.0F) / (float) pTextureHeight, (pVOffset + (float) pVHeight) / (float) pTextureHeight, matrix4f, new RenderInfo(1.0f));

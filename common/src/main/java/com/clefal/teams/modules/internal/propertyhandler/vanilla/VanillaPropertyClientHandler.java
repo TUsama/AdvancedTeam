@@ -1,18 +1,17 @@
-package com.clefal.teams.server.propertyhandler.vanilla;
+package com.clefal.teams.modules.internal.propertyhandler.vanilla;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.Function1;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.IProperty;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.clefal.teams.client.core.property.impl.Health;
 import com.clefal.teams.client.core.property.impl.Hunger;
 import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
-import com.clefal.teams.server.propertyhandler.HandlerManager;
-import com.clefal.teams.server.propertyhandler.IPropertyClientHandler;
-import com.clefal.teams.server.propertyhandler.PositionContext;
+import com.clefal.teams.modules.internal.propertyhandler.IPropertyClientHandler;
+import com.clefal.teams.modules.internal.propertyhandler.PositionContext;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 

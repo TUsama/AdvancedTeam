@@ -1,6 +1,5 @@
-package com.clefal.teams.server.propertyhandler;
+package com.clefal.teams.modules.internal.propertyhandler;
 
-import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.clefal.teams.event.server.ServerGatherPropertyEvent;
 
 public interface IPropertyServerHandler {

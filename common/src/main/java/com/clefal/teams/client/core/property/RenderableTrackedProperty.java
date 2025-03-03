@@ -1,9 +1,6 @@
 package com.clefal.teams.client.core.property;
 
-import com.clefal.teams.client.core.ClientTeam;
-import net.minecraft.client.gui.GuiGraphics;
-
-public abstract class RenderableTrackedProperty<SELF, T extends Number> extends RenderableProperty implements ITracking<SELF> {
+public abstract class RenderableTrackedProperty<SELF, T extends Number> extends RenderableProperty implements INumberTracking<SELF> {
     public T currentValue;
     public T targetValue;
     public T maxValue;

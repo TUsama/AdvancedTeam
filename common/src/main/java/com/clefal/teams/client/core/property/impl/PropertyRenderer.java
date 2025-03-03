@@ -1,6 +1,6 @@
 package com.clefal.teams.client.core.property.impl;
 
-import com.clefal.teams.client.core.IProperty;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.clefal.teams.client.core.property.IPropertyRenderer;
 
 import javax.annotation.Nullable;

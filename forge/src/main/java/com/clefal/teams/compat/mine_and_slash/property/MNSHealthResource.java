@@ -8,7 +8,7 @@ import com.clefal.teams.client.gui.util.FillGradientBufferInfo;
 import com.clefal.teams.client.gui.util.TextureBufferInfo;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.server.ModComponents;
-import com.clefal.teams.server.propertyhandler.PositionContext;
+import com.clefal.teams.modules.internal.propertyhandler.PositionContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -58,13 +58,14 @@ public class MNSHealthResource extends RenderableCompoundProperty<MNSHealthResou
 
             Matrix4f matrix4f = new Matrix4f(gui.pose().last().pose());
             pose.pushPose();
+            int i = positionContext.getPlayerHeadIconSize() / 3;
             if (this.isInDanger()) {
                 float randomFactor = Constants.random.nextFloat(-0.005f, 0.005f);
-                container.putBliz(this.getResourceLocation(), TextureBufferInfo.of(PositionContext.getRelativeWidth(randomFactor * 2), PositionContext.getRelativeHeight(randomFactor), 0, 0, 9, 9, 9, 9, matrix4f));
+                container.putBliz(this.getResourceLocation(), TextureBufferInfo.of(PositionContext.getRelativeWidth(randomFactor * 2), PositionContext.getRelativeHeight(randomFactor), i, i,0.0f, 0.0f, 9, 9, 9,9, matrix4f));
 
-                //gui.blit(this.getResourceLocation(), (int) (Constants.getRelativeWidth(randomFactor)), (int) (getRelativeHeight(randomFactor)), 0, 0, 9, 9, 9, 9);
+
             } else {
-                container.putBliz(this.getResourceLocation(), TextureBufferInfo.of(0, 0, 0, 0, 9, 9, 9, 9, matrix4f));
+                container.putBliz(this.getResourceLocation(), TextureBufferInfo.of(0, 0, i, i,0.0f, 0.0f, 9, 9, 9,9, matrix4f));
             }
 
             pose.translate(positionContext.iconAndTextInterval(), 0, 0);

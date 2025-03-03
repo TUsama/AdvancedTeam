@@ -1,8 +1,8 @@
 package com.clefal.teams.compat.mine_and_slash;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.compat.ICompatModule;
-import com.clefal.teams.server.propertyhandler.HandlerManager;
+import com.clefal.teams.modules.compat.ICompatModule;
+import com.clefal.teams.modules.internal.HandlerManager;
 import com.robertx22.mine_and_slash.mmorpg.SlashRef;
 import me.fzzyhmstrs.fzzy_config.annotations.Action;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;

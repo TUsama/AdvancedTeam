@@ -65,8 +65,7 @@ public class ATServerTeam extends Team {
     public void announceConfigChangeToClient(){
         List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
         Services.PLATFORM.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), players1);
-        Services.PLATFORM.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite((name), allowEveryoneInvite), onlinePlayers.values());
-
+        Services.PLATFORM.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(name, allowEveryoneInvite), onlinePlayers.values());
     }
 
     public void promote(ServerPlayer player){

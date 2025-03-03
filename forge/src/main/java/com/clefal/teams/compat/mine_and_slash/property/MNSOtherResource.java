@@ -2,14 +2,13 @@ package com.clefal.teams.compat.mine_and_slash.property;
 
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.client.core.property.Constants;
-import com.clefal.teams.client.core.property.ITracking;
+import com.clefal.teams.client.core.property.INumberTracking;
 import com.clefal.teams.client.core.property.RenderableTrackedProperty;
 import com.clefal.teams.client.core.property.impl.PropertyRenderer;
 import com.clefal.teams.client.gui.util.FillBufferInfo;
 import com.clefal.teams.client.gui.util.FillGradientBufferInfo;
 import com.clefal.teams.client.gui.util.VertexContainer;
-import com.clefal.teams.server.propertyhandler.PositionContext;
+import com.clefal.teams.modules.internal.propertyhandler.PositionContext;
 import com.google.common.collect.ImmutableMap;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,9 +19,6 @@ import org.joml.Matrix4f;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.Function;
-
-import static com.clefal.teams.client.core.property.Constants.getRelativeHeight;
-import static com.clefal.teams.client.core.property.Constants.getRelativeWidth;
 
 public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource, Float> {
     public static Function<ResourceType, String> identifier = type1 -> "MNS" + type1;
@@ -53,7 +49,7 @@ public class MNSOtherResource extends RenderableTrackedProperty<MNSOtherResource
     @Override
     public void update() {
         if (currentValue < targetValue) {
-            currentValue = Math.min(currentValue + ITracking.lerpTo(currentValue, targetValue), maxValue);
+            currentValue = Math.min(currentValue + INumberTracking.lerpTo(currentValue, targetValue), maxValue);
         } else {
             currentValue = targetValue;
         }

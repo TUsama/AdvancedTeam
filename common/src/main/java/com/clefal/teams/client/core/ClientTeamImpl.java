@@ -1,9 +1,10 @@
 package com.clefal.teams.client.core;
 
 import com.clefal.teams.AdvancedTeam;
-import com.clefal.teams.client.gui.screens.noteam.NoTeamScreen;
-import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
+import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
+import com.clefal.teams.client.gui.screens.noteam.NoTeamScreen;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -13,12 +14,24 @@ import java.util.*;
 class ClientTeamImpl implements ClientTeam {
 
     private Minecraft client = Minecraft.getInstance();
-    private Map<UUID, Teammate> teammates = new HashMap<>();
     private UUID leader;
+    private Map<UUID, Teammate> teammates = new TreeMap<>(new Comparator<UUID>() {
+        @Override
+        public int compare(UUID uuid, UUID t1) {
+            if (uuid.equals(leader)) {
+                return -1;
+            } else if (t1.equals(leader)) {
+                return 1;
+            } else {
+                return uuid.compareTo(t1);
+            }
+        }
+
+    });
     private boolean initialized = false;
     private String name = "";
     private boolean hasPermission;
-    private boolean canInvite;
+    private boolean allowEveryoneInvite;
 
     ClientTeamImpl() {
     }
@@ -34,7 +47,7 @@ class ClientTeamImpl implements ClientTeam {
     }
 
     @Override
-    public void changeLeader(UUID leader){
+    public void changeLeader(UUID leader) {
         this.leader = leader;
     }
 
@@ -55,12 +68,17 @@ class ClientTeamImpl implements ClientTeam {
 
     @Override
     public boolean canInvite() {
-        return canInvite;
+        return allowEveryoneInvite || hasPermission;
+    }
+
+    @Override
+    public boolean allowEveryoneInvite() {
+        return allowEveryoneInvite;
     }
 
     @Override
     public void setCanInvite(boolean canInvite) {
-        this.canInvite = canInvite;
+        this.allowEveryoneInvite = canInvite;
     }
 
     @Override
@@ -80,19 +98,7 @@ class ClientTeamImpl implements ClientTeam {
 
     @Override
     public List<Teammate> getTeammates() {
-        ImmutableList.Builder<Teammate> builder = ImmutableList.builder();
-        Optional<Teammate> first = teammates.values().stream().filter(x -> x.id.equals(leader)).findFirst();
-        if (first.isPresent()) {
-            builder.add(first.get());
-            for (Teammate value : teammates.values()) {
-                if (value.id.equals(leader)) continue;
-                builder.add(value);
-
-            }
-            return builder.build();
-        } else {
-            return ImmutableList.copyOf(teammates.values());
-        }
+        return ImmutableList.copyOf(teammates.values());
     }
 
     public boolean hasPlayer(UUID player) {
@@ -122,7 +128,8 @@ class ClientTeamImpl implements ClientTeam {
         } else {
             // it means that the update is earlier than the client joins the world.
             // this should be ignored
-            if (teammates.get(client.player.getUUID()) != null) AdvancedTeam.LOGGER.warn("Tried updating player with UUID " + player + ", but they are not in this client team");
+            if (teammates.get(client.player.getUUID()) != null)
+                AdvancedTeam.LOGGER.warn("Tried updating player with UUID " + player + ", but they are not in this client team");
         }
     }
 

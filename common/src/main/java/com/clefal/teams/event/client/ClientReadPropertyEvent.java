@@ -1,6 +1,6 @@
 package com.clefal.teams.event.client;
 
-import com.clefal.teams.client.core.IProperty;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;

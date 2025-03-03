@@ -1,7 +1,8 @@
 package com.clefal.teams.client.core;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
-import com.clefal.teams.client.core.property.ITracking;
+import com.clefal.teams.client.core.property.INumberTracking;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedHashMap;
@@ -18,6 +19,7 @@ public interface ClientTeam {
     String getName();
 
     boolean canInvite();
+    boolean allowEveryoneInvite();
     void setCanInvite(boolean canInvite);
 
     void changeLeader(UUID leader);
@@ -62,9 +64,9 @@ public interface ClientTeam {
 
 
         public void addProperty(IProperty property) {
-            if (property instanceof ITracking tracking) {
+            if (property instanceof INumberTracking tracking) {
                 IProperty old = properties.get(property.getIdentifier());
-                ITracking<?> o = (ITracking<?>) tracking.mergeWith(old);
+                INumberTracking<?> o = (INumberTracking<?>) tracking.mergeWith(old);
                 properties.put(property.getIdentifier(), (IProperty) o);
             } else {
                 properties.put(property.getIdentifier(), property);
