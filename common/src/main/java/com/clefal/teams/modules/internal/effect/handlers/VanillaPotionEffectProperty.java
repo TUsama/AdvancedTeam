@@ -1,23 +1,16 @@
 package com.clefal.teams.modules.internal.effect.handlers;
 
 import com.clefal.teams.client.core.property.ITracking;
-import com.clefal.teams.client.core.property.RenderableProperty;
-import com.clefal.teams.modules.internal.effect.IEffectProperty;
+import com.clefal.teams.modules.internal.effect.EffectProperty;
 import net.minecraft.world.effect.MobEffectInstance;
 
 import java.util.List;
 
-public class VanillaPotionEffectProperty extends RenderableProperty implements IEffectProperty, ITracking<VanillaPotionEffectProperty> {
+public class VanillaPotionEffectProperty extends EffectProperty<MobEffectInstance> implements ITracking<VanillaPotionEffectProperty> {
     public static final String KEY = "vanilla_potion_effect";
-    private List<MobEffectInstance> instance;
 
     public VanillaPotionEffectProperty(List<MobEffectInstance> instance) {
-        this.instance = instance;
-    }
-
-    @Override
-    public String getRenderString() {
-        return "";
+        super(instance);
     }
 
     @Override
@@ -25,9 +18,8 @@ public class VanillaPotionEffectProperty extends RenderableProperty implements I
         return KEY;
     }
 
-    @Override
     public List<MobEffectInstance> getMobEffectInstance() {
-        return instance;
+        return super.effects;
     }
 
     @Override
@@ -35,7 +27,7 @@ public class VanillaPotionEffectProperty extends RenderableProperty implements I
         if (old == null) {
             return this;
         } else {
-            old.instance = this.instance;
+            old.effects = super.effects;
             return old;
         }
     }

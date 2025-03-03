@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import org.joml.Vector2f;
 
 import java.util.List;
 
@@ -37,14 +38,47 @@ public class StatusOverlay {
         RenderSystem.enableDepthTest();
         graphics.pose().pushPose();
         RenderSystem.enableBlend();
-        PositionContext positionContext = PositionContext.fromFactor(0.03f, 0.025f, 0.15f, 0.026f);
+        PositionContext positionContext = PositionContext.fromOrigin(new Vector2f(ATClientConfig.config.overlays.originX, ATClientConfig.config.overlays.originY));
         for (int i = 0; i < teammates.size() && shown < ATClientConfig.config.overlays.maxEntryAmount; ++i) {
+            ClientTeam.Teammate teammate = teammates.get(i);
             if (!AdvancedTeam.IN_DEV){
-                if (client.player.getUUID().equals(teammates.get(i).id)) {
+                if (client.player.getUUID().equals(teammate.id)) {
                     continue;
                 }
             }
-           renderStatus(graphics, teammates.get(i), positionContext);
+            PoseStack pose = graphics.pose();
+            //from left to right
+            pose.pushPose();
+
+            // Draw skin
+            positionContext.setupInitialPosition(pose);
+
+            {
+                PlayerFaceRenderer.draw(graphics, teammate.skin, 0, 0, positionContext.getPlayerHeadIconSize());
+            }
+
+            // Draw name
+            {
+                positionContext.setupNamePosition(pose);
+                graphics.drawString(client.font, Component.literal(teammate.name), 0, 0, ChatFormatting.WHITE.getColor());
+
+                if (ClientTeam.INSTANCE.isLeader(teammate.id)){
+                    pose.pushPose();
+                    pose.translate(0, 0, 1);
+                    pose.translate(client.font.width(Component.literal(teammate.name)) + 10, 0, 0);
+                    graphics.blit(FLAG, 0, 0, 10, 10, 0, 0, 32, 32, 32, 64);
+                    pose.popPose();
+                }
+            }
+
+            {
+                for (var handler : this.handlers) {
+                    handler.onRender(graphics, container, teammate, positionContext);
+                }
+            }
+            positionContext = positionContext.updateOrigin(positionContext.origin().add(0, ATClientConfig.config.overlays.entryInterval));
+            pose.popPose();
+
             ++shown;
         }
         container.draw(graphics.bufferSource());
@@ -56,44 +90,6 @@ public class StatusOverlay {
 
     }
 
-    private void renderStatus(GuiGraphics graphics, ClientTeam.Teammate teammate, PositionContext positionContext) {
-        PoseStack pose = graphics.pose();
-        //from left to right
-        pose.pushPose();
 
-        // Draw skin
-
-        float scale = ATClientConfig.config.overlays.scale.get();
-        pose.scale(scale, scale, 1.0f);
-
-        pose.translate(ATClientConfig.config.overlays.originX, ATClientConfig.config.overlays.originY, 0);
-
-        {
-            PlayerFaceRenderer.draw(graphics, teammate.skin, 0, 0, 32);
-        }
-
-        // Draw name
-        {
-            pose.translate(40, 0, 0);
-            graphics.drawString(client.font, Component.literal(teammate.name), 0, 0, ChatFormatting.WHITE.getColor());
-
-            if (ClientTeam.INSTANCE.isLeader(teammate.id)){
-                pose.pushPose();
-                pose.translate(0, 0, 1);
-                pose.translate(client.font.width(Component.literal(teammate.name)) + 10, 0, 0);
-                graphics.blit(FLAG, 0, 0, 10, 10, 0, 0, 32, 32, 32, 64);
-                pose.popPose();
-            }
-        }
-
-        {
-            for (var handler : this.handlers) {
-                handler.onRender(graphics, container, teammate, positionContext);
-            }
-        }
-        pose.popPose();
-
-        graphics.pose().translate(0, ATClientConfig.config.overlays.entryInterval, 0);
-    }
 
 }

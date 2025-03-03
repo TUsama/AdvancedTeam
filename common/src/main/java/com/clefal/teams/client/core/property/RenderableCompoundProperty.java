@@ -2,7 +2,7 @@ package com.clefal.teams.client.core.property;
 
 import java.util.Map;
 
-public abstract class RenderableCompoundProperty<SELF> extends Property implements IPropertyRenderer, INumberTracking<SELF> {
+public abstract class RenderableCompoundProperty<SELF> extends SimpleProperty implements IPropertyRenderer, INumberTracking<SELF> {
     public Map<String, INumberTracking<?>> propertyMap;
 
     public RenderableCompoundProperty(Map<String, INumberTracking<?>> propertyMap) {

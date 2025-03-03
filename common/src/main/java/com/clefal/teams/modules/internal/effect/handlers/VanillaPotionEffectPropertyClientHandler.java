@@ -12,6 +12,7 @@ import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.clefal.teams.modules.internal.propertyhandler.IPropertyClientHandler;
 import com.clefal.teams.modules.internal.propertyhandler.PositionContext;
+import com.clefal.teams.utils.GuiUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -59,66 +60,25 @@ public class VanillaPotionEffectPropertyClientHandler implements IPropertyClient
             public void render(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
                 PoseStack pose = gui.pose();
                 pose.pushPose();
-                pose.translate(positionContext.iconAndTextInterval() + positionContext.barWidth() + 5, positionContext.barHeight(), 0);
-                int interval = 2;
+                positionContext.setupEffectPosition(pose);
+                //System.out.println("vanilla: " + positionContext.finalEffectPosition());
+                int interval = PositionContext.interval;
                 int i = 0;
-                int iconSize = 12;
+                int iconSize = PositionContext.iconSize;
                 MobEffectTextureManager mobEffectTextureManager = Minecraft.getInstance().getMobEffectTextures();
-                //pose.translate((float) iconSize / 2, 0, 0);
                 for(Iterator var8 = property.getMobEffectInstance().iterator(); var8.hasNext(); i += iconSize + interval) {
                     MobEffectInstance mobEffectInstance = (MobEffectInstance)var8.next();
-                    Component formatDuration;
-                    int duration = mobEffectInstance.getDuration();
-                    if (duration >= 20 * 60){
-                        formatDuration =  Component.translatable("teams.effect_format.minute", duration / (20 * 60));
-                    } else {
-                        formatDuration = Component.translatable("teams.effect_format.second", duration / 20);
-                    }
 
                     MobEffect mobEffect = mobEffectInstance.getEffect();
                     TextureAtlasSprite textureAtlasSprite = mobEffectTextureManager.get(mobEffect);
 
                     gui.blit(i, 0, 0, iconSize, iconSize, textureAtlasSprite);
 
-                    String string = formatDuration.getString();
-                    StringBuilder numberPart = new StringBuilder();
-                    boolean hasWord = false;
-                    for (char c : string.toCharArray()) {
-                        if (Character.isDigit(c)) {
-                            numberPart.append(c);
-                        } else {
-                            hasWord = true;
-                            break;
-                        }
-                    }
-                    String number = numberPart.toString();
-                    pose.pushPose();
-                    float scale = 0.6f;
-                    pose.scale(scale,  scale, 1);
-                    pose.translate(((i + (float) iconSize / 2)) / scale - 1, iconSize / scale - 2, 0);
-                    char[] charArray = number.toCharArray();
-                    //this can fix the problem of number overlap each other.
-                    //is this because minecraft can't handle a too small interval?
-                    for (int i1 = 0; i1 < charArray.length; i1++) {
-                        char c = charArray[i1];
-                        String s = String.valueOf(c);
-                        gui.drawString(Minecraft.getInstance().font, s, -1, 0, ChatFormatting.WHITE.getColor());
-                        if (!(i1 + 1 == charArray.length)){
-                            //idk why this should add a 0.8f but it just works perfectly.
-                            //can't use * scale here, the interval could be so weird.
-                            pose.translate((Minecraft.getInstance().font.width(s) + 0.8f), 0, 0);
-                        }
-                    }
+                    GuiUtils.renderDuration(gui, mobEffectInstance.getDuration(), pose, i, iconSize);
 
-
-                    //gui.drawString(Minecraft.getInstance().font, number, -1, 0, ChatFormatting.WHITE.getColor());
-                    if (hasWord){
-                        pose.translate(Minecraft.getInstance().font.width(number) * scale, 0, 0);
-                        gui.drawString(Minecraft.getInstance().font, string.replace(number, ""), -1, 0, ChatFormatting.WHITE.getColor());
-                    }
-                    pose.popPose();
                 }
 
+                positionContext.finalEffectPosition().add(i, 0);
                 pose.popPose();
             }
         }));

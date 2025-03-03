@@ -13,6 +13,7 @@ import me.fzzyhmstrs.fzzy_config.config.Config;
 
 public class MineAndSlashCompatModule implements ICompatModule {
     public static final MineAndSlashCompatModule INSTANCE = new MineAndSlashCompatModule();
+    public boolean isEnabled = false;
 
 
     private static MineAndSlashServerConfig serverConfig;
@@ -46,6 +47,7 @@ public class MineAndSlashCompatModule implements ICompatModule {
         }
         getClientConfig();
         getServerConfig();
+        this.isEnabled = true;
     }
 
 

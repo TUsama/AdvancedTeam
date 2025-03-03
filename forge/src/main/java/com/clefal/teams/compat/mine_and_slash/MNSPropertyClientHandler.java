@@ -4,30 +4,32 @@ import com.clefal.nirvana_lib.relocated.io.vavr.Function1;
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Option;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.SubscribeEvent;
 import com.clefal.teams.client.core.ClientTeam;
-import com.clefal.teams.modules.internal.propertyhandler.IProperty;
-import com.clefal.teams.client.core.property.Constants;
 import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.client.gui.util.VertexContainer;
-import com.clefal.teams.compat.mine_and_slash.property.MNSHealth;
-import com.clefal.teams.compat.mine_and_slash.property.MNSHealthResource;
-import com.clefal.teams.compat.mine_and_slash.property.MNSMagicShield;
-import com.clefal.teams.compat.mine_and_slash.property.MNSOtherResource;
+import com.clefal.teams.compat.mine_and_slash.property.*;
+import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
+import com.clefal.teams.modules.internal.propertyhandler.IProperty;
 import com.clefal.teams.modules.internal.propertyhandler.IPropertyClientHandler;
 import com.clefal.teams.modules.internal.propertyhandler.PositionContext;
+import com.clefal.teams.utils.GuiUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.robertx22.mine_and_slash.database.registry.ExileDB;
 import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import org.joml.Vector2f;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.clefal.teams.client.core.property.Constants.*;
 
 public class MNSPropertyClientHandler implements IPropertyClientHandler {
     public static final MNSPropertyClientHandler INSTANCE = new MNSPropertyClientHandler();
-
 
 
     @Override
@@ -56,6 +58,19 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
                 event.addResult(mnsOtherResource);
             }
         }
+
+        if (properties.contains(MNSStatusEffect.KEY)) {
+            if (tag.contains(MNSStatusEffect.KEY, 9)) {
+                ListTag listTag = tag.getList(MNSStatusEffect.KEY, 10);
+                ArrayList<MNSStatusEffectData> mnsStatusEffectData = new ArrayList<>();
+                //System.out.println(listTag.size());
+                for (int i = 0; i < listTag.size(); ++i) {
+                    CompoundTag compoundTag = listTag.getCompound(i);
+                    mnsStatusEffectData.add(new MNSStatusEffectData(compoundTag.getString("effect"), compoundTag.getInt("stack"), compoundTag.getInt("duration")));
+                }
+                event.addResult(new MNSStatusEffect(mnsStatusEffectData));
+            }
+        }
     }
 
     @Override
@@ -71,6 +86,7 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
     @Override
     public void onRender(GuiGraphics gui, VertexContainer container, ClientTeam.Teammate teammate, PositionContext positionContext) {
         Option<IProperty> property = teammate.getProperty(MNSHealthResource.KEY);
+
         for (IProperty iProperty : property) {
             if (iProperty instanceof MNSHealthResource healthResource) {
                 healthResource.update();
@@ -95,14 +111,40 @@ public class MNSPropertyClientHandler implements IPropertyClientHandler {
                     RendererManager.getRenderer(otherResource).render(gui, container, teammate, positionContext);
                     count++;
                     if (count % 2 == 0) {
-                        pose.translate(-getRelativeWidth(Constants.barWidth) / 2 * 2, getRelativeHeight(barHeight) / 3, 0);
+                        pose.translate(-getRelativeWidth(barWidth) / 2 * 2, getRelativeHeight(barHeight) / 3, 0);
                     } else {
-                        pose.translate(getRelativeWidth(Constants.barWidth) / 2, 0, 0);
+                        pose.translate(getRelativeWidth(barWidth) / 2, 0, 0);
                     }
                 }
             }
 
         }
+        for (IProperty iProperty : teammate.getProperty(MNSStatusEffect.KEY)) {
+            MNSStatusEffect effect = (MNSStatusEffect) iProperty;
+            pose.pushPose();
+            positionContext.setupEffectPosition(pose);
+
+            int i = 0;
+
+            for (Iterator<MNSStatusEffectData> var8 = effect.effects.iterator(); var8.hasNext(); i += PositionContext.iconSize + PositionContext.interval) {
+                MNSStatusEffectData next = var8.next();
+                //this can be buggy if I change the timing of sending effect packet.
+                //currently the effect will always leave 1 tick.
+                //do not use Continue, considering MNS adds so many effects.
+                if (next.duration() == 1) var8.remove();
+
+                var eff = ExileDB.ExileEffects().get(next.effect());
+
+                gui.blit(eff.getTexture(), i, 0, PositionContext.iconSize, PositionContext.iconSize, 0, 0, 16, 16, 16, 16);
+
+                GuiUtils.renderDuration(gui, next.duration(), pose, i, PositionContext.iconSize);
+
+            }
+
+            pose.popPose();
+        }
+
+
     }
 
 }
