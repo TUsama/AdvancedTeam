@@ -1,3 +1,6 @@
+### 1.4.1
+fix some MNS compat bugs
+
 ### 1.4.0
 now teammate overlay can see potion effects
 (Forge) add MNS compat for effect.
