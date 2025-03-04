@@ -15,11 +15,11 @@ import net.minecraft.world.entity.LivingEntity;
 public class MixinHelper {
 
     public void sendDMGParticleToTeammates(IParticleSpawnMaterial notifier, ServerPlayer source, LivingEntity target){
-        if (MineAndSlashCompatModule.INSTANCE.isModuleEnabled && MineAndSlashCompatModule.getClientConfig().renderTeammateDamageParticle){
+        if (MineAndSlashCompatModule.INSTANCE.isModuleEnabled && MineAndSlashCompatModule.getServerConfig().enableTeammateDamageParticle){
             IHasTeam player = (IHasTeam) source;
             if (player.hasTeam()) {
                 for (ServerPlayer onlinePlayer : player.getTeam().getOnlinePlayers()) {
-                    if (source.distanceToSqr(onlinePlayer) <= Math.pow(MineAndSlashCompatModule.getClientConfig().renderWhenWithinRange.get(), 2)) Packets.sendToClient(onlinePlayer, new ExileInteractionResultPacket(target.getId(), notifier));
+                    if (source.distanceToSqr(onlinePlayer) <= Math.pow(MineAndSlashCompatModule.getServerConfig().sendParticleWhenWithinRange.get(), 2)) Packets.sendToClient(onlinePlayer, new ExileInteractionResultPacket(target.getId(), notifier));
                 }
             }
         }

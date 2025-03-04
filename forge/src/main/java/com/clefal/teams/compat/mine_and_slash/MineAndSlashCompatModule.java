@@ -60,9 +60,7 @@ public class MineAndSlashCompatModule implements ICompatModule {
         private static MineAndSlashClientConfig clientConfig;
 
         public boolean showModProperty = true;
-        public boolean renderTeammateDamageParticle = true;
-        public ConfigGroup statusOption = new ConfigGroup("teammates_particle");
-        public ValidatedFloat renderWhenWithinRange = new ValidatedFloat(10);
+
 
 
         private MineAndSlashClientConfig() {
@@ -81,5 +79,8 @@ public class MineAndSlashCompatModule implements ICompatModule {
 
         @RequiresAction(action = Action.RESTART)
         public boolean replaceMNSTeam = true;
+        public boolean enableTeammateDamageParticle = true;
+        public ConfigGroup statusOption = new ConfigGroup("teammates_particle");
+        public ValidatedFloat sendParticleWhenWithinRange = new ValidatedFloat(10);
     }
 }
