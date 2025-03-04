@@ -105,6 +105,9 @@ dependencies {
 
     implementation fg.deobf("curse.maven:nirvana-library-1164411:6016044")
 
+    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:ftb-library-forge-404465:6164053")
+    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:6130786")
 
     implementation fg.deobf("me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge")
     implementation("thedarkcolour:kotlinforforge:4.11.0")
