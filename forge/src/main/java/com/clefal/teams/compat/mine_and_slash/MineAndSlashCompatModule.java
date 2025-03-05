@@ -19,9 +19,6 @@ public class MineAndSlashCompatModule implements ICompatModule {
     public static final MineAndSlashCompatModule INSTANCE = new MineAndSlashCompatModule();
     public boolean isModuleEnabled = false;
 
-
-    private static MineAndSlashServerConfig serverConfig;
-
     public static MineAndSlashClientConfig getClientConfig() {
         if (MineAndSlashClientConfig.clientConfig == null) {
             MineAndSlashClientConfig.clientConfig = ConfigApiJava.registerAndLoadConfig(MineAndSlashClientConfig::new, RegisterType.CLIENT);

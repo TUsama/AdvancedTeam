@@ -15,6 +15,8 @@ public record PositionContext(float oneEntryHeight, float iconAndTextInterval, f
         float oneEntryHeight = getRelativeHeight(0.03f);
         float iconAndTextInterval = getRelativeWidth(0.025f);
         float barWidth = getRelativeWidth(0.15f);
+        //player head is barWidth / 3, so is 0.05.
+        //0.05+0.025+0.15
         float barHeight = getRelativeHeight(0.026f);
 
         return new PositionContext(oneEntryHeight, iconAndTextInterval, barWidth, barHeight, origin, new Vector2f(iconAndTextInterval + barWidth + 5, barHeight));
