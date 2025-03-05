@@ -1,8 +1,9 @@
 package com.clefal.teams;
 
 import com.clefal.teams.client.AdvancedTeamClientForge;
-import com.clefal.teams.modules.compat.CompatManager;
+import com.clefal.teams.compat.ftbteams.FTBTeamsCompatModule;
 import com.clefal.teams.compat.mine_and_slash.MineAndSlashCompatModule;
+import com.clefal.teams.modules.compat.CompatManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,12 +18,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import java.util.List;
+
 @Mod(AdvancedTeam.MODID)
 public class AdvancedTeamForge {
-    
+
     public AdvancedTeamForge() {
         AdvancedTeam.LOGGER.info("Teams forge mod init!");
-        IEventBus bus  = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::commonSetup);
 
         MinecraftForge.EVENT_BUS.addListener(this::login);
@@ -33,7 +36,11 @@ public class AdvancedTeamForge {
         MinecraftForge.EVENT_BUS.addListener(this::onAdvancement);
         MinecraftForge.EVENT_BUS.addListener(this::serverTick);
 
-        CompatManager.compats.add(MineAndSlashCompatModule.INSTANCE);
+        CompatManager.compats.addAll(
+                List.of(
+                        MineAndSlashCompatModule.INSTANCE,
+                        FTBTeamsCompatModule.INSTANCE
+                ));
         CompatManager.tryEnableAll();
 
         AdvancedTeam.packetInit();
@@ -46,14 +53,11 @@ public class AdvancedTeamForge {
         AdvancedTeam.serverInit();
 
 
-
-
     }
 
 
-
     private void onAdvancement(AdvancementEvent.AdvancementEarnEvent event) {
-        AdvancedTeam.onAdvancement((ServerPlayer) event.getEntity(),event.getAdvancement());
+        AdvancedTeam.onAdvancement((ServerPlayer) event.getEntity(), event.getAdvancement());
     }
 
     private void onServerStarted(ServerStartedEvent event) {
@@ -72,12 +76,12 @@ public class AdvancedTeamForge {
         AdvancedTeam.whenPlayerOffline((ServerPlayer) event.getEntity());
     }
 
-    private void serverTick(TickEvent.ServerTickEvent event){
+    private void serverTick(TickEvent.ServerTickEvent event) {
         AdvancedTeam.whenServerTick(event.getServer());
     }
 
     private void playerClone(PlayerEvent.Clone event) {
-        AdvancedTeam.whenplayerClone((ServerPlayer) event.getOriginal(), (ServerPlayer) event.getEntity(),!event.isWasDeath());
+        AdvancedTeam.whenplayerClone((ServerPlayer) event.getOriginal(), (ServerPlayer) event.getEntity(), !event.isWasDeath());
     }
 
 
