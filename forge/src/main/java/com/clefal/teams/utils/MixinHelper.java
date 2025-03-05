@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraftforge.fml.ModList;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
@@ -46,7 +47,7 @@ public class MixinHelper {
     }
 
     public void enableOfflineForFTBTeams(KnownClientPlayer selfKnown, Map<UUID, KnownClientPlayer> knownPlayers, CallbackInfo info){
-        if (FTBTeamsCompatModule.INSTANCE.isModuleEnabled && FTBTeamsCompatModule.getServerConfig().enableOfflineSupport){
+        if (FTBTeamsCompatModule.INSTANCE.isModuleEnabled && FTBTeamsCompatModule.getServerConfig().enableOfflineSupport && !ModList.get().isLoaded("ftb_teams_offline_enabler")){
             String userName = Minecraft.getInstance().getUser().getName();
             UUID offlinePlayerUUID = UUIDUtil.createOfflinePlayerUUID(userName);
             selfKnown = knownPlayers.get(offlinePlayerUUID);
