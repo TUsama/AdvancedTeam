@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 
 public class TeamsCreateScreen extends TeamsInputScreen {
     ATCheckBox isPublic;
-    float scale = 0.5f;
 
     public TeamsCreateScreen(Screen parent) {
         super(parent, ModComponents.CREATE_TITLE);
@@ -30,9 +29,9 @@ public class TeamsCreateScreen extends TeamsInputScreen {
     @Override
     protected void init() {
         super.init();
-        this.isPublic = new ATCheckBox((int) (x + (float) (getWidth() - 100) / 2), y + 35, 10, 10, Component.translatable("teams.menu.team_config.is_public"), false, false);
+        /*this.isPublic = new ATCheckBox((int) (x + (float) (getWidth() - 100) / 2), y + 35, 10, 10, Component.translatable("teams.menu.team_config.is_public"), false, false);
         isPublic.setTooltip(Tooltip.create(Component.translatable("teams.menu.team_config.is_public.desc")));
-        addWidget(this.isPublic);
+        addWidget(this.isPublic);*/
     }
 
 
@@ -40,8 +39,8 @@ public class TeamsCreateScreen extends TeamsInputScreen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         super.render(graphics, mouseX, mouseY, delta);
 
-        graphics.drawString(Minecraft.getInstance().font, Component.translatable("teams.menu.create.public"), (int) (x + (float) (getWidth() - 100) / 2) + 13, y + 36, ChatFormatting.WHITE.getColor());
-        this.isPublic.render(graphics, mouseX, mouseY, delta);
+        /*graphics.drawString(Minecraft.getInstance().font, Component.translatable("teams.menu.create.public").getString(), (int) (x + (float) (getWidth() - 100) / 2) + 13, y + 36, ChatFormatting.WHITE.getColor());
+        this.isPublic.render(graphics, mouseX, mouseY, delta);*/
     }
 
     @Override

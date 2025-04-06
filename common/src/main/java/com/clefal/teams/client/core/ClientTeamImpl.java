@@ -52,6 +52,9 @@ class ClientTeamImpl implements ClientTeam {
     @Override
     public void changeLeader(UUID leader) {
         this.leader = leader;
+        if (client.screen instanceof HasTeamScreen screen) {
+            screen.refresh();
+        }
     }
 
     @Override
@@ -62,6 +65,9 @@ class ClientTeamImpl implements ClientTeam {
     @Override
     public void updatePermission(boolean hasPermission) {
         this.hasPermission = hasPermission;
+        if (client.screen instanceof HasTeamScreen screen) {
+            screen.refresh();
+        }
     }
 
     @Override
@@ -82,6 +88,9 @@ class ClientTeamImpl implements ClientTeam {
     @Override
     public void setCanInvite(boolean canInvite) {
         this.allowEveryoneInvite = canInvite;
+        if (client.screen instanceof HasTeamScreen screen) {
+            screen.refresh();
+        }
     }
 
     @Override
@@ -157,6 +166,8 @@ class ClientTeamImpl implements ClientTeam {
         teammates.clear();
         name = "";
         leader = null;
+        hasPermission = false;
+        allowEveryoneInvite = false;
         initialized = false;
         // If in TeamsScreen, go to lonely screen
         if (client.screen instanceof TeamsScreen) {
