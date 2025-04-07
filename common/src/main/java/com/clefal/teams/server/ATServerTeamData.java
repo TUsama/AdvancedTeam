@@ -66,6 +66,12 @@ public class ATServerTeamData extends SavedData {
         return team;
     }
 
+    public ATServerTeam createPublicTeam(@NotNull String name,@NotNull ServerPlayer creator) {
+        ATServerTeam team = createTeam(name, creator);
+        team.setPublic(true);
+        return team;
+    }
+
     public void disbandTeam(ATServerTeam team) {
         teams.remove(team.getName());
         MinecraftServer server = serverLevel.getServer();
