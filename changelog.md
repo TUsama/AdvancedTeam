@@ -1,4 +1,7 @@
 ### 1.4.2
+allow people to create a public team on create screen again.
+
+### 1.4.2
 fix a bug that will not show the team config menu tab after you create the party
 
 ### 1.4.1
