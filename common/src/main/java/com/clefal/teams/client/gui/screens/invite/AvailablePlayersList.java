@@ -105,7 +105,10 @@ public class AvailablePlayersList extends ATEntryListTemplate {
             pose.pushPose();
             pose.scale(scale, scale, 1.0f);
             this.selected.render(guiGraphics, mouseX, mouseY, partialTick);
-            PlayerFaceRenderer.draw(guiGraphics, this.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32);
+            if (skin != null){
+                PlayerFaceRenderer.draw(guiGraphics, this.skin, (int) ((left + 4) / scale), (int) ((top + 4) / scale), 32);
+
+            }
             pose.popPose();
             this.selected.setFocused(hovering);
 
