@@ -1,4 +1,7 @@
-### 1.4.2
+### 1.4.4
+fix a crashing bug that passes null ResourceLocation.
+
+### 1.4.3
 allow people to create a public team on create screen again.
 
 ### 1.4.2
