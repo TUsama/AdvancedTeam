@@ -3,6 +3,8 @@ package com.clefal.teams.config;
 
 import com.clefal.teams.AdvancedTeam;
 import kotlin.ranges.IntRange;
+import me.fzzyhmstrs.fzzy_config.annotations.Action;
+import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
@@ -46,6 +48,7 @@ public class ATClientConfig extends Config {
     }
     public Button button = new Button();
     public static class Button extends ConfigSection{
+        @RequiresAction(action = Action.RESTART)
         public boolean enableInventoryButton = true;
         public int inventoryButtonXOffset = 0;
         public int inventoryButtonYOffset = 0;

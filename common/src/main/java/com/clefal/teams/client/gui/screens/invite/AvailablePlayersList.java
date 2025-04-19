@@ -32,12 +32,11 @@ public class AvailablePlayersList extends ATEntryListTemplate {
     Minecraft client = Minecraft.getInstance();
     Font font = client.font;
     int textHeight = font.lineHeight;
-    ResourceLocation fail = ResourceLocation.tryParse("fail:fail");
 
     public AvailablePlayersList(TeamsScreen screen, List<String> players) {
         super(screen);
         for (String player : players) {
-            this.addEntry(new PlayerEntry(player, fail));
+            this.addEntry(new PlayerEntry(player, DefaultPlayerSkin.getDefaultSkin(Minecraft.getInstance().player.getUUID())));
         }
     }
 
