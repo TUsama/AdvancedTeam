@@ -1,6 +1,7 @@
 package com.clefal.teams.client.gui.screens.hasteam;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.PlaceUtils;
 import com.clefal.teams.client.core.ClientTeam;
@@ -155,7 +156,7 @@ public class HasTeamScreen extends TeamsScreen {
             Minecraft minecraft = Minecraft.getInstance();
 
             this.leaveTeamButton = Button.builder(ModComponents.LEAVE_TEXT, button -> {
-                Services.PLATFORM.sendToServer(new C2STeamLeavePacket());
+                NetworkUtils.sendToServer(new C2STeamLeavePacket());
                 minecraft.setScreen(new NoTeamScreen(screen));
             }).bounds(screen.width / 2 - 125, screen.y + HEIGHT - 30, 80, 20).build();
 
@@ -236,7 +237,7 @@ public class HasTeamScreen extends TeamsScreen {
             this.everyoneInvite = new ATCheckBox(screen.x + 20, screen.y + 30, 10, 10, Component.translatable("teams.menu.team_config.everyone_can_invite"), ClientTeam.INSTANCE.allowEveryoneInvite());
 
             this.saveButton = Button.builder(Component.translatable("teams.menu.team_config.save"), button -> {
-                Services.PLATFORM.sendToServer(new C2STeamConfigSavePacket(isPublic.selected(), everyoneInvite.selected()));
+                NetworkUtils.sendToServer(new C2STeamConfigSavePacket(isPublic.selected(), everyoneInvite.selected()));
                 new TeammateMenu(screen).getTab().onPress();
                 Minecraft.getInstance().getToasts().addToast(new ToastConfigSave(ClientTeam.INSTANCE.getName()));
             }).build();

@@ -1,5 +1,6 @@
 package com.clefal.teams.network.server;
 
+import com.clefal.nirvana_lib.network.C2SModPacket;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.server.ATServerTeam;

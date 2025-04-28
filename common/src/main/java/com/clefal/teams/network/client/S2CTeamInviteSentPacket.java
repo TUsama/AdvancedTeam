@@ -1,5 +1,6 @@
 package com.clefal.teams.network.client;
 
+import com.clefal.nirvana_lib.network.S2CModPacket;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class S2CTeamInviteSentPacket implements S2CModPacket {

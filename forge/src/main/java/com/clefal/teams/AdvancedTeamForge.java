@@ -1,9 +1,9 @@
 package com.clefal.teams;
 
 import com.clefal.teams.client.AdvancedTeamClientForge;
-import com.clefal.teams.compat.ftbteams.FTBTeamsCompatModule;
 import com.clefal.teams.compat.mine_and_slash.MineAndSlashCompatModule;
 import com.clefal.teams.modules.compat.CompatManager;
+import com.clefal.teams.modules.compat.ftbteams.FTBTeamsCompatModule;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,7 +39,7 @@ public class AdvancedTeamForge {
         CompatManager.compats.addAll(
                 List.of(
                         MineAndSlashCompatModule.INSTANCE,
-                        FTBTeamsCompatModule.INSTANCE
+                        FTBTeamsCompatModule.getInstance()
                 ));
         CompatManager.tryEnableAll();
 

@@ -1,6 +1,6 @@
 package com.clefal.teams.network.client.config;
 
-import com.clefal.teams.network.client.S2CModPacket;
+import com.clefal.nirvana_lib.network.S2CModPacket;
 
 abstract class S2CTeamConfigChangePacket<T> implements S2CModPacket {
     String name;

@@ -1,5 +1,6 @@
 package com.clefal.teams.network.server;
 
+import com.clefal.nirvana_lib.network.C2SModPacket;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.IHasTeam;
 import net.minecraft.network.FriendlyByteBuf;
@@ -8,7 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
-public class C2SAcceptApplicationPacket implements C2SModPacket{
+public class C2SAcceptApplicationPacket implements C2SModPacket {
     UUID uuid;
 
     public C2SAcceptApplicationPacket(UUID uuid) {

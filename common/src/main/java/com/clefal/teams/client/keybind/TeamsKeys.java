@@ -1,5 +1,6 @@
 package com.clefal.teams.client.keybind;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.client.gui.hud.CompassOverlay;
 import com.clefal.teams.client.gui.hud.StatusOverlay;
 import com.clefal.teams.network.server.C2SAcceptApplicationPacket;
@@ -64,12 +65,12 @@ public class TeamsKeys {
         ToastInvited invited = toastManager.getToast(ToastInvited.class, Toast.NO_TOKEN);
         if (invited != null) {
             invited.respond();
-            Services.PLATFORM.sendToServer(new C2STeamJoinPacket(invited.team));
+            NetworkUtils.sendToServer(new C2STeamJoinPacket(invited.team));
         } else {
             ToastApplied requested = toastManager.getToast(ToastApplied.class, Toast.NO_TOKEN);
             if (requested != null) {
                 requested.respond();
-                Services.PLATFORM.sendToServer(new C2SAcceptApplicationPacket(requested.id));
+                NetworkUtils.sendToServer(new C2SAcceptApplicationPacket(requested.id));
             }
         }
     });

@@ -1,6 +1,8 @@
 package com.clefal.teams.network.server;
 
+import com.clefal.nirvana_lib.network.C2SModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.client.gui.util.PlayerWithSkin;
 import com.clefal.teams.network.client.S2CReturnPlayerWithSkinPacket;
 import com.clefal.teams.platform.Services;
@@ -20,7 +22,7 @@ public class C2SAskNoTeamPlayerWithSkinPacket implements C2SModPacket {
 
     @Override
     public void handleServer(ServerPlayer player) {
-        Services.PLATFORM.sendToClient(new S2CReturnPlayerWithSkinPacket(List.ofAll(player.getServer().getPlayerList().getPlayers())
+        NetworkUtils.sendToClient(new S2CReturnPlayerWithSkinPacket(List.ofAll(player.getServer().getPlayerList().getPlayers())
                 .filter(x -> !((IHasTeam) x).hasTeam())
                 .map(x -> {
                     var properties = player.getGameProfile().getProperties();

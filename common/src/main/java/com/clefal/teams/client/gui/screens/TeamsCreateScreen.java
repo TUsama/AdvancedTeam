@@ -1,5 +1,6 @@
 package com.clefal.teams.client.gui.screens;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATCheckBox;
 import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
@@ -47,9 +48,9 @@ public class TeamsCreateScreen extends TeamsInputScreen {
     protected void onSubmit(Button widget) {
         minecraft.setScreen(new HasTeamScreen(null));
         if (isPublic.selected()){
-            Services.PLATFORM.sendToServer(C2STeamCreatePacket.createPublicTeam(inputField.getValue()));
+            NetworkUtils.sendToServer(C2STeamCreatePacket.createPublicTeam(inputField.getValue()));
         } else {
-            Services.PLATFORM.sendToServer(C2STeamCreatePacket.createNonPublicTeam(inputField.getValue()));
+            NetworkUtils.sendToServer(C2STeamCreatePacket.createNonPublicTeam(inputField.getValue()));
         }
 
     }

@@ -1,5 +1,6 @@
 package com.clefal.teams.client.gui.screens.invite;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.client.core.ClientRenderPersistentData;
 import com.clefal.teams.client.gui.components.ATEntryList;
 import com.clefal.teams.client.gui.components.ATEntryListTemplate;
@@ -35,7 +36,7 @@ public class InvitationEntryList extends ATEntryListTemplate {
             Invitation = invitation;
             this.accept = ComponentButton.builder(Component.translatable("teams.menu.invitation.accept"), button -> {
                 if (ClientRenderPersistentData.getInstance().invitations.contains(Invitation)){
-                    Services.PLATFORM.sendToServer(new C2STeamJoinPacket(Invitation));
+                    NetworkUtils.sendToServer(new C2STeamJoinPacket(Invitation));
                     ClientRenderPersistentData.getInstance().invitations.remove(invitation);
                 } else {
                     Minecraft.getInstance().player.sendSystemMessage(Component.translatable("teams.menu.invitation_expired"));

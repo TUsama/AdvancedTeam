@@ -1,5 +1,6 @@
 package com.clefal.teams.client.gui.screens.noteam;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeamData;
 import com.clefal.teams.client.gui.components.ATEntryList;
@@ -54,7 +55,7 @@ public class TeamEntryList extends ATEntryListTemplate {
             this.team = team;
 
             var button = new ImageButton(0, 0, 8, 8, 24, 190, TEXTURE, button1 -> {
-                Services.PLATFORM.sendToServer(new C2STeamApplyingPacket(team));
+                NetworkUtils.sendToServer(new C2STeamApplyingPacket(team));
                 client.getToasts().addToast(new ToastApplying(team));
                 client.setScreen(null);
             });

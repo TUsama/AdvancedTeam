@@ -1,5 +1,6 @@
 package com.clefal.teams.network.server;
 
+import com.clefal.nirvana_lib.network.C2SModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Either;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.server.IHasTeam;

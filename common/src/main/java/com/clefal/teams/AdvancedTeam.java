@@ -3,6 +3,7 @@ package com.clefal.teams;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.BusBuilder;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.IEventBus;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.config.ConfigManager;
 import com.clefal.teams.event.client.ClientEvent;
@@ -105,8 +106,8 @@ public class AdvancedTeam {
         // Send packets
         var teams = teamData.getTeams().map(ATServerTeam::getName).toJavaArray(String[]::new);
         var onlineTeams = teamData.getTeams().filter(t -> !t.getOnlinePlayers().isEmpty()).map(ATServerTeam::getName).toJavaArray(String[]::new);
-        Services.PLATFORM.sendToClient(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ADD, teams), player);
-        Services.PLATFORM.sendToClient(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, onlineTeams), player);
+        NetworkUtils.sendToClient(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ADD, teams), player);
+        NetworkUtils.sendToClient(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, onlineTeams), player);
     }
 
     public static void whenPlayerOffline(ServerPlayer player) {

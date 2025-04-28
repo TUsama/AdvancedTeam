@@ -1,6 +1,7 @@
 package com.clefal.teams.server;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Either;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
@@ -43,7 +44,7 @@ public class ATServerTeamData extends SavedData {
     }
 
     private void announceUpdate(S2CTeamDataUpdatePacket.Type type, Collection<ServerPlayer> players, String... name){
-        Services.PLATFORM.sendToClients(new S2CTeamDataUpdatePacket(type, name), players);
+        NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(type, name), players);
         setDirty();
     }
 
@@ -103,7 +104,7 @@ public class ATServerTeamData extends SavedData {
             return Either.left(Failure.in_a_team);
         } else {
             if (!player1.getInvitations().contains(new Invitation(team.getName()))) {
-                Services.PLATFORM.sendToClient(new S2CTeamInvitedPacket(team), player);
+                NetworkUtils.sendToClient(new S2CTeamInvitedPacket(team), player);
                 return Either.right(true);
             } else {
                 return Either.left(Failure.already_invite);

@@ -1,5 +1,6 @@
 package com.clefal.teams.network.client;
 
+import com.clefal.nirvana_lib.network.S2CModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;

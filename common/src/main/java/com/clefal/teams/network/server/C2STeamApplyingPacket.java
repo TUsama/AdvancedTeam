@@ -1,5 +1,7 @@
 package com.clefal.teams.network.server;
 
+import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.network.client.S2CTeamAppliedPacket;
@@ -35,7 +37,7 @@ public class C2STeamApplyingPacket implements C2SModPacket {
             var list = player.server.getPlayerList();
             ServerPlayer seniorPlayer = list.getPlayer(team.getLeader());
             team.addApplication(new Application(player.getUUID()));
-            Services.PLATFORM.sendToClient(new S2CTeamAppliedPacket(name, player.getUUID()), seniorPlayer);
+            NetworkUtils.sendToClient(new S2CTeamAppliedPacket(name, player.getUUID()), seniorPlayer);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.clefal.teams.server;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.config.ATServerConfig;
 import com.clefal.teams.event.server.ServerOnPlayerOnlineEvent;
@@ -64,14 +65,14 @@ public class ATServerTeam extends Team {
 
     public void announceConfigChangeToClient(){
         List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
-        Services.PLATFORM.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), players1);
-        Services.PLATFORM.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(name, allowEveryoneInvite), onlinePlayers.values());
+        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), players1);
+        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(name, allowEveryoneInvite), onlinePlayers.values());
     }
 
     public void promote(ServerPlayer player){
         this.leader = player.getUUID();
         for (ServerPlayer value : this.onlinePlayers.values()) {
-            Services.PLATFORM.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(value), this.leader), value);
+            NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(value), this.leader), value);
         }
         AdvancedTeam.post(new ServerPromoteEvent(player));
     }
@@ -131,17 +132,17 @@ public class ATServerTeam extends Team {
         ((IHasTeam) player).setTeam(this);
         // Packets
         if (sendPackets) {
-            Services.PLATFORM.sendToClient(new S2CTeamInitPacket(name, leader), player);
+            NetworkUtils.sendToClient(new S2CTeamInitPacket(name, leader), player);
             if (onlinePlayers.size() == 1) {
                 var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
-                Services.PLATFORM.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, name), players);
+                NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, name), players);
             }
             var players = getOnlinePlayers().toJavaList();
-            Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.ADD), players);
+            NetworkUtils.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.ADD), players);
 
             for (var teammate : players) {
-                Services.PLATFORM.sendToClient(new S2CTeamPlayerDataPacket(teammate, S2CTeamPlayerDataPacket.Type.ADD), player);
-                Services.PLATFORM.sendToClient(new S2CPermissionUpdatePacket(playerHasPermissions(teammate), leader), player);
+                NetworkUtils.sendToClient(new S2CTeamPlayerDataPacket(teammate, S2CTeamPlayerDataPacket.Type.ADD), player);
+                NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(playerHasPermissions(teammate), leader), player);
             }
         }
         // Advancement Sync
@@ -167,10 +168,10 @@ public class ATServerTeam extends Team {
         if (sendPackets) {
             if (isEmpty()) {
                 var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
-                Services.PLATFORM.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.OFFLINE, name), players);
+                NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.OFFLINE, name), players);
             }
             var players = getOnlinePlayers();
-            Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.REMOVE), players.toJavaList());
+            NetworkUtils.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.REMOVE), players.toJavaList());
         }
     }
 
@@ -187,8 +188,8 @@ public class ATServerTeam extends Team {
         var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
             // Packets
-            Services.PLATFORM.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, true), playerEntity);
-            Services.PLATFORM.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, false), getOnlinePlayers().toJavaList());
+            NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, true), playerEntity);
+            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, false), getOnlinePlayers().toJavaList());
             onPlayerOnline(playerEntity, true);
             // Advancement Sync
             Set<Advancement> advancements = ((AdvancementAccessor) playerEntity.getAdvancements()).getVisibleAdvancements();
@@ -222,9 +223,9 @@ public class ATServerTeam extends Team {
         var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
             onPlayerOffline(playerEntity, true);
-            Services.PLATFORM.sendToClient(new S2CTeamClearPacket(), playerEntity);
-            Services.PLATFORM.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);
-            Services.PLATFORM.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers().toJavaList());
+            NetworkUtils.sendToClient(new S2CTeamClearPacket(), playerEntity);
+            NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);
+            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers().toJavaList());
             ((IHasTeam) playerEntity).setTeam(null);
         }
         teamData.setDirty();

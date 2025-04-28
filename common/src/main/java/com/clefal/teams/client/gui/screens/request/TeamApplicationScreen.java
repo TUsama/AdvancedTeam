@@ -1,5 +1,6 @@
 package com.clefal.teams.client.gui.screens.request;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2SAskNoTeamPlayerWithSkinPacket;
 import com.clefal.teams.network.server.C2SAskRequestPlayerWithSkinPacket;
@@ -19,7 +20,7 @@ public class TeamApplicationScreen extends TeamsScreen {
     protected void init() {
         super.init();
         this.entryList = new ApplicationsList(this);
-        Services.PLATFORM.sendToServer(new C2SAskRequestPlayerWithSkinPacket());
+        NetworkUtils.sendToServer(new C2SAskRequestPlayerWithSkinPacket());
         addRenderableOnly(entryList);
     }
 

@@ -21,7 +21,7 @@ public class Hooker {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(player);
         if (team != null) {
             List<ServerPlayer> players = team.getOnlinePlayers().asJava();
-            Services.PLATFORM.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.UPDATE), players);
+            NetworkUtils.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.UPDATE), players);
         }
     }
 */

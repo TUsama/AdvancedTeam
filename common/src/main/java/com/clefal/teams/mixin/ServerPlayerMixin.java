@@ -1,5 +1,6 @@
 package com.clefal.teams.mixin;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.property.impl.Health;
 import com.clefal.teams.event.server.ServerFreezePropertyUpdateEvent;
@@ -94,7 +95,7 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
             Invitation next = invitationListIterator.next();
             if (next.update()) {
                 invitationListIterator.remove();
-                Services.PLATFORM.sendToClient(new S2CInvitationPacket(next.teamName, S2CInvitationPacket.Type.REMOVE), serverPlayer);
+                NetworkUtils.sendToClient(new S2CInvitationPacket(next.teamName, S2CInvitationPacket.Type.REMOVE), serverPlayer);
             }
         }
         //tick property update.
@@ -104,7 +105,7 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
                 List<ServerPlayer> players = team.getOnlinePlayers().asJava();
                 S2CTeamPlayerDataPacket s2CTeamPlayerDataPacket = new S2CTeamPlayerDataPacket(self(), S2CTeamPlayerDataPacket.Type.UPDATE, result);
                 //this keys collection is only initialized when we need to send an UPDATE type packet.
-                Services.PLATFORM.sendToClients(s2CTeamPlayerDataPacket, players);
+                NetworkUtils.sendToClients(s2CTeamPlayerDataPacket, players);
             }
             clear();
         }

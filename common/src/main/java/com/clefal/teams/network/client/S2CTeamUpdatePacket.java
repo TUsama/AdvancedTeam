@@ -1,5 +1,6 @@
 package com.clefal.teams.network.client;
 
+import com.clefal.nirvana_lib.network.S2CModPacket;
 import com.clefal.teams.client.gui.toast.ToastJoin;
 import com.clefal.teams.client.gui.toast.ToastLeave;
 import net.minecraft.nbt.CompoundTag;

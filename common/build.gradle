@@ -25,7 +25,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    compileOnly "curse.maven:nirvana-library-1164411:6016044"
+    compileOnly ("curse.maven:nirvana-library-1164411:6434893")
 
 
     compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"

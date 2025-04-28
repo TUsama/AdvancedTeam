@@ -1,5 +1,6 @@
 package com.clefal.teams.modules.internal;
 
+import com.clefal.nirvana_lib.utils.SideUtils;
 import com.clefal.teams.modules.internal.effect.handlers.VanillaPotionEffectPropertyClientHandler;
 import com.clefal.teams.modules.internal.effect.handlers.VanillaPotionEffectPropertyServerHandler;
 import com.clefal.teams.modules.internal.propertyhandler.IPropertyClientHandler;
@@ -23,8 +24,17 @@ public class HandlerManager {
 
 
     public void registerHandlerPair(IPropertyServerHandler handler1, IPropertyClientHandler handler2){
+        registerAtServer(handler1);
+        registerAtClient(handler2);
+    }
+
+    public void registerAtServer(IPropertyServerHandler handler1){
         serverHandlers.add(handler1);
-        clientHandlers.add(handler2);
+    }
+    public void registerAtClient(IPropertyClientHandler handler2){
+        if (SideUtils.isClient()) {
+            clientHandlers.add(handler2);
+        }
     }
 
     public List<IPropertyServerHandler> getServerHandlers(){

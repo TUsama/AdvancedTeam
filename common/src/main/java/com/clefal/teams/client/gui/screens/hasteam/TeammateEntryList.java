@@ -1,5 +1,6 @@
 package com.clefal.teams.client.gui.screens.hasteam;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.components.ATEntryList;
@@ -56,7 +57,7 @@ public class TeammateEntryList extends ATEntryListTemplate {
             int rowTop = getRowTop(index);
             {
                 ImageButton kickButton = new ImageButton(rowRight - 24, rowTop + 8, 8, 8, 16, 190, TEXTURE, button -> {
-                    Services.PLATFORM.sendToServer(new C2STeamKickPacket(ClientTeam.INSTANCE.getName(), teammate.id));
+                    NetworkUtils.sendToServer(new C2STeamKickPacket(ClientTeam.INSTANCE.getName(), teammate.id));
                     ClientTeam.INSTANCE.removePlayer(teammate.id);
                 });
                 kickButton.setTooltip(Tooltip.create(Component.translatable("teams.button.kick")));
@@ -64,7 +65,7 @@ public class TeammateEntryList extends ATEntryListTemplate {
                 this.kickButton.active = false;
             }
             {
-                ImageButton promoteButton = new ImageButton(rowRight - 48, rowTop + 8, 8, 8, 0, 0, 64, FLAG, 64, 128, button -> Services.PLATFORM.sendToServer(new C2SPromotePacket(teammate.id))){
+                ImageButton promoteButton = new ImageButton(rowRight - 48, rowTop + 8, 8, 8, 0, 0, 64, FLAG, 64, 128, button -> NetworkUtils.sendToServer(new C2SPromotePacket(teammate.id))){
                     @Override
                     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                         int i = 0;

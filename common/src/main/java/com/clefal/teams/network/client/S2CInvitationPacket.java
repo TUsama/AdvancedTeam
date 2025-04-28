@@ -1,5 +1,6 @@
 package com.clefal.teams.network.client;
 
+import com.clefal.nirvana_lib.network.S2CModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.clefal.teams.client.core.ClientRenderPersistentData;
 import net.minecraft.network.FriendlyByteBuf;
@@ -8,7 +9,7 @@ import static com.clefal.nirvana_lib.relocated.io.vavr.API.$;
 import static com.clefal.nirvana_lib.relocated.io.vavr.API.Case;
 import static com.clefal.nirvana_lib.relocated.io.vavr.Predicates.is;
 
-public class S2CInvitationPacket implements S2CModPacket{
+public class S2CInvitationPacket implements S2CModPacket {
 
     public enum Type{
         ADD,

@@ -22,6 +22,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
+
+    modImplementation "curse.maven:nirvana-library-1164411:6434896"
 }
 
 loom {
