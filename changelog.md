@@ -2,6 +2,7 @@
 add FTB Teams compat, now the change made in this mod will be sync to FTB Teams.
 fix a bug that player can't leave the team when there is only one player in the team.
 fix a MNS duplicated damage particle bug.
+update dependency's version
 
 ### 1.4.4
 fix a crashing bug that passes null ResourceLocation.

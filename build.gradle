@@ -78,6 +78,9 @@ subprojects {
         maven {
             url = "https://maven.theillusivec4.top/"
         }
+        maven {
+            url = "https://api.modrinth.com/maven"
+        }
 
     }
 

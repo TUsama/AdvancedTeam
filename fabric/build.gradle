@@ -23,7 +23,7 @@ dependencies {
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
 
-    modImplementation "curse.maven:nirvana-library-1164411:6434896"
+    modImplementation "maven.modrinth:nirvana-library:${fabric_lib_version}"
 }
 
 loom {

@@ -103,7 +103,7 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
 
-    implementation fg.deobf("curse.maven:nirvana-library-1164411:6434893")
+    implementation fg.deobf("maven.modrinth:nirvana-library:${lib_version}")
 
     runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:ftb-library-forge-404465:6164053")
@@ -146,7 +146,7 @@ publishMods {
         clientRequired = true
         serverRequired = true
         minecraftVersions.add("1.20.1")
-        requires("fzzy-config", "nirvana-library")
+        requires("nirvana-library")
     }
 }
 
