@@ -25,10 +25,12 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    compileOnly ("curse.maven:nirvana-library-1164411:6434893")
+    modCompileOnly ("curse.maven:nirvana-library-1164411:6434893")
 
+    modCompileOnly ("curse.maven:ftb-library-forge-404465:6164053")
+    modCompileOnly ("curse.maven:ftb-teams-forge-404468:6130786")
 
-    compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"
+    modCompileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"
 }
 
 loom {

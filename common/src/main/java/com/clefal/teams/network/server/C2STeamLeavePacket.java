@@ -4,7 +4,9 @@ import com.clefal.nirvana_lib.network.C2SModPacket;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerPlayerLeaveEvent;
 import com.clefal.teams.server.ATServerTeamData;
+import com.clefal.teams.server.IHasTeam;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class C2STeamLeavePacket implements C2SModPacket {
@@ -12,7 +14,7 @@ public class C2STeamLeavePacket implements C2SModPacket {
 
     public C2STeamLeavePacket() {}
 
-    public C2STeamLeavePacket( FriendlyByteBuf byteBuf) {
+    public C2STeamLeavePacket(FriendlyByteBuf byteBuf) {
 
     }
 
@@ -23,8 +25,9 @@ public class C2STeamLeavePacket implements C2SModPacket {
 
     @Override
     public void handleServer(ServerPlayer player) {
+        var team = ((IHasTeam) player).getTeam();
         if (ATServerTeamData.getOrMakeDefault(player.server).removePlayerFromTeam(player)) {
-            AdvancedTeam.post(new ServerPlayerLeaveEvent(player));
+            AdvancedTeam.post(new ServerPlayerLeaveEvent(player, team));
         }
     }
 }

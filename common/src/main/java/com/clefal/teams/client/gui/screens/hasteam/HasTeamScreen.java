@@ -157,7 +157,7 @@ public class HasTeamScreen extends TeamsScreen {
 
             this.leaveTeamButton = Button.builder(ModComponents.LEAVE_TEXT, button -> {
                 NetworkUtils.sendToServer(new C2STeamLeavePacket());
-                minecraft.setScreen(new NoTeamScreen(screen));
+                minecraft.setScreen(new NoTeamScreen(null));
             }).bounds(screen.width / 2 - 125, screen.y + HEIGHT - 30, 80, 20).build();
 
             this.inviteButton = Button.builder(ModComponents.INVITE_TEXT, button -> minecraft.setScreen(new TeamsInvitePlayerScreen(screen)))

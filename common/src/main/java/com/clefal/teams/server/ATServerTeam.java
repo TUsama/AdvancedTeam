@@ -70,11 +70,13 @@ public class ATServerTeam extends Team {
     }
 
     public void promote(ServerPlayer player){
+        ServerPlayer oldLeader = getOnlinePlayers().find(x -> x.getUUID().equals(leader)).get();
+        if (oldLeader == null) throw new NullPointerException("can't find old leader when try to promote!");
         this.leader = player.getUUID();
         for (ServerPlayer value : this.onlinePlayers.values()) {
             NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(value), this.leader), value);
         }
-        AdvancedTeam.post(new ServerPromoteEvent(player));
+        AdvancedTeam.post(new ServerPromoteEvent(oldLeader, player, this));
     }
 
     public void addApplication(Application application){
@@ -204,15 +206,18 @@ public class ATServerTeam extends Team {
 
     private void removePlayer(UUID player) {
         players.remove(player);
-        if (this.leader.equals(player)) {
-            Iterator<ServerPlayer> iterator = onlinePlayers.values().iterator();
+        if (this.leader.equals(player) && getOnlinePlayers().size() > 1) {
+            Iterator<ServerPlayer> iterator = getOnlinePlayers().iterator();
             if (iterator.hasNext()){
                 this.promote(iterator.next());
 
             }
+        } else if (getOnlinePlayers().size() == 1) {
+            this.leader = getOnlinePlayers().getOrElseThrow(() -> new NullPointerException("can't find the last player after removing, even there is still a player in team!")).getUUID();
         }
         String playerName = getNameFromUUID(player);
         // Scoreboard
+
         if (ATServerConfig.config.enableVanillaTeamCompat){
             var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
             if (playerScoreboardTeam != null && playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
@@ -222,6 +227,7 @@ public class ATServerTeam extends Team {
         // Packets
         var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
+
             onPlayerOffline(playerEntity, true);
             NetworkUtils.sendToClient(new S2CTeamClearPacket(), playerEntity);
             NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);

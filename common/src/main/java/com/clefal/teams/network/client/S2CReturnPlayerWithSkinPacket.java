@@ -36,7 +36,6 @@ public class S2CReturnPlayerWithSkinPacket implements S2CModPacket {
         switch (usage){
             case INVITATION -> Helper.tryUpdateInvitationScreenEntryList(playersName);
             case REQUEST -> {
-                System.out.println(playersName);
                 Helper.tryUpdateApplicationScreenEntryList(playersName);
             }
         }

@@ -38,7 +38,7 @@ public class C2STeamKickPacket implements C2SModPacket {
         if (team.playerHasPermissions(player)) {
             ServerPlayer kicked = player.server.getPlayerList().getPlayer(toKick);
             ATServerTeamData.getOrMakeDefault(player.server).removePlayerFromTeam(kicked);
-            AdvancedTeam.post(new ServerKickPlayerEvent(name, kicked));
+            AdvancedTeam.post(new ServerKickPlayerEvent(player, kicked, name));
         } else {
             player.sendSystemMessage(Component.literal("You don't have permission!"));
         }

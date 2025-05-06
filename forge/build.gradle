@@ -36,7 +36,7 @@ minecraft {
             taskName 'Client'
             property 'at.dev.tool', 'true'
             property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.debug.verbose', 'true'
+            //property 'mixin.debug.verbose', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             jvmArgs '-XX:+AllowEnhancedClassRedefinition'
             mods {

@@ -29,6 +29,7 @@ public class MixinHelper {
             IHasTeam player = (IHasTeam) source;
             if (player.hasTeam()) {
                 for (ServerPlayer onlinePlayer : player.getTeam().getOnlinePlayers()) {
+                    if (onlinePlayer.equals(source)) continue;
                     if (source.distanceToSqr(onlinePlayer) <= Math.pow(MineAndSlashCompatModule.getServerConfig().sendParticleWhenWithinRange.get(), 2)) Packets.sendToClient(onlinePlayer, new ExileInteractionResultPacket(target.getId(), notifier));
                 }
             }

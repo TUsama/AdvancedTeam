@@ -1,5 +1,6 @@
 package com.clefal.teams.compat.ftbteams;
 
+import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.modules.compat.ICompatModule;
 import me.fzzyhmstrs.fzzy_config.annotations.WithPerms;

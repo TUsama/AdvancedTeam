@@ -31,7 +31,6 @@ public class Hooker {
                 IHasTeam player1 = (IHasTeam) player;
                 if (player1.hasTeam() && !listtag.isEmpty()) {
                     ((IPropertySender) player).addUpdate(VanillaPotionEffectProperty.KEY);
-                    System.out.println("update potion effect!");
                 }
             }
         }
