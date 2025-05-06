@@ -38,7 +38,6 @@ public class FTBTeamsPartyCompat {
 
     private static boolean hasNoParty(ServerPlayer player) {
         if (FTBTeamsAPI.api().getManager().getTeamForPlayerID(player.getUUID()).map((team) -> !team.isPartyTeam()).orElse(false)){
-            System.out.println("has no party team!");
             return true;
         }
         return false;
@@ -72,7 +71,6 @@ public class FTBTeamsPartyCompat {
     @SubscribeEvent
     public void onLeaveTeam(ServerPlayerLeaveEvent event) {
         ServerPlayer leaver = event.leaver;
-        System.out.println(hasNoParty(leaver));
         getTeamForPlayer(leaver)
                 .filter(x -> !hasNoParty(leaver))
                 .filter(x -> x instanceof PartyTeam)

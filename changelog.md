@@ -1,5 +1,5 @@
 ### 1.5.0
-add FTB Teams compat, now the change made in this mod will be sync to FTB Teams.
+(**Experience**)add FTB Teams compat, now the change made in this mod will be sync to FTB Teams. Let me know if there are any bugs!
 fix a bug that player can't leave the team when there is only one player in the team.
 fix a MNS duplicated damage particle bug.
 update dependency's version
