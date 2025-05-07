@@ -1,8 +1,10 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
+    /*id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'*/
 }
-
+boolean enableFTBTeams = true
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered() {
@@ -19,8 +21,19 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
+    
+    modImplementation "me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+${minecraft_version}"
+    modImplementation "curse.maven:fabric-language-kotlin-308769:4718458"
 
     modImplementation "maven.modrinth:nirvana-library:${fabric_lib_version}"
+
+    if (enableFTBTeams){
+        modImplementation "curse.maven:ftb-teams-fabric-438497:6130783"
+        modImplementation "curse.maven:architectury-api-419699:5137936"
+        modImplementation "curse.maven:ftb-library-fabric-438495:6164052"
+    } else {
+        modCompileOnly "curse.maven:ftb-teams-fabric-438497:6130783"
+    }
 }
 
 loom {

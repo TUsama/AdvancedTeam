@@ -34,7 +34,7 @@ public class TeammateEntryList extends ATEntryListTemplate {
         }
         setRenderBackground(false);
         updateSize(this.width, this.height, this.y0, screen.getY() + TeamsScreen.HEIGHT - 32);
-        setLeftPos(-10);
+        //setLeftPos(-10);
     }
 
 

@@ -1,6 +1,5 @@
 package com.clefal.teams.mixin;
 
-import com.clefal.teams.AdvancedTeamsHUDClient;
 import com.clefal.teams.client.gui.hud.CompassOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlayerTabOverlay;

@@ -1,6 +1,8 @@
 plugins {
     id 'multiloader-common'
     id 'net.neoforged.moddev.legacyforge'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 legacyForge {
@@ -24,12 +26,12 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    compileOnly ("maven.modrinth:nirvana-library:${lib_version}")
+    modCompileOnly ("maven.modrinth:nirvana-library:${lib_version}")
 
-    compileOnly ("curse.maven:ftb-library-forge-404465:6164053")
-    compileOnly ("curse.maven:ftb-teams-forge-404468:6130786")
+    modCompileOnly ("curse.maven:ftb-library-forge-404465:6164053")
+    modCompileOnly ("curse.maven:ftb-teams-forge-404468:6130786")
 
-    compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"
+    modCompileOnly "me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+${minecraft_version}+forge"
 }
 
 configurations {

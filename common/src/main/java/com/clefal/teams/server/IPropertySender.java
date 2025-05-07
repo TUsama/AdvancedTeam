@@ -4,4 +4,6 @@ public interface IPropertySender {
 
     void addUpdate(String key);
     void clear();
+    void handleUpdate();
+
 }

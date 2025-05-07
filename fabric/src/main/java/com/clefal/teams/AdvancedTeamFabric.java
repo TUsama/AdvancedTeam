@@ -1,10 +1,16 @@
 package com.clefal.teams;
 
+import com.clefal.teams.modules.compat.CompatManager;
+import com.clefal.teams.modules.compat.ftbteams.FTBTeamsCompatModule;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.List;
 
 public class AdvancedTeamFabric implements ModInitializer {
 
@@ -15,7 +21,7 @@ public class AdvancedTeamFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(AdvancedTeam::onServerStarted);
         ServerLifecycleEvents.SERVER_STOPPED.register(AdvancedTeam::onServerStopped);
-
+        ServerTickEvents.END_SERVER_TICK.register(AdvancedTeam::whenServerTick);
 
         // Event hooks
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
@@ -27,6 +33,15 @@ public class AdvancedTeamFabric implements ModInitializer {
             AdvancedTeam.whenPlayerOffline(player);
         });
         ServerPlayerEvents.COPY_FROM.register(AdvancedTeam::whenplayerClone);
-        AdvancedTeam.init();
+
+        CompatManager.compats.addAll(
+                List.of(
+                        FTBTeamsCompatModule.getInstance()
+                ));
+        CompatManager.tryEnableAll();
+
+        AdvancedTeam.packetInit();
+
+        AdvancedTeam.serverInit();
     }
 }

@@ -2,6 +2,7 @@ package com.clefal.teams.client.gui.components;
 
 import com.clefal.teams.AdvancedTeam;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
@@ -10,8 +11,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class ATEntryList extends AbstractSelectionList<ATEntryList.ATEntry> {
 
-    static final int WIDTH = 200;
+    static final int WIDTH = 244;
     static final int HEIGHT = 24;
+    private int rowWidth = 200;
     public static final int buttonXInterval = 24;
     public static final int buttonYInterval = 8;
     private static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
@@ -31,10 +33,10 @@ public abstract class ATEntryList extends AbstractSelectionList<ATEntryList.ATEn
     }
 
 
-
+    //not WIDTH!!
     @Override
     public int getRowWidth() {
-        return WIDTH;
+        return rowWidth;
     }
 
 
@@ -50,7 +52,7 @@ public abstract class ATEntryList extends AbstractSelectionList<ATEntryList.ATEn
         @Override
         public void renderBack(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
             RenderSystem.enableDepthTest();
-            guiGraphics.blit(TEXTURE, left, top, 0, 166, WIDTH, HEIGHT);
+            guiGraphics.blitNineSliced(TEXTURE, left, top, rowWidth, HEIGHT, 5, 5, 5, 5, WIDTH, HEIGHT, 0, 166);
         }
     }
 }

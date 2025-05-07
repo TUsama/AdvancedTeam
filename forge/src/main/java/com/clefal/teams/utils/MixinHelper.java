@@ -37,15 +37,6 @@ public class MixinHelper {
 
     }
 
-    public void updateStatusEffects(ServerPlayer player){
-        if (MineAndSlashCompatModule.INSTANCE.isModuleEnabled){
-            IPropertySender propertySender = (IPropertySender) player;
-            IHasTeam hasTeam = (IHasTeam) player;
-            if (hasTeam.hasTeam() && !Load.Unit(player).getStatusEffectsData().exileMap.isEmpty()){
-                propertySender.addUpdate(MNSStatusEffect.KEY);
-            }
-        }
-    }
 
     public void enableOfflineForFTBTeams(KnownClientPlayer selfKnown, Map<UUID, KnownClientPlayer> knownPlayers, CallbackInfo info){
         if (FTBTeamsCompatModule.INSTANCE.isModuleEnabled && FTBTeamsCompatModule.getServerConfig().enableOfflineSupport && !ModList.get().isLoaded("ftb_teams_offline_enabler")){

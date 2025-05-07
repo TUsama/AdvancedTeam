@@ -155,6 +155,8 @@ public class ATServerTeamData extends SavedData {
         compound.put(TEAMS_KEY, list);
     }
 
+    
+
 
     static ATServerTeamData getOrMake(ServerLevel serverLevel) {
         return serverLevel.getDataStorage()

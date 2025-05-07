@@ -5,12 +5,10 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.config.ATServerConfig;
 import com.clefal.teams.event.server.ServerOnPlayerOnlineEvent;
 import com.clefal.teams.event.server.ServerPromoteEvent;
+import com.clefal.teams.mixin.AdvancementAccessor;
 import com.clefal.teams.network.client.*;
 import com.clefal.teams.network.client.config.S2CTeamConfigBooleanPacket;
 import com.mojang.authlib.GameProfile;
-import com.clefal.teams.mixin.AdvancementAccessor;
-import com.clefal.teams.platform.Services;
-import com.mojang.datafixers.kinds.App;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -34,12 +32,12 @@ public class ATServerTeam extends Team {
 
     public final String name;
     private final ATServerTeamData teamData;
+    private final Set<Advancement> advancements = new LinkedHashSet<>();
     @Getter
     private UUID leader;
     private Set<Application> applications;
     private Set<UUID> players;
     private Map<UUID, ServerPlayer> onlinePlayers;
-    private final Set<Advancement> advancements = new LinkedHashSet<>();
     private PlayerTeam scoreboardTeam;
     @Getter
     @Setter
@@ -63,13 +61,56 @@ public class ATServerTeam extends Team {
 
     }
 
-    public void announceConfigChangeToClient(){
+    static ATServerTeam fromNBT(CompoundTag compound, ATServerTeamData teamData) {
+        ATServerTeam team = new Builder(compound.getString("name"))
+                .complete(teamData, compound.getUUID("leader"));
+
+        val vanillaTeam = team.scoreboardTeam;
+        vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
+        vanillaTeam.setCollisionRule(Team.CollisionRule.byName(compound.getString("collision")));
+        vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
+        vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
+        vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(compound.getString("deathMessages")));
+        vanillaTeam.setNameTagVisibility(Team.Visibility.byName(compound.getString("nameTags")));
+
+        team.setPublic(compound.getBoolean("public"));
+        team.setAllowEveryoneInvite(compound.getBoolean("allowEveryoneInvite"));
+
+        for (Tag application : compound.getList("applications", Tag.TAG_INT_ARRAY)) {
+            try {
+                UUID uuid = NbtUtils.loadUUID(application);
+                team.applications.add(new Application(uuid));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
+        for (var elem : players) {
+            try {
+                UUID uuid = NbtUtils.loadUUID(elem);
+                team.addPlayer(uuid);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        ListTag advancements = compound.getList("advancement", Tag.TAG_STRING);
+        for (var adv : advancements) {
+            ResourceLocation id = ResourceLocation.tryParse(adv.getAsString());
+            team.addAdvancement(teamData.serverLevel.getServer().getAdvancements().getAdvancement(id));
+        }
+
+        return team;
+    }
+
+    public void announceConfigChangeToClient() {
         List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
         NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), players1);
         NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(name, allowEveryoneInvite), onlinePlayers.values());
     }
 
-    public void promote(ServerPlayer player){
+    public void promote(ServerPlayer player) {
         ServerPlayer oldLeader = getOnlinePlayers().find(x -> x.getUUID().equals(leader)).get();
         if (oldLeader == null) throw new NullPointerException("can't find old leader when try to promote!");
         this.leader = player.getUUID();
@@ -79,15 +120,15 @@ public class ATServerTeam extends Team {
         AdvancedTeam.post(new ServerPromoteEvent(oldLeader, player, this));
     }
 
-    public void addApplication(Application application){
+    public void addApplication(Application application) {
         applications.add(application);
     }
 
-    public boolean isApplying(ServerPlayer player){
+    public boolean isApplying(ServerPlayer player) {
         return applications.contains(new Application(player.getUUID()));
     }
 
-    public void tickApplication(){
+    public void tickApplication() {
         applications.removeIf(ExpirableObject::update);
     }
 
@@ -148,7 +189,7 @@ public class ATServerTeam extends Team {
             }
         }
         // Advancement Sync
-        if (ATServerConfig.config.shareAchievements){
+        if (ATServerConfig.config.shareAchievements) {
             for (Advancement advancement : advancements) {
                 AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
                 for (String criterion : progress.getRemainingCriteria()) {
@@ -181,7 +222,7 @@ public class ATServerTeam extends Team {
         players.add(player);
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        if (ATServerConfig.config.enableVanillaTeamCompat){
+        if (ATServerConfig.config.enableVanillaTeamCompat) {
             var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
             if (playerScoreboardTeam == null || !playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
                 teamData.scoreboard.addPlayerToTeam(playerName, scoreboardTeam);
@@ -208,7 +249,7 @@ public class ATServerTeam extends Team {
         players.remove(player);
         if (this.leader.equals(player) && getOnlinePlayers().size() > 1) {
             Iterator<ServerPlayer> iterator = getOnlinePlayers().iterator();
-            if (iterator.hasNext()){
+            if (iterator.hasNext()) {
                 this.promote(iterator.next());
 
             }
@@ -218,7 +259,7 @@ public class ATServerTeam extends Team {
         String playerName = getNameFromUUID(player);
         // Scoreboard
 
-        if (ATServerConfig.config.enableVanillaTeamCompat){
+        if (ATServerConfig.config.enableVanillaTeamCompat) {
             var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
             if (playerScoreboardTeam != null && playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
                 teamData.scoreboard.removePlayerFromTeam(playerName, scoreboardTeam);
@@ -239,49 +280,6 @@ public class ATServerTeam extends Team {
 
     private String getNameFromUUID(UUID id) {
         return teamData.serverLevel.getServer().getProfileCache().get(id).map(GameProfile::getName).orElseThrow();
-    }
-
-    static ATServerTeam fromNBT(CompoundTag compound, ATServerTeamData teamData) {
-        ATServerTeam team = new Builder(compound.getString("name"))
-                .complete(teamData, compound.getUUID("leader"));
-
-        val vanillaTeam = team.scoreboardTeam;
-        vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
-        vanillaTeam.setCollisionRule(Team.CollisionRule.byName(compound.getString("collision")));
-        vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
-        vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
-        vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(compound.getString("deathMessages")));
-        vanillaTeam.setNameTagVisibility(Team.Visibility.byName(compound.getString("nameTags")));
-
-        team.setPublic(compound.getBoolean("public"));
-        team.setAllowEveryoneInvite(compound.getBoolean("allowEveryoneInvite"));
-
-        for (Tag application : compound.getList("applications", Tag.TAG_INT_ARRAY)) {
-            try {
-                UUID uuid = NbtUtils.loadUUID(application);
-                team.applications.add(new Application(uuid));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
-        for (var elem : players) {
-            try {
-                UUID uuid = NbtUtils.loadUUID(elem);
-                team.addPlayer(uuid);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        ListTag advancements = compound.getList("advancement", Tag.TAG_STRING);
-        for (var adv : advancements) {
-            ResourceLocation id = ResourceLocation.tryParse(adv.getAsString());
-            team.addAdvancement(teamData.serverLevel.getServer().getAdvancements().getAdvancement(id));
-        }
-
-        return team;
     }
 
     CompoundTag toNBT() {
@@ -400,7 +398,9 @@ public class ATServerTeam extends Team {
         return this.name.hashCode();
     }
 
-
+    public PlayerTeam getScoreboardTeam() {
+        return scoreboardTeam;
+    }
 
     public static class Builder {
 
@@ -414,9 +414,5 @@ public class ATServerTeam extends Team {
             ATServerTeam team = new ATServerTeam(teamData.scoreboard, name, teamData, leader);
             return team;
         }
-    }
-
-    public PlayerTeam getScoreboardTeam() {
-        return scoreboardTeam;
     }
 }

@@ -33,13 +33,15 @@ public abstract class HasTeamMenuTab extends TeamMenuTab {
         RenderSystem.enableBlend();
         RenderSystem.disableCull();
         pose.translate(0, 0, -10.1);
-        if (isHoveredOrFocused()){
+        if (isHoveredOrFocused() || isInItsMenu()){
             pose.translate(-3, -0.3f, 0);
         }
         guiGraphics.blit(background, this.getX(), this.getY(), this.width, this.height, 0, 0, 14, 9, 14, 9);
         renderIcon(guiGraphics, mouseX, mouseY, partialTick);
         pose.popPose();
     }
+
+    public abstract boolean isInItsMenu();
 
     public abstract void renderIcon(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick);
 

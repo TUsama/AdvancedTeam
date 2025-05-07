@@ -1,5 +1,6 @@
 package com.clefal.teams;
 
+import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.BusBuilder;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.IEventBus;
@@ -8,11 +9,14 @@ import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.config.ConfigManager;
 import com.clefal.teams.event.client.ClientEvent;
 import com.clefal.teams.event.server.ServerEvent;
+import com.clefal.teams.event.server.ServerFreezePropertyUpdateEvent;
+import com.clefal.teams.event.server.ServerPlayerTickJobEvent;
 import com.clefal.teams.network.Packets;
+import com.clefal.teams.network.client.S2CInvitationPacket;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
+import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
 import com.clefal.teams.platform.Services;
-import com.clefal.teams.server.ATServerTeam;
-import com.clefal.teams.server.ATServerTeamData;
+import com.clefal.teams.server.*;
 import com.clefal.teams.modules.internal.HandlerManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +24,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.ListIterator;
 
 public class AdvancedTeam {
     public static final boolean IN_DEV = Boolean.getBoolean("at.dev.tool");
@@ -75,9 +82,9 @@ public class AdvancedTeam {
     public static void serverInit() {
         ConfigManager.init();
         for (var han : HandlerManager.INSTANCE.getServerHandlers()) {
-
             serverBus.register(han);
         }
+        AdvancedTeam.serverBus.<ServerPlayerTickJobEvent>addListener(x -> onServerPlayerTick(x.player));
     }
 
 
@@ -87,6 +94,23 @@ public class AdvancedTeam {
         if (team != null) {
             team.addAdvancement(advancement);
         }
+    }
+
+    public static void onServerPlayerTick(ServerPlayer player){
+        IHasTeam hasTeam = (IHasTeam) player;
+        IPropertySender propertySender = (IPropertySender) player;
+        ListIterator<Invitation> invitationListIterator = hasTeam.getInvitations().listIterator();
+        //tick invitation
+        while (invitationListIterator.hasNext()) {
+            Invitation next = invitationListIterator.next();
+            if (next.update()) {
+                invitationListIterator.remove();
+                NetworkUtils.sendToClient(new S2CInvitationPacket(next.teamName, S2CInvitationPacket.Type.REMOVE), player);
+            }
+        }
+        //tick property update.
+        propertySender.handleUpdate();
+        AdvancedTeam.post(new ServerPlayerTickJobEvent(player));
     }
 
     public static void whenServerTick(MinecraftServer server){

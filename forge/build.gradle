@@ -1,6 +1,8 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev.legacyforge'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 mixin {
@@ -92,6 +94,12 @@ legacyForge {
     runs {
         client {
             client()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
+        }
+        client2 {
+            client()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
+            programArguments.addAll('--username', 'Dev2')
         }
         data {
             data()
@@ -110,7 +118,8 @@ legacyForge {
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
-
+boolean enableMNS = true
+boolean enableFTBTeams = true
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -119,23 +128,35 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    modRuntimeOnly ("curse.maven:playeranimator-658587:4587214")
 
-    implementation ("curse.maven:library-of-exile-398780:6157677")
-    implementation ("curse.maven:mine-and-slash-reloaded-306575:6157680")
-    implementation ("curse.maven:orbs-of-crafting-1182250:6133170")
-    runtimeOnly ("curse.maven:playeranimator-658587:4587214")
+    if (enableMNS){
+        modImplementation ("curse.maven:library-of-exile-398780:6157677")
+        modImplementation ("curse.maven:mine-and-slash-reloaded-306575:6157680")
+        modImplementation ("curse.maven:orbs-of-crafting-1182250:6133170")
+    } else {
+        modCompileOnly ("curse.maven:library-of-exile-398780:6157677")
+        modCompileOnly ("curse.maven:mine-and-slash-reloaded-306575:6157680")
+    }
 
-    runtimeOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
-    compileOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
 
-    implementation ("maven.modrinth:nirvana-library:${lib_version}")
 
-    runtimeOnly ("curse.maven:architectury-api-419699:5137938")
-    implementation ("curse.maven:ftb-library-forge-404465:6164053")
-    implementation ("curse.maven:ftb-teams-forge-404468:6130786")
+    modRuntimeOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
+    modCompileOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
 
-    implementation ("me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge")
-    implementation("thedarkcolour:kotlinforforge:4.11.0")
+    modImplementation ("maven.modrinth:nirvana-library:${lib_version}")
+    modRuntimeOnly ("curse.maven:architectury-api-419699:5137938")
+    if (enableFTBTeams){
+        modImplementation ("curse.maven:ftb-library-forge-404465:6164053")
+        modImplementation ("curse.maven:ftb-teams-forge-404468:6130786")
+    } else {
+        modCompileOnly ("curse.maven:ftb-library-forge-404465:6164053")
+        modCompileOnly ("curse.maven:ftb-teams-forge-404468:6130786")
+    }
+
+
+    modImplementation ("me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+${minecraft_version}+forge")
+    modImplementation("thedarkcolour:kotlinforforge:4.11.0")
 }
 
 

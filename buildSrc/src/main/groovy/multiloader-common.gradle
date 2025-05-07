@@ -5,7 +5,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+    archivesName = "${mod_name}-${project.name}-${minecraft_version}"
 }
 
 java {
@@ -73,6 +73,9 @@ repositories {
     maven {
         url = "https://api.modrinth.com/maven"
     }
+    maven {
+        url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/"
+    }
 }
 
 // Declare capabilities on the outgoing configurations.
@@ -111,6 +114,7 @@ jar {
 }
 
 processResources {
+    int pack_format = getPackFormat()
     var expandProps = [
             'version'                      : version,
             'group'                        : project.group, //Else we target the task's group.
@@ -126,7 +130,10 @@ processResources {
             "forge_version": forge_version,
             "forge_loader_version_range": forge_loader_version_range,
             'credits'                      : credits,
-            'java_version'                 : java_version
+            'java_version'                 : java_version,
+            "forge_version_range"       : forge_version_range,
+            "lib_version": lib_version,
+            "pack_format"               : pack_format
     ]
 
     var jsonExpandProps = expandProps.collectEntries {
@@ -144,4 +151,17 @@ processResources {
     inputs.properties(expandProps)
 }
 
+int getPackFormat() {
+    switch (minecraft_version) {
+        case "1.18.2": return 8
+        case "1.19.2": return 9
+        case "1.19.3": return 12
+        case "1.19.4": return 13
+        case "1.20.1": return 15
+        case "1.20.2": return 18
+        case "1.20.3": return 22
+        case "1.20.4": return 22
+        default: return 6
+    }
+}
 

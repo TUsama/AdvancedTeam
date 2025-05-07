@@ -54,8 +54,9 @@ public class HasTeamScreen extends TeamsScreen {
 
 
         if (ClientTeam.INSTANCE.hasPermissions() || AdvancedTeam.IN_DEV) {
-            menus = menus.prepend(new TeamConfigMenu(this)).reverse();
+            menus = menus.prepend(new TeamConfigMenu(this));
         }
+        menus = menus.reverse();
         menus.forEach(ITeamMenu::init);
 
         int YCursor = this.y + 3;
@@ -64,7 +65,6 @@ public class HasTeamScreen extends TeamsScreen {
             hasTeamMenuTab.setPosition(this.x - hasTeamMenuTab.getWidth() + 3, YCursor);
             YCursor += (int) (hasTeamMenuTab.getHeight() * 1.5f);
         }
-
         changeMenu(menus.head());
     }
 
@@ -135,6 +135,11 @@ public class HasTeamScreen extends TeamsScreen {
                     TeammateMenu teammateMenu = new TeammateMenu(screen);
                     teammateMenu.init();
                     screen.changeMenu(teammateMenu);
+                }
+
+                @Override
+                public boolean isInItsMenu() {
+                    return screen.currentMenu instanceof TeammateMenu;
                 }
 
                 @Override
@@ -215,6 +220,11 @@ public class HasTeamScreen extends TeamsScreen {
                     TeamConfigMenu teamConfigMenu1 = new TeamConfigMenu(screen);
                     teamConfigMenu1.init();
                     screen.changeMenu(teamConfigMenu1);
+                }
+
+                @Override
+                public boolean isInItsMenu() {
+                    return screen.currentMenu instanceof TeamConfigMenu;
                 }
 
                 @Override
