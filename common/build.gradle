@@ -1,23 +1,22 @@
 plugins {
-    id 'idea'
-    id 'java'
-    id 'fabric-loom'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'multiloader-common'
+    id 'net.neoforged.moddev.legacyforge'
 }
-base {
-    archivesName = "${mod_name}-common-${minecraft_version}"
+
+legacyForge {
+    mcpVersion = minecraft_version
+    if (file("src/main/resources/META-INF/accesstransformer.cfg").exists()) {
+        accessTransformers = ["src/main/resources/META-INF/accesstransformer.cfg"]
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
-     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
-
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parch_mapping}@zip")
-    }
+    compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -25,35 +24,27 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    modCompileOnly ("maven.modrinth:nirvana-library:${lib_version}")
+    compileOnly ("maven.modrinth:nirvana-library:${lib_version}")
 
-    modCompileOnly ("curse.maven:ftb-library-forge-404465:6164053")
-    modCompileOnly ("curse.maven:ftb-teams-forge-404468:6130786")
+    compileOnly ("curse.maven:ftb-library-forge-404465:6164053")
+    compileOnly ("curse.maven:ftb-teams-forge-404468:6130786")
 
-    modCompileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"
+    compileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge"
 }
 
-loom {
-    mods {
-        "${mod_id}" {
-            // Tell Loom about each source set used by your mod here. This ensures that your mod's classes are properly transformed by Loader.
-            sourceSet sourceSets.main
-        }
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
     }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
 
-    def awFile = project.file("src/main/resources/${mod_id}.accesswidener")
-    if (awFile.exists()) {
-        accessWidenerPath.set(awFile)
-    }
-
-    mixin {
-        useLegacyMixinAp = false
-    }
-
-    runs {
-        configureEach {
-            ideConfigGenerated(false)
-        }
-    }
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
 

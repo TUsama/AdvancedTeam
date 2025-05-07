@@ -1,22 +1,15 @@
 plugins {
-    id 'idea'
-    id 'net.minecraftforge.gradle'
-    id 'org.spongepowered.mixin'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id "me.modmuss50.mod-publish-plugin"
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev.legacyforge'
 }
-base {
-    archivesName = "${mod_name}-forge-${minecraft_version}"
-}
+
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
 
     config("${mod_id}.mixins.json")
     config("${mod_id}.forge.mixins.json")
 }
-
+/*
 minecraft {
     mappings channel: 'parchment', version: parch_mapping+"-"+minecraft_version
 
@@ -81,12 +74,44 @@ minecraft {
             }
         }
     }
+}*/
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    //validateAccessTransformers = true
+
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers = ["src/main/resources/META-INF/accesstransformer.cfg"]
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+    runs {
+        client {
+            client()
+        }
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        server {
+            server()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
@@ -95,37 +120,31 @@ dependencies {
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    implementation fg.deobf("curse.maven:library-of-exile-398780:6157677")
-    implementation fg.deobf("curse.maven:mine-and-slash-reloaded-306575:6157680")
-    implementation fg.deobf("curse.maven:orbs-of-crafting-1182250:6133170")
-    runtimeOnly fg.deobf("curse.maven:playeranimator-658587:4587214")
+    implementation ("curse.maven:library-of-exile-398780:6157677")
+    implementation ("curse.maven:mine-and-slash-reloaded-306575:6157680")
+    implementation ("curse.maven:orbs-of-crafting-1182250:6133170")
+    runtimeOnly ("curse.maven:playeranimator-658587:4587214")
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
+    runtimeOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
+    compileOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
 
-    implementation fg.deobf("maven.modrinth:nirvana-library:${lib_version}")
+    implementation ("maven.modrinth:nirvana-library:${lib_version}")
 
-    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
-    implementation fg.deobf("curse.maven:ftb-library-forge-404465:6164053")
-    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:6130786")
+    runtimeOnly ("curse.maven:architectury-api-419699:5137938")
+    implementation ("curse.maven:ftb-library-forge-404465:6164053")
+    implementation ("curse.maven:ftb-teams-forge-404468:6130786")
 
-    implementation fg.deobf("me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge")
+    implementation ("me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}+forge")
     implementation("thedarkcolour:kotlinforforge:4.11.0")
 }
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
 
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
+jar {
+    finalizedBy('reobfJar')
+    manifest.attributes([
+            "MixinConfigs": "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
+    ])
 }
-
-processResources {
-    from project(":common").sourceSets.main.resources
-}
-
-jar.finalizedBy('reobfJar')
 
 
 publishMods {
