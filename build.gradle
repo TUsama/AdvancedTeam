@@ -94,6 +94,8 @@ subprojects {
         int pack_format = getPackFormat()
         def expandProps = [
                 "version"                   : version,
+                "lib_version": lib_version,
+                "fabric_lib_version": fabric_lib_version,
                 "group"                     : project.group, //Else we target the task's group.
                 "minecraft_version"         : minecraft_version,
                 "forge_version"             : forge_version,
