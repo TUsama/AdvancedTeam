@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -99,18 +100,15 @@ public class AdvancedTeam {
     public static void onServerPlayerTick(ServerPlayer player){
         IHasTeam hasTeam = (IHasTeam) player;
         IPropertySender propertySender = (IPropertySender) player;
-        ListIterator<Invitation> invitationListIterator = hasTeam.getInvitations().listIterator();
         //tick invitation
-        while (invitationListIterator.hasNext()) {
-            Invitation next = invitationListIterator.next();
-            if (next.update()) {
-                invitationListIterator.remove();
-                NetworkUtils.sendToClient(new S2CInvitationPacket(next.teamName, S2CInvitationPacket.Type.REMOVE), player);
+        hasTeam.getInvitations().forEach((x, y) -> {
+            if (y.update()) {
+                NetworkUtils.sendToClient(new S2CInvitationPacket(x, S2CInvitationPacket.Type.REMOVE), player);
             }
-        }
+        });
+
         //tick property update.
         propertySender.handleUpdate();
-        //AdvancedTeam.post(new ServerPlayerTickJobEvent(player));
     }
 
     public static void whenServerTick(MinecraftServer server){

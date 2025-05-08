@@ -107,6 +107,7 @@ legacyForge {
         }
         server {
             server()
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
         }
     }
 

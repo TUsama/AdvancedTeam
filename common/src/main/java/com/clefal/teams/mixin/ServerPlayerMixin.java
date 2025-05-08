@@ -5,9 +5,8 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.property.impl.Health;
 import com.clefal.teams.event.server.ServerFreezePropertyUpdateEvent;
 import com.clefal.teams.event.server.ServerPlayerTickJobEvent;
-import com.clefal.teams.network.client.S2CInvitationPacket;
+import com.clefal.teams.network.client.S2CTeamInvitedPacket;
 import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
-import com.clefal.teams.platform.Services;
 import com.clefal.teams.server.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -22,11 +21,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
     @Unique
-    private final List<Invitation> invitations = new ArrayList<>();
+    private final Map<String, Invitation> invitations = new ConcurrentHashMap<>();
     @Unique
     private final Set<String> advancedTeam$updateKey = new HashSet<>(10);
     @Shadow
@@ -59,7 +59,13 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
     }
 
     @Override
-    public List<Invitation> getInvitations() {
+    public void addInvitation(Invitation invitation) {
+        this.invitations.put(invitation.teamName, invitation);
+        NetworkUtils.sendToClient(new S2CTeamInvitedPacket(team), self());
+    }
+
+    @Override
+    public Map<String, Invitation> getInvitations() {
         return invitations;
     }
 

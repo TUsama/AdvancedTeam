@@ -2,6 +2,7 @@ package com.clefal.teams.server;
 
 import com.clefal.teams.config.ATServerConfig;
 import com.google.common.base.Objects;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.UUID;
 
@@ -10,7 +11,6 @@ public class Invitation extends ExpirableObject{
 
     public Invitation(String teamName) {
         this.teamName = teamName;
-
     }
 
     @Override
@@ -23,5 +23,21 @@ public class Invitation extends ExpirableObject{
     @Override
     public int hashCode() {
         return Objects.hashCode(teamName);
+    }
+
+
+    public CompoundTag toNBT(){
+        CompoundTag compoundTag = new CompoundTag();
+        compoundTag.putString("teamName", teamName);
+        compoundTag.putInt("life", lifetime);
+        return compoundTag;
+    }
+
+    public static Invitation fromNBT(CompoundTag compoundTag){
+        String uuid = compoundTag.getString("teamName");
+        int life = compoundTag.getInt("life");
+        Invitation invitation = new Invitation(uuid);
+        invitation.lifetime = life;
+        return invitation;
     }
 }

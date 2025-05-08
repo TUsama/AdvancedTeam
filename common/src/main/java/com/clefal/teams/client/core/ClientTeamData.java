@@ -28,6 +28,10 @@ public class ClientTeamData {
         return List.ofAll(onlineTeams);
     }
 
+    public boolean noPublicTeam(){
+        return publicTeams.isEmpty();
+    }
+
     public void addPublicTeam(String team){
         this.publicTeams.add(team);
     }

@@ -1,3 +1,10 @@
+### 1.5.1
+fix a bug that can't find the player UUID after promoting
+fix a bug that can't show the tips when no public team
+hide "check request" button when players don't have permission
+make application persistent
+fix a bug that application and invitation won't be removed after player responding
+
 ### 1.5.0
 (**Experience**)add FTB Teams compat, now the change made in this mod will be sync to FTB Teams. Let me know if there are any bugs!
 fix a bug that player can't leave the team when there is only one player in the team.

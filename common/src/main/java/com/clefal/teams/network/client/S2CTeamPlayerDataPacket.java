@@ -123,7 +123,6 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                 }
             }
             case UPDATE -> {
-                //System.out.println("updating!");
                 this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.updatePlayer(uuid, event.getResults()));
             }
             case REMOVE -> {

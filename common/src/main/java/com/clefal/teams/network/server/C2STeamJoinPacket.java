@@ -5,9 +5,13 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
+import com.clefal.teams.server.IHasTeam;
+import com.clefal.teams.server.Invitation;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Map;
 
 public class C2STeamJoinPacket implements C2SModPacket {
 
@@ -26,9 +30,18 @@ public class C2STeamJoinPacket implements C2SModPacket {
     }
     @Override
     public void handleServer(ServerPlayer player) {
-        ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(this.team);
-        if (!ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team)){
-            player.sendSystemMessage(Component.translatable("teams.error.you_are_already_in_a_team"));
+        Map<String, Invitation> invitations = ((IHasTeam) player).getInvitations();
+        System.out.println(invitations);
+        Invitation invitation = invitations.get(this.team);
+        System.out.println(invitation != null);
+        if (invitation != null){
+            ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(this.team);
+            if (!ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team)){
+                player.sendSystemMessage(Component.translatable("teams.error.you_are_already_in_a_team"));
+            } else {
+                invitation.markRemoval();
+            }
         }
+
     }
 }

@@ -103,8 +103,9 @@ public class ATServerTeamData extends SavedData {
         if (player1.hasTeam()) {
             return Either.left(Failure.in_a_team);
         } else {
-            if (!player1.getInvitations().contains(new Invitation(team.getName()))) {
-                NetworkUtils.sendToClient(new S2CTeamInvitedPacket(team), player);
+            if (!player1.getInvitations().containsKey(team.getName())) {
+                ((IHasTeam) player).addInvitation(new Invitation(team.getName()));
+
                 return Either.right(true);
             } else {
                 return Either.left(Failure.already_invite);

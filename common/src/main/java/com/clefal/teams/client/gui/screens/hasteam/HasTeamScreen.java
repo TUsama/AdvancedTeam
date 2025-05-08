@@ -115,8 +115,8 @@ public class HasTeamScreen extends TeamsScreen {
             screen.addRenderableWidget(leaveTeamButton);
             if (ClientTeam.INSTANCE.canInvite()){
                 screen.addRenderableWidget(inviteButton);
+                screen.addRenderableWidget(checkRequest);
             }
-            screen.addRenderableWidget(checkRequest);
         }
 
         @Override
@@ -174,7 +174,7 @@ public class HasTeamScreen extends TeamsScreen {
             if (ClientTeam.INSTANCE.canInvite()){
                 PlaceUtils.placeThreeButton(screen, leaveTeamButton, inviteButton, checkRequest);
             } else {
-                PlaceUtils.placeTwoButton(screen, leaveTeamButton, checkRequest);
+                PlaceUtils.placeOneButton(screen, leaveTeamButton);
             }
 
         }

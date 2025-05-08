@@ -67,22 +67,18 @@ public class ATServerTeam extends Team {
 
         val vanillaTeam = team.scoreboardTeam;
         vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
-        vanillaTeam.setCollisionRule(Team.CollisionRule.byName(compound.getString("collision")));
+        vanillaTeam.setCollisionRule(CollisionRule.byName(compound.getString("collision")));
         vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
         vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
-        vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(compound.getString("deathMessages")));
-        vanillaTeam.setNameTagVisibility(Team.Visibility.byName(compound.getString("nameTags")));
+        vanillaTeam.setDeathMessageVisibility(Visibility.byName(compound.getString("deathMessages")));
+        vanillaTeam.setNameTagVisibility(Visibility.byName(compound.getString("nameTags")));
 
         team.setPublic(compound.getBoolean("public"));
         team.setAllowEveryoneInvite(compound.getBoolean("allowEveryoneInvite"));
 
-        for (Tag application : compound.getList("applications", Tag.TAG_INT_ARRAY)) {
-            try {
-                UUID uuid = NbtUtils.loadUUID(application);
-                team.applications.add(new Application(uuid));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        for (Tag application : compound.getList("applications", Tag.TAG_COMPOUND)) {
+            CompoundTag application1 = (CompoundTag) application;
+            team.applications.add(Application.fromNBT(application1));
         }
 
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
@@ -114,8 +110,8 @@ public class ATServerTeam extends Team {
         ServerPlayer oldLeader = getOnlinePlayers().find(x -> x.getUUID().equals(leader)).get();
         if (oldLeader == null) throw new NullPointerException("can't find old leader when try to promote!");
         this.leader = player.getUUID();
-        for (ServerPlayer value : this.onlinePlayers.values()) {
-            NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(value), this.leader), value);
+        for (ServerPlayer onlinePlayer : this.onlinePlayers.values()) {
+            NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(onlinePlayer), this.leader), onlinePlayer);
         }
         AdvancedTeam.post(new ServerPromoteEvent(oldLeader, player, this));
     }
@@ -130,6 +126,9 @@ public class ATServerTeam extends Team {
 
     public void tickApplication() {
         applications.removeIf(ExpirableObject::update);
+    }
+    public void markApplicationAsRemoval(UUID target){
+        applications.stream().filter(x -> x.applicant.equals(target)).findFirst().ifPresent(Application::markRemoval);
     }
 
     public boolean playerHasPermissions(ServerPlayer player) {
@@ -299,7 +298,7 @@ public class ATServerTeam extends Team {
 
         ListTag applicationList = new ListTag();
         for (var application : applications) {
-            applicationList.add(NbtUtils.createUUID(application.applicant));
+            applicationList.add(application.toNBT());
         }
         compound.put("applications", applicationList);
 
