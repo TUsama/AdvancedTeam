@@ -1,11 +1,7 @@
 package com.clefal.teams.client.gui.util;
 
 import com.clefal.nirvana_lib.client.render.rendertype.RenderTypeCreator;
-import com.clefal.teams.mixin.AccessorRenderType;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 

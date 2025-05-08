@@ -13,7 +13,6 @@
   "client": [
     "AbstractSelectionListMixin",
     "AbstractWidgetMixin",
-    "AccessorRenderType",
     "InventoryScreenAccessor",
     "ScreenMixin"
   ],
