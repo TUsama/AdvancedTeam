@@ -110,7 +110,7 @@ public class AdvancedTeam {
         }
         //tick property update.
         propertySender.handleUpdate();
-        AdvancedTeam.post(new ServerPlayerTickJobEvent(player));
+        //AdvancedTeam.post(new ServerPlayerTickJobEvent(player));
     }
 
     public static void whenServerTick(MinecraftServer server){
