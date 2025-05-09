@@ -5,9 +5,10 @@ import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.property.impl.Health;
 import com.clefal.teams.event.server.ServerFreezePropertyUpdateEvent;
 import com.clefal.teams.event.server.ServerPlayerTickJobEvent;
-import com.clefal.teams.network.client.S2CTeamInvitedPacket;
+import com.clefal.teams.network.client.S2CSyncRenderMatPacket;
 import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
 import com.clefal.teams.server.*;
+import com.clefal.teams.utils.ServerHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,8 +61,26 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
 
     @Override
     public void addInvitation(Invitation invitation) {
-        this.invitations.put(invitation.teamName, invitation);
-        NetworkUtils.sendToClient(new S2CTeamInvitedPacket(team), self());
+        ServerHelper.addInv(invitations, invitation, self());
+    }
+
+    @Override
+    public void tickInvitations() {
+        Map<String, Invitation> invitations = getInvitations();
+        Iterator<Map.Entry<String, Invitation>> iterator = invitations.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String, Invitation> next = iterator.next();
+            if (next.getValue().update()){
+                NetworkUtils.sendToClient(new S2CSyncRenderMatPacket(next.getKey(), S2CSyncRenderMatPacket.Action.REMOVE, S2CSyncRenderMatPacket.Type.INVITATION), self());
+                iterator.remove();
+            }
+        }
+    }
+
+
+    @Override
+    public void clearInvitations() {
+        invitations.forEach((x ,y) -> y.markRemoval());
     }
 
     @Override

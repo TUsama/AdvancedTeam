@@ -1,6 +1,7 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.teams.client.core.ClientRenderPersistentData;
 import com.clefal.teams.client.core.ClientTeam;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -20,5 +21,7 @@ public class S2CTeamClearPacket implements S2CModPacket {
     @Override
     public void handleClient() {
         ClientTeam.INSTANCE.reset();
+        //don't think we need to reset invitations.
+        ClientRenderPersistentData.getInstance().applications.clear();
     }
 }

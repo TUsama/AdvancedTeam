@@ -3,6 +3,7 @@ package com.clefal.teams.network.client;
 import com.clefal.nirvana_lib.network.S2CModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.teams.client.gui.util.PlayerWithSkin;
+import com.clefal.teams.utils.ClientHelper;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
@@ -34,9 +35,9 @@ public class S2CReturnPlayerWithSkinPacket implements S2CModPacket {
     @Override
     public void handleClient() {
         switch (usage){
-            case INVITATION -> Helper.tryUpdateInvitationScreenEntryList(playersName);
+            case INVITATION -> ClientHelper.tryUpdateInvitationScreenEntryList(playersName);
             case REQUEST -> {
-                Helper.tryUpdateApplicationScreenEntryList(playersName);
+                ClientHelper.tryUpdateApplicationScreenEntryList(playersName);
             }
         }
 

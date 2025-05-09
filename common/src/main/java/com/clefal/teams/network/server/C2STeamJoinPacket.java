@@ -31,15 +31,11 @@ public class C2STeamJoinPacket implements C2SModPacket {
     @Override
     public void handleServer(ServerPlayer player) {
         Map<String, Invitation> invitations = ((IHasTeam) player).getInvitations();
-        System.out.println(invitations);
         Invitation invitation = invitations.get(this.team);
-        System.out.println(invitation != null);
         if (invitation != null){
             ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(this.team);
             if (!ATServerTeamData.getOrMakeDefault(player.server).addPlayerToTeam(player, team)){
                 player.sendSystemMessage(Component.translatable("teams.error.you_are_already_in_a_team"));
-            } else {
-                invitation.markRemoval();
             }
         }
 

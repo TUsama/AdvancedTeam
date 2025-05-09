@@ -117,7 +117,13 @@ public class ATServerTeam extends Team {
     }
 
     public void addApplication(Application application) {
+        ServerPlayer player = teamData.serverLevel.getServer().getPlayerList().getPlayer(application.applicant);
+        if (player == null) throw new NullPointerException("can't find player with UUID " + application.applicant + " when try to add application.");
         applications.add(application);
+        getOnlinePlayers().filter(this::playerHasPermissions).forEach(x -> {
+            NetworkUtils.sendToClient(new S2CSyncRenderMatPacket(player.getName().getString(), S2CSyncRenderMatPacket.Action.ADD, S2CSyncRenderMatPacket.Type.APPLICATION), x);
+            NetworkUtils.sendToClient(new S2CTeamAppliedPacket(name, player.getUUID()), x);
+        });
     }
 
     public boolean isApplying(ServerPlayer player) {
@@ -125,7 +131,16 @@ public class ATServerTeam extends Team {
     }
 
     public void tickApplication() {
-        applications.removeIf(ExpirableObject::update);
+        Iterator<Application> iterator = applications.iterator();
+        while (iterator.hasNext()){
+            Application next = iterator.next();
+            if (next.update()){
+                iterator.remove();
+                ServerPlayer player = teamData.serverLevel.getServer().getPlayerList().getPlayer(next.applicant);
+                if (player == null) throw new NullPointerException("can't find player with UUID " + next.applicant + " when try to remove application.");
+                getOnlinePlayers().filter(this::playerHasPermissions).forEach(x -> NetworkUtils.sendToClient(new S2CSyncRenderMatPacket(player.getName().getString(), S2CSyncRenderMatPacket.Action.REMOVE, S2CSyncRenderMatPacket.Type.APPLICATION), x));
+            }
+        }
     }
     public void markApplicationAsRemoval(UUID target){
         applications.stream().filter(x -> x.applicant.equals(target)).findFirst().ifPresent(Application::markRemoval);
@@ -196,6 +211,14 @@ public class ATServerTeam extends Team {
                 }
             }
         }
+        //Application Sync
+        if (playerHasPermissions(player)){
+            for (Application application : applications) {
+                ServerPlayer target = teamData.serverLevel.getServer().getPlayerList().getPlayer(application.applicant);
+                if (target == null) throw new NullPointerException("can't find target with UUID " + application.applicant + " when try to add application.");
+                NetworkUtils.sendToClient(new S2CSyncRenderMatPacket(target.getName().getString(), S2CSyncRenderMatPacket.Action.ADD, S2CSyncRenderMatPacket.Type.APPLICATION), player);
+            }
+        }
 
         AdvancedTeam.post(new ServerOnPlayerOnlineEvent(player));
     }
@@ -240,12 +263,19 @@ public class ATServerTeam extends Team {
                     addAdvancement(advancement);
                 }
             }
+
+            //clean invitation
+            ((IHasTeam) playerEntity).clearInvitations();
+            applications.stream().filter(x -> x.applicant.equals(player)).findFirst().ifPresent(ExpirableObject::markRemoval);
+
         }
+
         teamData.setDirty();
     }
 
     private void removePlayer(UUID player) {
         players.remove(player);
+        //find a new leader
         if (this.leader.equals(player) && getOnlinePlayers().size() > 1) {
             Iterator<ServerPlayer> iterator = getOnlinePlayers().iterator();
             if (iterator.hasNext()) {

@@ -1,6 +1,5 @@
 package com.clefal.teams;
 
-import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.BusBuilder;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.IEventBus;
@@ -9,13 +8,10 @@ import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.config.ConfigManager;
 import com.clefal.teams.event.client.ClientEvent;
 import com.clefal.teams.event.server.ServerEvent;
-import com.clefal.teams.event.server.ServerFreezePropertyUpdateEvent;
 import com.clefal.teams.event.server.ServerPlayerTickJobEvent;
 import com.clefal.teams.network.Packets;
-import com.clefal.teams.network.client.S2CInvitationPacket;
+import com.clefal.teams.network.client.S2CSyncRenderMatPacket;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
-import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
-import com.clefal.teams.platform.Services;
 import com.clefal.teams.server.*;
 import com.clefal.teams.modules.internal.HandlerManager;
 import net.minecraft.advancements.Advancement;
@@ -26,8 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
 
 public class AdvancedTeam {
     public static final boolean IN_DEV = Boolean.getBoolean("at.dev.tool");
@@ -101,11 +96,7 @@ public class AdvancedTeam {
         IHasTeam hasTeam = (IHasTeam) player;
         IPropertySender propertySender = (IPropertySender) player;
         //tick invitation
-        hasTeam.getInvitations().forEach((x, y) -> {
-            if (y.update()) {
-                NetworkUtils.sendToClient(new S2CInvitationPacket(x, S2CInvitationPacket.Type.REMOVE), player);
-            }
-        });
+        hasTeam.tickInvitations();
 
         //tick property update.
         propertySender.handleUpdate();

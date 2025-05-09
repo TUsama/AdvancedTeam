@@ -34,10 +34,7 @@ public class C2STeamApplyingPacket implements C2SModPacket {
         if (team == null) {
             player.sendSystemMessage(Component.literal("Team doesn't exist"));
         } else {
-            var list = player.server.getPlayerList();
-            ServerPlayer seniorPlayer = list.getPlayer(team.getLeader());
             team.addApplication(new Application(player.getUUID()));
-            NetworkUtils.sendToClient(new S2CTeamAppliedPacket(name, player.getUUID()), seniorPlayer);
         }
     }
 }

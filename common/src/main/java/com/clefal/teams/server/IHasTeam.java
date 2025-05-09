@@ -2,7 +2,6 @@ package com.clefal.teams.server;
 
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IHasTeam {
@@ -17,5 +16,7 @@ public interface IHasTeam {
 
     boolean isTeammate(ServerPlayer other);
     void addInvitation(Invitation invitation);
+    void tickInvitations();
+    void clearInvitations();
     Map<String, Invitation> getInvitations();
 }

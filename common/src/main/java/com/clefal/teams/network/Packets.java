@@ -5,7 +5,6 @@ import com.clefal.teams.network.client.*;
 import com.clefal.teams.network.client.config.S2CTeamConfigBooleanPacket;
 import com.clefal.teams.network.server.*;
 import com.clefal.teams.network.server.config.C2STeamConfigSavePacket;
-import com.clefal.teams.platform.Services;
 
 public class Packets {
 
@@ -35,7 +34,7 @@ public class Packets {
         NetworkUtils.registerClientMessage(S2CTeamUpdatePacket.class, S2CTeamUpdatePacket::new);
         NetworkUtils.registerClientMessage(S2CTeamInitPacket.class, S2CTeamInitPacket::new);
         NetworkUtils.registerClientMessage(S2CPermissionUpdatePacket.class, S2CPermissionUpdatePacket::new);
-        NetworkUtils.registerClientMessage(S2CInvitationPacket.class, S2CInvitationPacket::new);
+        NetworkUtils.registerClientMessage(S2CSyncRenderMatPacket.class, S2CSyncRenderMatPacket::new);
         NetworkUtils.registerClientMessage(S2CReturnPlayerWithSkinPacket.class, S2CReturnPlayerWithSkinPacket::new);
         NetworkUtils.registerClientMessage(S2CTeamConfigBooleanPacket.Public.class, S2CTeamConfigBooleanPacket.Public::new);
         NetworkUtils.registerClientMessage(S2CTeamConfigBooleanPacket.EveryoneCanInvite.class, S2CTeamConfigBooleanPacket.EveryoneCanInvite::new);

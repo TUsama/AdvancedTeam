@@ -1,6 +1,7 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.teams.utils.ClientHelper;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class S2CTeamInviteSentPacket implements S2CModPacket {
@@ -26,6 +27,6 @@ public class S2CTeamInviteSentPacket implements S2CModPacket {
 
     @Override
     public void handleClient() {
-        Helper.addInviteSentToast(team, player);
+        ClientHelper.addInviteSentToast(team, player);
     }
 }
