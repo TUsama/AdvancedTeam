@@ -1,138 +1,75 @@
 plugins {
     id 'fabric-loom' version '1.9-SNAPSHOT' apply(false)
     id 'net.neoforged.moddev.legacyforge' version '2.0.88' apply(false)
-    id "me.modmuss50.mod-publish-plugin" version "0.8.4" apply(false)
+    id "me.modmuss50.mod-publish-plugin" version "0.8.4"
     id 'org.jetbrains.kotlin.jvm' version '2.2.0-Beta2' apply(false)
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.2.0-Beta2' apply(false)
 }
+
+publishMods {
+    changelog = file("changelog.md").text.split('\n').collect { string -> {
+        if (!string.isBlank()) {
+            string + "</br>"
+        } else{
+            string
+        }
+    }}.join('\n')
+    type = BETA
+    //dryRun = true
+    // CurseForge options used by both Fabric and Forge
+    def cfOptions = curseforgeOptions {
+        accessToken = file("D:\\curseforge-key.txt").text
+        projectId = "${project_id}"
+        clientRequired = true
+        serverRequired = true
+        minecraftVersions.add("1.20.1")
+        requires("nirvana-library")
+    }
 /*
-subprojects {
-    apply plugin: 'java'
-
-    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-    java.withSourcesJar()
-
-    jar {
-        from(rootProject.file("LICENSE")) {
-            rename { "${it}_${mod_name}" }
+    // Modrinth options used by both Fabric and Forge
+    def mrOptions = modrinthOptions {
+        accessToken = file("D:\\modrinth-key.txt").text
+        projectId = "6gKEW2ql"
+        minecraftVersionRange {
+            start = "1.21"
+            end = "${minecraft_version}"
         }
-        manifest {
-            attributes([
-                    'Specification-Title'     : mod_name,
-                    'Specification-Vendor'    : mod_author,
-                    'Specification-Version'   : project.jar.archiveVersion,
-                    'Implementation-Title'    : project.name,
-                    'Implementation-Version'  : project.jar.archiveVersion,
-                    'Implementation-Vendor'   : mod_author,
-                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    'Timestamp'               : System.currentTimeMillis(),
-                    'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-                    'Built-On-Minecraft'      : minecraft_version
-            ])
-        }
+    }*/
+
+    // Fabric specific options for CurseForge
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        modLoaders.add("fabric")
+        displayName = file.map { it.asFile.name }
     }
 
-    sourcesJar {
-        from(rootProject.file("LICENSE")) {
-            rename { "${it}_${mod_name}" }
+    // Forge specific options for CurseForge
+    curseforge("curseforgeForge") {
+        from cfOptions
+        file = project.provider { project(":forge").tasks.reobfJar }.flatMap { it.archiveFile }
+        modLoaders.add("forge")
+        displayName = file.map { it.asFile.name }
+    }
+/*
+    // Fabric specific options for Modrinth
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        modLoaders.add("fabric")
+        requires {
+            slug = "fabric-api"
         }
+        displayName = file.map { it.asFile.name }
     }
 
-    repositories {
-        mavenCentral()
-        maven {
-            name = 'Sponge / Mixin'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-        }
-        maven {
-            name = 'BlameJared Maven (JEI / CraftTweaker / Bookshelf)'
-            url = 'https://maven.blamejared.com'
-        }
-        maven { url "https://maven.shedaniel.me/" }
+    // Forge specific options for Modrinth
+    modrinth("modrinthNeoforge") {
+        from mrOptions
+        file = project.provider { project(":neoforge").tasks.shadowJar }.flatMap { it.archiveFile }
+        modLoaders.add("neoforge")
+        displayName = file.map { it.asFile.name }
+    }*/
 
-        maven {
-            url "https://cursemaven.com"
-            content {
-                includeGroup "curse.maven"
-            }
-        }
-        maven {
-            name = "FzzyMaven"
-            url = "https://maven.fzzyhmstrs.me/"
-        }
-        maven {
-            name = 'Kotlin for Forge'
-            url = 'https://thedarkcolour.github.io/KotlinForForge/'
-        }
-
-        maven {
-            name = "TerraformersMC"
-            url = "https://maven.terraformersmc.com/"
-        }
-        maven {
-            name = "Ladysnake Libs"
-            url = 'https://maven.ladysnake.org/releases'
-        }
-        maven {
-            url = "https://maven.theillusivec4.top/"
-        }
-        maven {
-            url = "https://api.modrinth.com/maven"
-        }
-
-    }
-
-    tasks.withType(JavaCompile).configureEach {
-
-        it.options.encoding = 'UTF-8'
-        it.options.getRelease().set(17)
-    }
-
-    processResources {
-        int pack_format = getPackFormat()
-        def expandProps = [
-                "version"                   : version,
-                "lib_version": lib_version,
-                "fabric_lib_version": fabric_lib_version,
-                "group"                     : project.group, //Else we target the task's group.
-                "minecraft_version"         : minecraft_version,
-                "forge_version"             : forge_version,
-                "forge_loader_version_range": forge_loader_version_range,
-                "forge_version_range"       : forge_version_range,
-                "fabric_version"            : fabric_version,
-                "fabric_loader_version"     : fabric_loader_version,
-                "mod_name"                  : mod_name,
-                "mod_author"                : mod_author,
-                "mod_id"                    : mod_id,
-                "license"                   : license,
-                "description"               : project.description,
-                "pack_format"               : pack_format
-        ]
-
-        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {
-            expand expandProps
-        }
-        inputs.properties(expandProps)
-    }
-
-    // Disables Gradle's custom module metadata from being published to maven. The
-    // metadata includes mapped dependencies which are not reasonably consumable by
-    // other mod developers.
-    tasks.withType(GenerateModuleMetadata).configureEach {
-        enabled = false
-    }
 }
-*/
-int getPackFormat() {
-    switch (minecraft_version) {
-        case "1.18.2": return 8
-        case "1.19.2": return 9
-        case "1.19.3": return 12
-        case "1.19.4": return 13
-        case "1.20.1": return 15
-        case "1.20.2": return 18
-        case "1.20.3": return 22
-        case "1.20.4": return 22
-        default: return 6
-    }
-}
+
