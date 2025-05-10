@@ -103,27 +103,6 @@ jar {
 }
 
 
-publishMods {
-    file = tasks.jar.archiveFile
-    displayName = file.map { it.asFile.name }
-    changelog = file("..\\changelog.md").text.split('\n').collect { string -> {
-        if (!string.isBlank()) {
-            string + "</br>"
-        } else {
-            string
-        }
-    }}.join('\n')
-    type = STABLE
-    modLoaders.add("forge")
-    curseforge {
-        accessToken = file("D:\\curseforge-key.txt").text
-        projectId = "1190555"
-        clientRequired = true
-        serverRequired = true
-        minecraftVersions.add("1.20.1")
-        requires("nirvana-library")
-    }
-}
 
 
 
