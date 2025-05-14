@@ -18,9 +18,15 @@ public class ATServerConfig extends Config {
     public static void init() {
     }
 
-    public boolean shareAchievements = false;
+    public enum Case{
+        Disable,
+        enable,
+        force
+    }
 
-    public boolean enableVanillaTeamCompat = true;
+    public Case shareAchievements = Case.Disable;
+
+    public Case enableVanillaTeamCompat = Case.Disable;
 
     public ValidatedInt invitationAndApplicationExpireTick = new ValidatedInt(20 * 60 * 2);
 }

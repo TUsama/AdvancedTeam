@@ -81,7 +81,7 @@ public class FTBTeamsPartyCompat {
                         ATServerTeam leavedTeam = event.leavedTeam;
                         CommandSourceStack commandSourceStack = new CommandSourceStack(null, null, null, leaver.serverLevel(), 0, "", Component.literal(""), leaver.getServer(), event.leaver);
                         try {
-                            x1.transferOwnership(commandSourceStack, leavedTeam.getOnlinePlayers().find(player -> player.getUUID().equals(leavedTeam.getLeader())).getOrElseThrow(() -> new NullPointerException("the leader is not online!")).getGameProfile());
+                            x1.transferOwnership(commandSourceStack, leavedTeam.getOnlinePlayers().find(player -> player.getUUID().equals(leavedTeam.getMembership().getLeader())).getOrElseThrow(() -> new NullPointerException("the leader is not online!")).getGameProfile());
                         } catch (CommandSyntaxException e) {
                             throw new RuntimeException(e);
                         }

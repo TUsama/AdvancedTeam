@@ -21,10 +21,10 @@ public class MineAndSlashPartyCompat {
         ServerPlayer player = event.player;
         if (((IHasTeam) player).hasTeam()) {
             ATServerTeam team1 = ((IHasTeam) player).getTeam();
-            String name = team1.getName();
+            String name = team1.getCore().name();
             TeamData team = Load.player(player).team;
             team.team_id = name;
-            if (team1.getLeader().equals(player.getUUID())) {
+            if (team1.getMembership().getLeader().equals(player.getUUID())) {
                 team.isLeader = true;
             }
         } else {
@@ -72,7 +72,7 @@ public class MineAndSlashPartyCompat {
         ServerPlayer joiner = event.joiner;
 
         TeamData team = Load.player(joiner).team;
-        team.team_id = event.team.name;
+        team.team_id = event.team.getCore().name();
         team.isLeader = false;
     }
 

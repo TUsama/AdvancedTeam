@@ -8,59 +8,57 @@ import com.clefal.teams.event.server.ServerPromoteEvent;
 import com.clefal.teams.mixin.AdvancementAccessor;
 import com.clefal.teams.network.client.*;
 import com.clefal.teams.network.client.config.S2CTeamConfigBooleanPacket;
+import com.clefal.teams.server.team.*;
+import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.nbt.*;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
-import net.minecraft.world.scores.Team;
 
 import java.util.*;
-import java.util.stream.Stream;
 
-
-public class ATServerTeam extends Team {
-
-    public final String name;
-    private final ATServerTeamData teamData;
-    private final Set<Advancement> advancements = new LinkedHashSet<>();
+@RequiredArgsConstructor
+public class ATServerTeam implements IPostProcess {
     @Getter
-    private UUID leader;
-    private Set<Application> applications;
-    private Set<UUID> players;
-    private Map<UUID, ServerPlayer> onlinePlayers;
-    private PlayerTeam scoreboardTeam;
+    private final ATServerTeamCore core;
     @Getter
-    @Setter
-    private boolean isPublic = false;
+    private final ATServerTeamMembership membership;
     @Getter
-    @Setter
-    private boolean allowEveryoneInvite = false;
+    private final ATServerTeamConfig config;
+    private final ATServerTeamAttachments attachments;
+    private ATServerTeamData teamData;
 
 
-    private ATServerTeam(Scoreboard scoreboard, String name, ATServerTeamData teamData, UUID leader) {
-        this.name = name;
+    public static Codec<ATServerTeam> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    ATServerTeamCore.CODEC.fieldOf("core").forGetter(x -> x.core),
+                    ATServerTeamMembership.CODEC.fieldOf("member").forGetter(x -> x.membership),
+                    ATServerTeamConfig.CODEC.fieldOf("config").forGetter(x -> x.config),
+                    ATServerTeamAttachments.CODEC.fieldOf("attachments").forGetter(x -> x.attachments)
+
+            ).apply(instance, ATServerTeam::new)
+    );
+
+
+    private ATServerTeam(String name, ATServerTeamData teamData, UUID leader) {
+        UUID uuid = UUID.randomUUID();
+        this.core = new ATServerTeamCore(name, uuid);
+        this.config = new ATServerTeamConfig(false, false, false, false);
+        this.membership = new ATServerTeamMembership(leader);
         this.teamData = teamData;
-        this.leader = leader;
-        players = new HashSet<>();
-        applications = new LinkedHashSet<>();
-        onlinePlayers = new LinkedHashMap<>();
-        scoreboardTeam = scoreboard.getPlayerTeam(name);
-        if (scoreboardTeam == null) {
-            scoreboardTeam = scoreboard.addPlayerTeam(name);
-        }
-
+        this.attachments = new ATServerTeamAttachments(new VanillaTeamAttachment(name + uuid), new AdvancementSyncAttachment());
     }
-
+/*
     static ATServerTeam fromNBT(CompoundTag compound, ATServerTeamData teamData) {
         ATServerTeam team = new Builder(compound.getString("name"))
                 .complete(teamData, compound.getUUID("leader"));
@@ -76,9 +74,9 @@ public class ATServerTeam extends Team {
         team.setPublic(compound.getBoolean("public"));
         team.setAllowEveryoneInvite(compound.getBoolean("allowEveryoneInvite"));
 
-        for (Tag application : compound.getList("applications", Tag.TAG_COMPOUND)) {
+        for (Tag application : compound.getList("membership.getApplications()", Tag.TAG_COMPOUND)) {
             CompoundTag application1 = (CompoundTag) application;
-            team.applications.add(Application.fromNBT(application1));
+            team.membership.getApplications().add(Application.fromNBT(application1));
         }
 
         ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
@@ -99,39 +97,37 @@ public class ATServerTeam extends Team {
 
         return team;
     }
-
+*/
     public void announceConfigChangeToClient() {
         List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
-        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), players1);
-        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(name, allowEveryoneInvite), onlinePlayers.values());
+        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.Public(core.name(), config.isPublic), players1);
+        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(core.name(), config.allowEveryoneInvite), membership.getOnlineMembers().values());
     }
 
     public void promote(ServerPlayer player) {
-        ServerPlayer oldLeader = getOnlinePlayers().find(x -> x.getUUID().equals(leader)).get();
+        ServerPlayer oldLeader = getOnlinePlayers().find(x -> x.getUUID().equals(membership.getLeader())).get();
         if (oldLeader == null) throw new NullPointerException("can't find old leader when try to promote!");
-        this.leader = player.getUUID();
-        for (ServerPlayer onlinePlayer : this.onlinePlayers.values()) {
-            NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(onlinePlayer), this.leader), onlinePlayer);
-        }
+        membership.setLeader(player.getUUID());
+        membership.forAllOnlineMembers(x -> NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(x), membership.getLeader()), x));
         AdvancedTeam.post(new ServerPromoteEvent(oldLeader, player, this));
     }
 
     public void addApplication(Application application) {
         ServerPlayer player = teamData.serverLevel.getServer().getPlayerList().getPlayer(application.applicant);
         if (player == null) throw new NullPointerException("can't find player with UUID " + application.applicant + " when try to add application.");
-        applications.add(application);
+        membership.getApplications().add(application);
         getOnlinePlayers().filter(this::playerHasPermissions).forEach(x -> {
             NetworkUtils.sendToClient(new S2CSyncRenderMatPacket(player.getName().getString(), S2CSyncRenderMatPacket.Action.ADD, S2CSyncRenderMatPacket.Type.APPLICATION), x);
-            NetworkUtils.sendToClient(new S2CTeamAppliedPacket(name, player.getUUID()), x);
+            NetworkUtils.sendToClient(new S2CTeamAppliedPacket(core.name(), player.getUUID()), x);
         });
     }
 
     public boolean isApplying(ServerPlayer player) {
-        return applications.contains(new Application(player.getUUID()));
+        return membership.getApplications().contains(new Application(player.getUUID()));
     }
 
     public void tickApplication() {
-        Iterator<Application> iterator = applications.iterator();
+        Iterator<Application> iterator = membership.getApplications().iterator();
         while (iterator.hasNext()){
             Application next = iterator.next();
             if (next.update()){
@@ -143,19 +139,19 @@ public class ATServerTeam extends Team {
         }
     }
     public void markApplicationAsRemoval(UUID target){
-        applications.stream().filter(x -> x.applicant.equals(target)).findFirst().ifPresent(Application::markRemoval);
+        membership.getApplications().stream().filter(x -> x.applicant.equals(target)).findFirst().ifPresent(Application::markRemoval);
     }
 
     public boolean playerHasPermissions(ServerPlayer player) {
-        return getLeader().equals(player.getUUID()) || player.hasPermissions(2);
+        return membership.playerHasPermissions(player);
     }
 
     public com.clefal.nirvana_lib.relocated.io.vavr.collection.List<ServerPlayer> getOnlinePlayers() {
-        return com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(onlinePlayers.values());
+        return membership.getOnlinePlayers();
     }
 
     public boolean isEmpty() {
-        return players.isEmpty();
+        return membership.getMembers().isEmpty();
     }
 
     public boolean hasPlayer(ServerPlayer player) {
@@ -163,7 +159,7 @@ public class ATServerTeam extends Team {
     }
 
     public boolean hasPlayer(UUID player) {
-        return players.contains(player);
+        return membership.getMembers().contains(player);
     }
 
     public void addPlayer(ServerPlayer player) {
@@ -174,23 +170,26 @@ public class ATServerTeam extends Team {
         removePlayer(player.getUUID());
     }
 
-    public void clear() {
-        var playersCopy = new ArrayList<>(players);
-        playersCopy.forEach(player -> removePlayer(player));
-        advancements.clear();
+    public void onDisband() {
+        var playersCopy = new ArrayList<>(membership.getMembers());
+        playersCopy.forEach(this::removePlayer);
+        attachments.getVanillaTeamAttachment().getVanillaTeam().getScoreboard().removePlayerTeam(attachments.getVanillaTeamAttachment().getVanillaTeam());
     }
 
     public void addAdvancement(Advancement advancement) {
-        advancements.add(advancement);
+        attachments.getAdvancementSyncAttachment().addAdvancement(advancement);
     }
 
     public void onPlayerOnline(ServerPlayer player, boolean sendPackets) {
-        onlinePlayers.put(player.getUUID(), player);
+        Map<UUID, ServerPlayer> onlineMembers = membership.getOnlineMembers();
+        onlineMembers.put(player.getUUID(), player);
         ((IHasTeam) player).setTeam(this);
+        String name = core.name();
+        UUID leader = membership.getLeader();
         // Packets
         if (sendPackets) {
             NetworkUtils.sendToClient(new S2CTeamInitPacket(name, leader), player);
-            if (onlinePlayers.size() == 1) {
+            if (onlineMembers.size() == 1) {
                 var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
                 NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.ONLINE, name), players);
             }
@@ -203,17 +202,19 @@ public class ATServerTeam extends Team {
             }
         }
         // Advancement Sync
-        if (ATServerConfig.config.shareAchievements) {
-            for (Advancement advancement : advancements) {
-                AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
-                for (String criterion : progress.getRemainingCriteria()) {
-                    player.getAdvancements().award(advancement, criterion);
-                }
-            }
-        }
+        attachments.conditionallyGetAdvancementSyncAttachment((ATServerConfig.config.shareAchievements.equals(ATServerConfig.Case.enable) && config.syncAdvancement) || ATServerConfig.config.shareAchievements.equals(ATServerConfig.Case.force))
+                .map(x -> x.getAdvancements())
+                .toStream()
+                .flatMap(x -> x)
+                .forEach(advancement -> {
+                    AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
+                    for (String criterion : progress.getRemainingCriteria()) {
+                        player.getAdvancements().award(advancement, criterion);
+                    }
+                });
         //Application Sync
         if (playerHasPermissions(player)){
-            for (Application application : applications) {
+            for (Application application : membership.getApplications()) {
                 ServerPlayer target = teamData.serverLevel.getServer().getPlayerList().getPlayer(application.applicant);
                 if (target == null) throw new NullPointerException("can't find target with UUID " + application.applicant + " when try to add application.");
                 NetworkUtils.sendToClient(new S2CSyncRenderMatPacket(target.getName().getString(), S2CSyncRenderMatPacket.Action.ADD, S2CSyncRenderMatPacket.Type.APPLICATION), player);
@@ -223,17 +224,14 @@ public class ATServerTeam extends Team {
         AdvancedTeam.post(new ServerOnPlayerOnlineEvent(player));
     }
 
-    public Stream<UUID> getPlayerUuids() {
-        return players.stream();
-    }
 
     public void onPlayerOffline(ServerPlayer player, boolean sendPackets) {
-        onlinePlayers.remove(player.getUUID());
+        membership.getOnlineMembers().remove(player.getUUID());
         // Packets
         if (sendPackets) {
             if (isEmpty()) {
                 var players = teamData.serverLevel.getServer().getPlayerList().getPlayers();
-                NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.OFFLINE, name), players);
+                NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.OFFLINE, core.name()), players);
             }
             var players = getOnlinePlayers();
             NetworkUtils.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.REMOVE), players.toJavaList());
@@ -241,20 +239,19 @@ public class ATServerTeam extends Team {
     }
 
     private void addPlayer(UUID player) {
-        players.add(player);
+        membership.getMembers().add(player);
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        if (ATServerConfig.config.enableVanillaTeamCompat) {
-            var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
-            if (playerScoreboardTeam == null || !playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
-                teamData.scoreboard.addPlayerToTeam(playerName, scoreboardTeam);
-            }
-        }
+        attachments.conditionallyGetVanillaTeamAttachment((ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.enable) && config.enableVanillaTeamCompat) || ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.force))
+                .map(x -> x.getVanillaTeam())
+                .filter(x -> teamData.scoreboard.getPlayersTeam(playerName) == null || teamData.scoreboard.getPlayersTeam(playerName).isAlliedTo(x))
+                .forEach(x -> teamData.scoreboard.addPlayerToTeam(playerName, x));
+
         var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
             // Packets
-            NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, true), playerEntity);
-            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, false), getOnlinePlayers().toJavaList());
+            NetworkUtils.sendToClient(new S2CTeamUpdatePacket(core.name(), playerName, S2CTeamUpdatePacket.Action.JOINED, true), playerEntity);
+            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(core.name(), playerName, S2CTeamUpdatePacket.Action.JOINED, false), getOnlinePlayers().toJavaList());
             onPlayerOnline(playerEntity, true);
             // Advancement Sync
             Set<Advancement> advancements = ((AdvancementAccessor) playerEntity.getAdvancements()).getVisibleAdvancements();
@@ -266,7 +263,7 @@ public class ATServerTeam extends Team {
 
             //clean invitation
             ((IHasTeam) playerEntity).clearInvitations();
-            applications.stream().filter(x -> x.applicant.equals(player)).findFirst().ifPresent(ExpirableObject::markRemoval);
+            membership.getApplications().stream().filter(x -> x.applicant.equals(player)).findFirst().ifPresent(ExpirableObject::markRemoval);
 
         }
 
@@ -274,34 +271,32 @@ public class ATServerTeam extends Team {
     }
 
     private void removePlayer(UUID player) {
-        players.remove(player);
+        membership.getMembers().remove(player);
         //find a new leader
-        if (this.leader.equals(player) && getOnlinePlayers().size() > 1) {
+        if (membership.getLeader().equals(player) && getOnlinePlayers().size() > 1) {
             Iterator<ServerPlayer> iterator = getOnlinePlayers().iterator();
             if (iterator.hasNext()) {
                 this.promote(iterator.next());
 
             }
         } else if (getOnlinePlayers().size() == 1) {
-            this.leader = getOnlinePlayers().getOrElseThrow(() -> new NullPointerException("can't find the last player after removing, even there is still a player in team!")).getUUID();
+            membership.setLeader(getOnlinePlayers().getOrElseThrow(() -> new NullPointerException("can't find the last player after removing, even there is still a player in team!")).getUUID());
         }
         String playerName = getNameFromUUID(player);
         // Scoreboard
+        attachments.conditionallyGetVanillaTeamAttachment((ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.enable) && config.enableVanillaTeamCompat) || ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.force))
+                .map(x -> x.getVanillaTeam())
+                .filter(x -> teamData.scoreboard.getPlayersTeam(playerName) == null || teamData.scoreboard.getPlayersTeam(playerName).isAlliedTo(x))
+                .forEach(x -> teamData.scoreboard.removePlayerFromTeam(playerName, x));
 
-        if (ATServerConfig.config.enableVanillaTeamCompat) {
-            var playerScoreboardTeam = teamData.scoreboard.getPlayersTeam(playerName);
-            if (playerScoreboardTeam != null && playerScoreboardTeam.isAlliedTo(scoreboardTeam)) {
-                teamData.scoreboard.removePlayerFromTeam(playerName, scoreboardTeam);
-            }
-        }
         // Packets
         var playerEntity = teamData.serverLevel.getServer().getPlayerList().getPlayer(player);
         if (playerEntity != null) {
 
             onPlayerOffline(playerEntity, true);
             NetworkUtils.sendToClient(new S2CTeamClearPacket(), playerEntity);
-            NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);
-            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers().toJavaList());
+            NetworkUtils.sendToClient(new S2CTeamUpdatePacket(core.name(), playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);
+            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(core.name(), playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers().toJavaList());
             ((IHasTeam) playerEntity).setTeam(null);
         }
         teamData.setDirty();
@@ -310,7 +305,7 @@ public class ATServerTeam extends Team {
     private String getNameFromUUID(UUID id) {
         return teamData.serverLevel.getServer().getProfileCache().get(id).map(GameProfile::getName).orElseThrow();
     }
-
+/*
     CompoundTag toNBT() {
         CompoundTag compound = new CompoundTag();
         compound.putString("name", name);
@@ -327,10 +322,10 @@ public class ATServerTeam extends Team {
         compound.putBoolean("allowEveryoneInvite", allowEveryoneInvite);
 
         ListTag applicationList = new ListTag();
-        for (var application : applications) {
+        for (var application : membership.getApplications()) {
             applicationList.add(application.toNBT());
         }
-        compound.put("applications", applicationList);
+        compound.put("membership.getApplications()", applicationList);
 
         ListTag playerList = new ListTag();
         for (var player : players) {
@@ -347,88 +342,25 @@ public class ATServerTeam extends Team {
 
         return compound;
     }
+*/
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public MutableComponent getFormattedName(Component name) {
-        return scoreboardTeam.getFormattedName(name);
-    }
-
-    @Override
-    public boolean canSeeFriendlyInvisibles() {
-        return scoreboardTeam.canSeeFriendlyInvisibles();
-    }
-
-    public void setShowFriendlyInvisibles(boolean value) {
-        scoreboardTeam.setSeeFriendlyInvisibles(value);
-    }
-
-    @Override
-    public boolean isAllowFriendlyFire() {
-        return scoreboardTeam.isAllowFriendlyFire();
-    }
-
-    public void setFriendlyFireAllowed(boolean value) {
-        scoreboardTeam.setAllowFriendlyFire(value);
-    }
-
-    @Override
-    public Visibility getNameTagVisibility() {
-        return scoreboardTeam.getNameTagVisibility();
-    }
-
-    public void setNameTagVisibilityRule(Visibility value) {
-        scoreboardTeam.setNameTagVisibility(value);
-    }
-
-    @Override
-    public ChatFormatting getColor() {
-        return scoreboardTeam.getColor();
-    }
-
-    public void setColour(ChatFormatting colour) {
-        scoreboardTeam.setColor(colour);
-    }
-
-    @Override
-    public Collection<String> getPlayers() {
-        return scoreboardTeam.getPlayers();
-    }
-
-    @Override
-    public Visibility getDeathMessageVisibility() {
-        return scoreboardTeam.getDeathMessageVisibility();
-    }
-
-    public void setDeathMessageVisibilityRule(Visibility value) {
-        scoreboardTeam.setDeathMessageVisibility(value);
-    }
-
-    @Override
-    public CollisionRule getCollisionRule() {
-        return scoreboardTeam.getCollisionRule();
-    }
-
-    public void setCollisionRule(CollisionRule value) {
-        scoreboardTeam.setCollisionRule(value);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof ATServerTeam team && Objects.equals(team.name, this.name);
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof ATServerTeam that)) return false;
+        return Objects.equal(core, that.core);
     }
 
     @Override
     public int hashCode() {
-        return this.name.hashCode();
+        return Objects.hashCode(core);
     }
 
-    public PlayerTeam getScoreboardTeam() {
-        return scoreboardTeam;
+    @Override
+    public void postProcess(ServerLevel level, ATServerTeamData data, ATServerTeam team) {
+        this.teamData = data;
+        this.membership.postProcess(level, data, this);
+        this.attachments.postProcess(level, data, this);
     }
 
     public static class Builder {
@@ -440,7 +372,7 @@ public class ATServerTeam extends Team {
         }
 
         public ATServerTeam complete(ATServerTeamData teamData, UUID leader) {
-            ATServerTeam team = new ATServerTeam(teamData.scoreboard, name, teamData, leader);
+            ATServerTeam team = new ATServerTeam(name, teamData, leader);
             return team;
         }
     }

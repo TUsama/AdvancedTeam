@@ -8,6 +8,7 @@ import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.utils.Failure;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -21,19 +22,37 @@ import java.util.*;
 public class ATServerTeamData extends SavedData {
 
     private static final String TEAMS_KEY = "teams";
-
-    private Map<String, ATServerTeam> teams = new HashMap<>();
     ServerLevel serverLevel;
     Scoreboard scoreboard;
+    private Map<String, ATServerTeam> teams = new HashMap<>();
 
     private ATServerTeamData(ServerLevel serverLevel) {
         this.serverLevel = serverLevel;
         scoreboard = serverLevel.getScoreboard();
     }
 
+    static ATServerTeamData getOrMake(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage()
+                .computeIfAbsent(compoundTag -> loadStatic(compoundTag, serverLevel), () -> new ATServerTeamData(serverLevel), TEAMS_KEY);
+    }
+
+    public static ATServerTeamData getOrMakeDefault(MinecraftServer server) {
+        return getOrMake(server.overworld());
+    }
+
+    public static ATServerTeamData loadStatic(CompoundTag compoundTag, ServerLevel level) {
+        ATServerTeamData id = new ATServerTeamData(level);
+
+        id.fromNBT(compoundTag);
+        return id;
+    }
+
     @Override
-    public CompoundTag save(CompoundTag compoundTag) {
-        toNBT(compoundTag);
+    public @NotNull CompoundTag save(CompoundTag compoundTag) {
+        //toNBT(compoundTag);
+        ATServerTeam.CODEC.listOf().encodeStart(NbtOps.INSTANCE, new ArrayList<>(teams.values()))
+                .resultOrPartial(error -> AdvancedTeam.LOGGER.error("Error on encoding team: {}", error))
+                .ifPresent(x -> compoundTag.put(TEAMS_KEY, x));
         return compoundTag;
     }
 
@@ -41,43 +60,41 @@ public class ATServerTeamData extends SavedData {
         return com.clefal.nirvana_lib.relocated.io.vavr.collection.List.ofAll(teams.values());
     }
 
-    private void announceUpdate(S2CTeamDataUpdatePacket.Type type, Collection<ServerPlayer> players, String... name){
+    private void announceUpdate(S2CTeamDataUpdatePacket.Type type, Collection<ServerPlayer> players, String... name) {
         NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(type, name), players);
         setDirty();
     }
 
-
-    public ATServerTeam createTeam(@NotNull String name,@NotNull ServerPlayer creator) {
+    public ATServerTeam createTeam(@NotNull String name, @NotNull ServerPlayer creator) {
         ATServerTeam team;
         if (((IHasTeam) creator).hasTeam()) {
             creator.sendSystemMessage(ModComponents.translatable("teams.error.alreadyinteam", creator.getName().getString()));
             team = ((IHasTeam) creator).getTeam();
         } else {
             team = new ATServerTeam.Builder(name).complete(this, creator.getUUID());
-            teams.put(team.getName(), team);
+            teams.put(team.getCore().name(), team);
             team.addPlayer(creator);
             team.promote(creator);
 
             List<ServerPlayer> players = creator.getServer().getPlayerList().getPlayers();
-            announceUpdate(S2CTeamDataUpdatePacket.Type.ONLINE, players, team.getName());
+            announceUpdate(S2CTeamDataUpdatePacket.Type.ONLINE, players, team.getCore().name());
         }
 
         return team;
     }
 
-    public ATServerTeam createPublicTeam(@NotNull String name,@NotNull ServerPlayer creator) {
+    public ATServerTeam createPublicTeam(@NotNull String name, @NotNull ServerPlayer creator) {
         ATServerTeam team = createTeam(name, creator);
-        team.setPublic(true);
+        team.getConfig().isPublic = true;
         return team;
     }
 
     public void disbandTeam(ATServerTeam team) {
-        teams.remove(team.getName());
+        team.onDisband();
+        teams.remove(team.getCore().name());
         MinecraftServer server = serverLevel.getServer();
-        scoreboard.removePlayerTeam(scoreboard.getPlayerTeam(team.getName()));
-        team.clear();
         List<ServerPlayer> players = server.getPlayerList().getPlayers();
-        announceUpdate(S2CTeamDataUpdatePacket.Type.DISBAND, players, team.getName());
+        announceUpdate(S2CTeamDataUpdatePacket.Type.DISBAND, players, team.getCore().name());
     }
 
     public boolean isEmpty() {
@@ -101,8 +118,8 @@ public class ATServerTeamData extends SavedData {
         if (player1.hasTeam()) {
             return Either.left(Failure.in_a_team);
         } else {
-            if (!player1.getInvitations().containsKey(team.getName())) {
-                ((IHasTeam) player).addInvitation(new Invitation(team.getName()));
+            if (!player1.getInvitations().containsKey(team.getCore().name())) {
+                ((IHasTeam) player).addInvitation(new Invitation(team.getCore().name()));
                 return Either.right(true);
             } else {
                 return Either.left(Failure.already_invite);
@@ -110,7 +127,7 @@ public class ATServerTeamData extends SavedData {
         }
     }
 
-    public boolean addPlayerToTeam(ServerPlayer player, ATServerTeam team){
+    public boolean addPlayerToTeam(ServerPlayer player, ATServerTeam team) {
         if (((IHasTeam) player).hasTeam()) {
             return false;
         } else {
@@ -133,42 +150,25 @@ public class ATServerTeamData extends SavedData {
 
     public void fromNBT(CompoundTag compound) {
         teams.clear();
+
         ListTag list = compound.getList(TEAMS_KEY, Tag.TAG_COMPOUND);
         List<String> add = new ArrayList<>();
-        for (var tag : list) {
-            ATServerTeam atServerTeam = ATServerTeam.fromNBT((CompoundTag) tag, this);
-            teams.put(atServerTeam.getName(), atServerTeam);
-            add.add(atServerTeam.getName());
-        }
-        if (!list.isEmpty()){
+        ATServerTeam.CODEC.listOf().parse(NbtOps.INSTANCE, list)
+                .resultOrPartial(x -> AdvancedTeam.LOGGER.error("Error on decoding team data: " + x))
+                .ifPresent(x -> {
+                    for (ATServerTeam atServerTeam : x) {
+                        teams.put(atServerTeam.getCore().name(), atServerTeam);
+                        add.add(atServerTeam.getCore().name());
+                        atServerTeam.postProcess(serverLevel, this, atServerTeam);
+                    }
+                });
+            /*ATServerTeam atServerTeam = ATServerTeam.fromNBT((CompoundTag) tag, this);
+            teams.put(atServerteam.getCore().name(), atServerTeam);
+            add.add(atServerteam.getCore().name());*/
+
+        if (!list.isEmpty()) {
             announceUpdate(S2CTeamDataUpdatePacket.Type.ADD, serverLevel.getServer().getPlayerList().getPlayers(), add.toArray(String[]::new));
         }
-    }
-
-    public void toNBT(CompoundTag compound) {
-        ListTag list = new ListTag();
-        for (var team : teams.values()) {
-            list.add(team.toNBT());
-        }
-        compound.put(TEAMS_KEY, list);
-    }
-
-    
-
-
-    static ATServerTeamData getOrMake(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage()
-                .computeIfAbsent(compoundTag -> loadStatic(compoundTag,serverLevel), () -> new ATServerTeamData(serverLevel), TEAMS_KEY);
-    }
-
-    public static ATServerTeamData getOrMakeDefault(MinecraftServer server) {
-        return getOrMake(server.overworld());
-    }
-
-    public static ATServerTeamData loadStatic(CompoundTag compoundTag, ServerLevel level) {
-        ATServerTeamData id = new ATServerTeamData(level);
-        id.fromNBT(compoundTag);
-        return id;
     }
 
 }

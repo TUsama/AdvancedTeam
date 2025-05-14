@@ -92,7 +92,7 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
     @Inject(at = @At(value = "TAIL"), method = "addAdditionalSaveData")
     private void writeCustomDataToNbt(CompoundTag nbt, CallbackInfo info) {
         if (team != null) {
-            nbt.putString("playerTeam", team.getName());
+            nbt.putString("playerTeam", team.getCore().name());
         }
     }
 
