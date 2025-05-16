@@ -58,46 +58,7 @@ public class ATServerTeam implements IPostProcess {
         this.teamData = teamData;
         this.attachments = new ATServerTeamAttachments(new VanillaTeamAttachment(name + uuid), new AdvancementSyncAttachment());
     }
-/*
-    static ATServerTeam fromNBT(CompoundTag compound, ATServerTeamData teamData) {
-        ATServerTeam team = new Builder(compound.getString("name"))
-                .complete(teamData, compound.getUUID("leader"));
 
-        val vanillaTeam = team.scoreboardTeam;
-        vanillaTeam.setColor(ChatFormatting.getByName(compound.getString("colour")));
-        vanillaTeam.setCollisionRule(CollisionRule.byName(compound.getString("collision")));
-        vanillaTeam.setAllowFriendlyFire(compound.getBoolean("friendlyFire"));
-        vanillaTeam.setSeeFriendlyInvisibles(compound.getBoolean("showInvisible"));
-        vanillaTeam.setDeathMessageVisibility(Visibility.byName(compound.getString("deathMessages")));
-        vanillaTeam.setNameTagVisibility(Visibility.byName(compound.getString("nameTags")));
-
-        team.setPublic(compound.getBoolean("public"));
-        team.setAllowEveryoneInvite(compound.getBoolean("allowEveryoneInvite"));
-
-        for (Tag application : compound.getList("membership.getApplications()", Tag.TAG_COMPOUND)) {
-            CompoundTag application1 = (CompoundTag) application;
-            team.membership.getApplications().add(Application.fromNBT(application1));
-        }
-
-        ListTag players = compound.getList("players", Tag.TAG_INT_ARRAY);
-        for (var elem : players) {
-            try {
-                UUID uuid = NbtUtils.loadUUID(elem);
-                team.addPlayer(uuid);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        ListTag advancements = compound.getList("advancement", Tag.TAG_STRING);
-        for (var adv : advancements) {
-            ResourceLocation id = ResourceLocation.tryParse(adv.getAsString());
-            team.addAdvancement(teamData.serverLevel.getServer().getAdvancements().getAdvancement(id));
-        }
-
-        return team;
-    }
-*/
     public void announceConfigChangeToClient() {
         List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
         NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.Public(core.name(), config.isPublic), players1);
@@ -305,44 +266,6 @@ public class ATServerTeam implements IPostProcess {
     private String getNameFromUUID(UUID id) {
         return teamData.serverLevel.getServer().getProfileCache().get(id).map(GameProfile::getName).orElseThrow();
     }
-/*
-    CompoundTag toNBT() {
-        CompoundTag compound = new CompoundTag();
-        compound.putString("name", name);
-        compound.putUUID("leader", leader);
-
-        compound.putString("colour", scoreboardTeam.getColor().getName());
-        compound.putString("collision", scoreboardTeam.getCollisionRule().name);
-        compound.putString("deathMessages", scoreboardTeam.getDeathMessageVisibility().name);
-        compound.putString("nameTags", scoreboardTeam.getNameTagVisibility().name);
-        compound.putBoolean("friendlyFire", scoreboardTeam.isAllowFriendlyFire());
-        compound.putBoolean("showInvisible", scoreboardTeam.canSeeFriendlyInvisibles());
-
-        compound.putBoolean("public", isPublic);
-        compound.putBoolean("allowEveryoneInvite", allowEveryoneInvite);
-
-        ListTag applicationList = new ListTag();
-        for (var application : membership.getApplications()) {
-            applicationList.add(application.toNBT());
-        }
-        compound.put("membership.getApplications()", applicationList);
-
-        ListTag playerList = new ListTag();
-        for (var player : players) {
-
-            playerList.add(NbtUtils.createUUID(player));
-        }
-        compound.put("players", playerList);
-
-        ListTag advList = new ListTag();
-        for (var advancement : advancements) {
-            advList.add(StringTag.valueOf(advancement.getId().toString()));
-        }
-        compound.put("advancements", advList);
-
-        return compound;
-    }
-*/
 
     @Override
     public boolean equals(Object object) {
