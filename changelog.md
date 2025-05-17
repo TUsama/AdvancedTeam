@@ -1,3 +1,11 @@
+### 1.6.0
+## Breaking change!!! This will probably wipe the old team data after you update!
+so remember to back up your teams.dat!
+refactor data structure of the team
+use not intrusive way to handle the tick mixin, fix MNS mixin bug.
+if you find any bugs please report to GitHub!
+
+
 ### 1.5.1
 fix a bug that can't find the player UUID after promoting
 fix a bug that can't show the tips when no public team
