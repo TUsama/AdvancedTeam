@@ -29,6 +29,7 @@ public class VanillaTeamAttachment implements IATServerTeamAttachment<VanillaTea
     private PlayerTeam vanillaTeam;
     private String teamName;
     private VanillaTeamConfig config;
+    public boolean isProcessed = false;
 
     public VanillaTeamAttachment(String teamName, VanillaTeamConfig config) {
         this.teamName = teamName;
@@ -68,7 +69,7 @@ public class VanillaTeamAttachment implements IATServerTeamAttachment<VanillaTea
             vanillaTeam.setDeathMessageVisibility(Team.Visibility.byName(config.deathMessages));
             vanillaTeam.setNameTagVisibility(Team.Visibility.byName(config.nameTags));
         }
-
+        isProcessed = true;
     }
 
     public record VanillaTeamConfig(ChatFormatting color, String collision, String deathMessages, String nameTags,

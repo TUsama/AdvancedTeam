@@ -53,10 +53,10 @@ public class ATServerTeam implements IPostProcess {
     private ATServerTeam(String name, ATServerTeamData teamData, UUID leader) {
         UUID uuid = UUID.randomUUID();
         this.core = new ATServerTeamCore(name, uuid);
-        this.config = new ATServerTeamConfig(false, false, false, false);
+        this.config = new ATServerTeamConfig(false, false);
         this.membership = new ATServerTeamMembership(leader);
         this.teamData = teamData;
-        this.attachments = new ATServerTeamAttachments(new VanillaTeamAttachment(name + uuid), new AdvancementSyncAttachment());
+        this.attachments = new ATServerTeamAttachments(new VanillaTeamAttachment(name + "_" + uuid), new AdvancementSyncAttachment());
     }
 
     public void announceConfigChangeToClient() {
@@ -134,11 +134,12 @@ public class ATServerTeam implements IPostProcess {
     public void onDisband() {
         var playersCopy = new ArrayList<>(membership.getMembers());
         playersCopy.forEach(this::removePlayer);
-        attachments.getVanillaTeamAttachment().getVanillaTeam().getScoreboard().removePlayerTeam(attachments.getVanillaTeamAttachment().getVanillaTeam());
+        attachments.getVanillaTeamAttachment().forEach(x -> x.getVanillaTeam().getScoreboard().removePlayerTeam(x.getVanillaTeam()))
+    ;
     }
 
     public void addAdvancement(Advancement advancement) {
-        attachments.getAdvancementSyncAttachment().addAdvancement(advancement);
+        attachments.getAdvancementSyncAttachment().forEach(x -> x.addAdvancement(advancement));
     }
 
     public void onPlayerOnline(ServerPlayer player, boolean sendPackets) {
@@ -163,7 +164,7 @@ public class ATServerTeam implements IPostProcess {
             }
         }
         // Advancement Sync
-        attachments.conditionallyGetAdvancementSyncAttachment((ATServerConfig.config.shareAchievements.equals(ATServerConfig.Case.enable) && config.syncAdvancement) || ATServerConfig.config.shareAchievements.equals(ATServerConfig.Case.force))
+        attachments.getAdvancementSyncAttachment()
                 .map(x -> x.getAdvancements())
                 .toStream()
                 .flatMap(x -> x)
@@ -203,7 +204,7 @@ public class ATServerTeam implements IPostProcess {
         membership.getMembers().add(player);
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        attachments.conditionallyGetVanillaTeamAttachment((ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.enable) && config.enableVanillaTeamCompat) || ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.force))
+        attachments.getVanillaTeamAttachment()
                 .map(x -> x.getVanillaTeam())
                 .filter(x -> teamData.scoreboard.getPlayersTeam(playerName) == null || teamData.scoreboard.getPlayersTeam(playerName).isAlliedTo(x))
                 .forEach(x -> teamData.scoreboard.addPlayerToTeam(playerName, x));
@@ -245,7 +246,7 @@ public class ATServerTeam implements IPostProcess {
         }
         String playerName = getNameFromUUID(player);
         // Scoreboard
-        attachments.conditionallyGetVanillaTeamAttachment((ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.enable) && config.enableVanillaTeamCompat) || ATServerConfig.config.enableVanillaTeamCompat.equals(ATServerConfig.Case.force))
+        attachments.getVanillaTeamAttachment()
                 .map(x -> x.getVanillaTeam())
                 .filter(x -> teamData.scoreboard.getPlayersTeam(playerName) == null || teamData.scoreboard.getPlayersTeam(playerName).isAlliedTo(x))
                 .forEach(x -> teamData.scoreboard.removePlayerFromTeam(playerName, x));

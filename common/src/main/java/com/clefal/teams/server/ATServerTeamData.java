@@ -72,10 +72,10 @@ public class ATServerTeamData extends SavedData {
             team = ((IHasTeam) creator).getTeam();
         } else {
             team = new ATServerTeam.Builder(name).complete(this, creator.getUUID());
+            team.postProcess(serverLevel, this, team);
             teams.put(team.getCore().name(), team);
             team.addPlayer(creator);
             team.promote(creator);
-
             List<ServerPlayer> players = creator.getServer().getPlayerList().getPlayers();
             announceUpdate(S2CTeamDataUpdatePacket.Type.ONLINE, players, team.getCore().name());
         }

@@ -19,6 +19,7 @@ public class AdvancementSyncAttachment implements IATServerTeamAttachment<Advanc
     public static String IDENTIFIER = "advancement_sync";
     public Set<ResourceLocation> advancementLocations;
     private Set<Advancement> advancements;
+    public boolean isProcessed = false;
     public static Codec<AdvancementSyncAttachment> CODEC = RecordCodecBuilder.create(advancementSyncAttachmentInstance -> advancementSyncAttachmentInstance.group(
             ExtraCodecs.transformToSet(ResourceLocation.CODEC.listOf()).fieldOf("locations").forGetter(x -> x.advancementLocations)
     ).apply(advancementSyncAttachmentInstance, AdvancementSyncAttachment::new)
@@ -44,6 +45,7 @@ public class AdvancementSyncAttachment implements IATServerTeamAttachment<Advanc
         return IDENTIFIER;
     }
 
+
     @Override
     public Codec<AdvancementSyncAttachment> getCodec() {
         return CODEC;
@@ -58,6 +60,7 @@ public class AdvancementSyncAttachment implements IATServerTeamAttachment<Advanc
                 addAdvancement(advancement);
             }
         }
+        isProcessed = true;
 
     }
 }

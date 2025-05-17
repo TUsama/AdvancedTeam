@@ -10,6 +10,9 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 @WithPerms(opLevel = 2)
 public class ATServerConfig extends Config {
     public static ATServerConfig config = ConfigApiJava.registerAndLoadConfig(ATServerConfig::new, RegisterType.BOTH);
+    public boolean shareAchievements = false;
+    public boolean enableVanillaTeamCompat = false;
+    public ValidatedInt invitationAndApplicationExpireTick = new ValidatedInt(20 * 60 * 2);
 
     public ATServerConfig() {
         super(AdvancedTeam.id("server_config"));
@@ -17,16 +20,4 @@ public class ATServerConfig extends Config {
 
     public static void init() {
     }
-
-    public enum Case{
-        Disable,
-        enable,
-        force
-    }
-
-    public Case shareAchievements = Case.Disable;
-
-    public Case enableVanillaTeamCompat = Case.Disable;
-
-    public ValidatedInt invitationAndApplicationExpireTick = new ValidatedInt(20 * 60 * 2);
 }
