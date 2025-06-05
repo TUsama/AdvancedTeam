@@ -1,20 +1,23 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.teams.client.core.ClientRenderPersistentData;
 import com.clefal.teams.client.core.ClientTeam;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class S2CTeamClearPacket implements S2CModPacket {
+public class S2CTeamClearPacket implements S2CModPacket<S2CTeamClearPacket> {
 
     public S2CTeamClearPacket() {
     }
 
-    public S2CTeamClearPacket(FriendlyByteBuf byteBuf) {
-    }
 
     @Override
     public void write(FriendlyByteBuf to) {
+
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
 
     }
 

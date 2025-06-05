@@ -15,7 +15,7 @@ import com.clefal.teams.client.gui.screens.request.TeamApplicationScreen;
 import com.clefal.teams.client.gui.toast.ToastConfigSave;
 import com.clefal.teams.network.server.C2STeamLeavePacket;
 import com.clefal.teams.network.server.config.C2STeamConfigSavePacket;
-import com.clefal.teams.platform.Services;
+
 import com.clefal.teams.server.ModComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;

@@ -10,7 +10,6 @@ import com.clefal.teams.event.client.ClientEvent;
 import com.clefal.teams.event.server.ServerEvent;
 import com.clefal.teams.event.server.ServerPlayerTickJobEvent;
 import com.clefal.teams.network.Packets;
-import com.clefal.teams.network.client.S2CSyncRenderMatPacket;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
 import com.clefal.teams.server.*;
 import com.clefal.teams.modules.internal.HandlerManager;
@@ -21,8 +20,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.Map;
 
 public class AdvancedTeam {
     public static final boolean IN_DEV = Boolean.getBoolean("at.dev.tool");

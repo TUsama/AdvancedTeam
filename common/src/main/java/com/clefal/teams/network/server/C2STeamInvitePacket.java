@@ -1,6 +1,6 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.control.Either;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.server.IHasTeam;
@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 import java.util.UUID;
 
-public class C2STeamInvitePacket implements C2SModPacket {
+public class C2STeamInvitePacket implements C2SModPacket<C2STeamInvitePacket> {
 
 
     List<String> to;
@@ -23,8 +23,7 @@ public class C2STeamInvitePacket implements C2SModPacket {
         this.to = to;
     }
 
-    public C2STeamInvitePacket(FriendlyByteBuf byteBuf) {
-        to = byteBuf.readList(FriendlyByteBuf::readUtf);
+    public C2STeamInvitePacket() {
     }
 
     @Override
@@ -33,23 +32,29 @@ public class C2STeamInvitePacket implements C2SModPacket {
     }
 
     @Override
-    public void handleServer(ServerPlayer player) {
-        for (String s : this.to) {
-            UUID to = player.server.getProfileCache().get(s).orElseThrow().getId();
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        to = friendlyByteBuf.readList(FriendlyByteBuf::readUtf);
+    }
 
-            ServerPlayer toPlayer = player.server.getPlayerList().getPlayer(to);
+
+
+    @Override
+    public void handleServer(ServerPlayer serverPlayer, C2STeamInvitePacket c2STeamInvitePacket, boolean b) {
+        for (String s : this.to) {
+            UUID to = serverPlayer.server.getProfileCache().get(s).orElseThrow().getId();
+
+            ServerPlayer toPlayer = serverPlayer.server.getPlayerList().getPlayer(to);
             if (toPlayer == null) {
                 AdvancedTeam.LOGGER.error("Trying to invite a null player: {}", to);
                 return;
             }
-            ATServerTeam team = ((IHasTeam) player).getTeam();
+            ATServerTeam team = ((IHasTeam) serverPlayer).getTeam();
             if (team == null) {
-                player.sendSystemMessage(Component.translatable("teams.error.not_in_a_team"));
+                serverPlayer.sendSystemMessage(Component.translatable("teams.error.not_in_a_team"));
             } else {
-                Either<Failure, Boolean> booleans = ATServerTeamData.getOrMakeDefault(player.server).invitePlayerToTeam(toPlayer, team);
-                if (!booleans.isRight()) booleans.getLeft().announce(player, toPlayer.getName());
+                Either<Failure, Boolean> booleans = ATServerTeamData.getOrMakeDefault(serverPlayer.server).invitePlayerToTeam(toPlayer, team);
+                if (!booleans.isRight()) booleans.getLeft().announce(serverPlayer, toPlayer.getName());
             }
         }
-
     }
 }

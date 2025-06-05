@@ -6,7 +6,7 @@ import com.clefal.teams.client.gui.components.ATCheckBox;
 import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamCreatePacket;
-import com.clefal.teams.platform.Services;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

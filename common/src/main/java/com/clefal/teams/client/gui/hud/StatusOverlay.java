@@ -1,5 +1,6 @@
 package com.clefal.teams.client.gui.hud;
 
+import com.clefal.nirvana_lib.utils.DevUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.gui.util.VertexContainer;
@@ -42,10 +43,8 @@ public class StatusOverlay {
 
         for (int i = 0; i < teammates.size() && shown < ATClientConfig.config.overlays.maxEntryAmount; ++i) {
             ClientTeam.Teammate teammate = teammates.get(i);
-            if (!AdvancedTeam.IN_DEV){
-                if (client.player.getUUID().equals(teammate.id)) {
-                    continue;
-                }
+            if (!DevUtils.isInDev() && client.player.getUUID().equals(teammate.id)){
+                continue;
             }
             PoseStack pose = graphics.pose();
             //from left to right

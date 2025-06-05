@@ -1,6 +1,6 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerKickPlayerEvent;
 import com.clefal.teams.server.ATServerTeam;
@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
-public class C2STeamKickPacket implements C2SModPacket {
+public class C2STeamKickPacket implements C2SModPacket<C2STeamKickPacket> {
 
     String name;
     UUID toKick;
@@ -21,9 +21,7 @@ public class C2STeamKickPacket implements C2SModPacket {
         toKick = playerToKick;
     }
 
-    public C2STeamKickPacket(FriendlyByteBuf byteBuf) {
-        name = byteBuf.readUtf();
-        toKick = byteBuf.readUUID();
+    public C2STeamKickPacket() {
     }
 
     @Override
@@ -33,14 +31,20 @@ public class C2STeamKickPacket implements C2SModPacket {
     }
 
     @Override
-    public void handleServer(ServerPlayer player) {
-        ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(name);
-        if (team.playerHasPermissions(player)) {
-            ServerPlayer kicked = player.server.getPlayerList().getPlayer(toKick);
-            ATServerTeamData.getOrMakeDefault(player.server).removePlayerFromTeam(kicked);
-            AdvancedTeam.post(new ServerKickPlayerEvent(player, kicked, name));
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        name = friendlyByteBuf.readUtf();
+        toKick = friendlyByteBuf.readUUID();
+    }
+
+    @Override
+    public void handleServer(ServerPlayer serverPlayer, C2STeamKickPacket c2STeamKickPacket, boolean b) {
+        ATServerTeam team = ATServerTeamData.getOrMakeDefault(serverPlayer.server).getTeam(name);
+        if (team.playerHasPermissions(serverPlayer)) {
+            ServerPlayer kicked = serverPlayer.server.getPlayerList().getPlayer(toKick);
+            ATServerTeamData.getOrMakeDefault(serverPlayer.server).removePlayerFromTeam(kicked);
+            AdvancedTeam.post(new ServerKickPlayerEvent(serverPlayer, kicked, name));
         } else {
-            player.sendSystemMessage(Component.literal("You don't have permission!"));
+            serverPlayer.sendSystemMessage(Component.literal("You don't have permission!"));
         }
     }
 }

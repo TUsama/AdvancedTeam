@@ -17,7 +17,7 @@ legacyForge {
 
     //validateAccessTransformers = true
 
-    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
         accessTransformers = ["src/main/resources/META-INF/accesstransformer.cfg"]
     }
@@ -28,6 +28,7 @@ legacyForge {
     runs {
         client {
             client()
+            setDevLogin(false)
             jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
         }
         client2 {
@@ -53,7 +54,7 @@ legacyForge {
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
-boolean enableMNS = true
+boolean enableMNS = false
 boolean enableFTBTeams = true
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.34'
@@ -78,8 +79,13 @@ dependencies {
 
     modRuntimeOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
     modCompileOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
+    modImplementation ("maven.modrinth:nirvana-library:${project.name}-${minecraft_version}-${lib_version}")
+    //modImplementation ("blank:Nirvana Lib-forge-1.20.1:2.0.8")
+    modImplementation("maven.modrinth:common-network:1.0.5-1.20.1"){
+        transitive = false
+    }
 
-    modImplementation ("maven.modrinth:nirvana-library:${lib_version}")
+
     modRuntimeOnly ("curse.maven:architectury-api-419699:5137938")
     if (enableFTBTeams){
         modImplementation ("curse.maven:ftb-library-forge-404465:6164053")

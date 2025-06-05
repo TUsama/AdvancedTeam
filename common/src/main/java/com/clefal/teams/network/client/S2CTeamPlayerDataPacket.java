@@ -1,6 +1,6 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class S2CTeamPlayerDataPacket implements S2CModPacket {
+public class S2CTeamPlayerDataPacket implements S2CModPacket<S2CTeamPlayerDataPacket> {
 
     public static final String ID_KEY = "playerUuid";
     public static final String NAME_KEY = "playerName";
@@ -81,15 +81,19 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
 
 
 
-    public S2CTeamPlayerDataPacket(FriendlyByteBuf byteBuf) {
-        tag = byteBuf.readNbt();
-        this.propertiesName = byteBuf.readList(FriendlyByteBuf::readUtf);
+    public S2CTeamPlayerDataPacket() {
     }
 
     @Override
     public void write(FriendlyByteBuf to) {
         to.writeNbt(tag);
         to.writeCollection(this.propertiesName, FriendlyByteBuf::writeUtf);
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        tag = friendlyByteBuf.readNbt();
+        this.propertiesName = friendlyByteBuf.readList(FriendlyByteBuf::readUtf);
     }
 
     @Override

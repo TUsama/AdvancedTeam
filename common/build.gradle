@@ -26,7 +26,11 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    modCompileOnly ("maven.modrinth:nirvana-library:${lib_version}")
+    modCompileOnly ("maven.modrinth:nirvana-library:forge-${minecraft_version}-${lib_version}")
+    //modCompileOnly ("blank:Nirvana Lib-forge-1.20.1:2.0.8")
+    modImplementation("maven.modrinth:common-network:1.0.5-1.20.1"){
+        transitive = false
+    }
 
     modCompileOnly ("curse.maven:ftb-library-forge-404465:6164053")
     modCompileOnly ("curse.maven:ftb-teams-forge-404468:6130786")

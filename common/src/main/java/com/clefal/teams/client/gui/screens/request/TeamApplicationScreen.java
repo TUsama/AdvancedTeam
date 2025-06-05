@@ -4,7 +4,7 @@ import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2SAskNoTeamPlayerWithSkinPacket;
 import com.clefal.teams.network.server.C2SAskRequestPlayerWithSkinPacket;
-import com.clefal.teams.platform.Services;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

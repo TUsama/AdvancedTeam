@@ -8,7 +8,7 @@ import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.client.gui.toast.ToastApplying;
 import com.clefal.teams.network.server.C2STeamApplyingPacket;
-import com.clefal.teams.platform.Services;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

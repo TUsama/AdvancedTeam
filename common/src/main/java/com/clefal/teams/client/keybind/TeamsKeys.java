@@ -8,7 +8,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.clefal.teams.client.gui.toast.ToastInvited;
 import com.clefal.teams.client.gui.toast.ToastApplied;
 import com.clefal.teams.network.server.C2STeamJoinPacket;
-import com.clefal.teams.platform.Services;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;

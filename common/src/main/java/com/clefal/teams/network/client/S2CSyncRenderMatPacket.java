@@ -1,6 +1,6 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.teams.client.core.ClientRenderPersistentData;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import static com.clefal.nirvana_lib.relocated.io.vavr.API.$;
 import static com.clefal.nirvana_lib.relocated.io.vavr.API.Case;
 
-public class S2CSyncRenderMatPacket implements S2CModPacket {
+public class S2CSyncRenderMatPacket implements S2CModPacket<S2CSyncRenderMatPacket> {
 
     public enum Action {
         ADD(Collection::add),
@@ -45,10 +45,8 @@ public class S2CSyncRenderMatPacket implements S2CModPacket {
         this.type = type;
     }
 
-    public S2CSyncRenderMatPacket(FriendlyByteBuf byteBuf) {
-        this.name = byteBuf.readUtf(100);
-        this.action = Action.values()[byteBuf.readByte()];
-        this.type = Type.values()[byteBuf.readByte()];
+    public S2CSyncRenderMatPacket() {
+
     }
 
     @Override
@@ -61,5 +59,12 @@ public class S2CSyncRenderMatPacket implements S2CModPacket {
         to.writeUtf(name, 100);
         to.writeByte(action.ordinal());
         to.writeByte(type.ordinal());
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        this.name = friendlyByteBuf.readUtf(100);
+        this.action = Action.values()[friendlyByteBuf.readByte()];
+        this.type = Type.values()[friendlyByteBuf.readByte()];
     }
 }
