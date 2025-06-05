@@ -1,3 +1,9 @@
+### 1.6.1
+add a FTBTeams compat config to allow server OP disable this function.
+fix a FTBTeams compat bug that offline enabler doesn't work.
+clean up code.
+
+
 ### 1.6.0
 ## Breaking change!!! This will probably wipe the old team data after you update!
 so remember to back up your teams.dat!
