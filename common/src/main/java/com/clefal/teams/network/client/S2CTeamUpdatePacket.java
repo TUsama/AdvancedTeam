@@ -34,6 +34,11 @@ public class S2CTeamUpdatePacket implements S2CModPacket<S2CTeamUpdatePacket> {
     }
 
     @Override
+    public Class<S2CTeamUpdatePacket> getSelfClass() {
+        return S2CTeamUpdatePacket.class;
+    }
+
+    @Override
     public void handleClient() {
         String team = tag.getString(TEAM_KEY);
         String player = tag.getString(PLAYER_KEY);

@@ -97,6 +97,11 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket<S2CTeamPlayerDataPa
     }
 
     @Override
+    public Class<S2CTeamPlayerDataPacket> getSelfClass() {
+        return S2CTeamPlayerDataPacket.class;
+    }
+
+    @Override
     public void handleClient() {
         UUID uuid = tag.getUUID(S2CTeamPlayerDataPacket.ID_KEY);
         Type type1 = Type.valueOf(tag.getString(S2CTeamPlayerDataPacket.TYPE_KEY));

@@ -33,6 +33,11 @@ public class S2CTeamAppliedPacket implements S2CModPacket<S2CTeamAppliedPacket> 
         tag = friendlyByteBuf.readNbt();
     }
 
+    @Override
+    public Class<S2CTeamAppliedPacket> getSelfClass() {
+        return S2CTeamAppliedPacket.class;
+    }
+
 
     @Override
     public void handleClient() {

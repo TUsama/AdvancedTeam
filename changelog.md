@@ -1,3 +1,6 @@
+### 1.6.2
+follow lib change
+
 ### 1.6.1
 add a FTBTeams compat config to allow server OP disable this function.
 fix a FTBTeams compat bug that offline enabler doesn't work.

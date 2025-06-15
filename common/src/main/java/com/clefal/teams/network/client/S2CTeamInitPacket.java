@@ -32,6 +32,11 @@ public class S2CTeamInitPacket implements S2CModPacket<S2CTeamInitPacket> {
     }
 
     @Override
+    public Class<S2CTeamInitPacket> getSelfClass() {
+        return S2CTeamInitPacket.class;
+    }
+
+    @Override
     public void handleClient() {
         ClientTeam.INSTANCE.init(name,leader);
     }

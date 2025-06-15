@@ -31,6 +31,11 @@ public class S2CTeamInviteSentPacket implements S2CModPacket<S2CTeamInviteSentPa
     }
 
     @Override
+    public Class<S2CTeamInviteSentPacket> getSelfClass() {
+        return S2CTeamInviteSentPacket.class;
+    }
+
+    @Override
     public void handleClient() {
         ClientHelper.addInviteSentToast(team, player);
     }

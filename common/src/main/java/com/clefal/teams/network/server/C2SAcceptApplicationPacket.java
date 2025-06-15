@@ -31,6 +31,11 @@ public class C2SAcceptApplicationPacket implements C2SModPacket<C2SAcceptApplica
     }
 
     @Override
+    public Class<C2SAcceptApplicationPacket> getSelfClass() {
+        return C2SAcceptApplicationPacket.class;
+    }
+
+    @Override
     public void handleServer(ServerPlayer serverPlayer, C2SAcceptApplicationPacket c2SAcceptApplicationPacket, boolean b) {
         if (((IHasTeam) serverPlayer).hasTeam()){
             ATServerTeam team = ((IHasTeam) serverPlayer).getTeam();

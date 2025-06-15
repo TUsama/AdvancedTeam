@@ -56,4 +56,9 @@ public class S2CReturnPlayerWithSkinPacket implements S2CModPacket<S2CReturnPlay
         playersName = List.ofAll(objects);
         usage = friendlyByteBuf.readEnum(Usage.class);
     }
+
+    @Override
+    public Class<S2CReturnPlayerWithSkinPacket> getSelfClass() {
+        return S2CReturnPlayerWithSkinPacket.class;
+    }
 }

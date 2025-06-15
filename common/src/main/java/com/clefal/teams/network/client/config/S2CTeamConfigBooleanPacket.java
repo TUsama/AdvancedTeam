@@ -45,6 +45,10 @@ public abstract class S2CTeamConfigBooleanPacket<MSG extends S2CModPacket<MSG>> 
             }
         }
 
+        @Override
+        public Class<Public> getSelfClass() {
+            return Public.class;
+        }
     }
 
     public static class EveryoneCanInvite extends S2CTeamConfigBooleanPacket<EveryoneCanInvite>{
@@ -59,6 +63,11 @@ public abstract class S2CTeamConfigBooleanPacket<MSG extends S2CModPacket<MSG>> 
         @Override
         public void handleClient() {
             ClientTeam.INSTANCE.setCanInvite(config);
+        }
+
+        @Override
+        public Class<EveryoneCanInvite> getSelfClass() {
+            return EveryoneCanInvite.class;
         }
     }
 }

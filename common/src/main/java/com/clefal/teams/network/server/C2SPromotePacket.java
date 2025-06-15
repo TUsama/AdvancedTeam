@@ -30,6 +30,11 @@ public class C2SPromotePacket implements C2SModPacket<C2SPromotePacket> {
     }
 
     @Override
+    public Class<C2SPromotePacket> getSelfClass() {
+        return C2SPromotePacket.class;
+    }
+
+    @Override
     public void handleServer(ServerPlayer serverPlayer, C2SPromotePacket c2SPromotePacket, boolean b) {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(serverPlayer.server).getTeam(serverPlayer);
         if (team.hasPlayer(this.promoted)){

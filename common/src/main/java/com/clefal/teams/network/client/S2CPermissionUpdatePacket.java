@@ -36,4 +36,9 @@ public class S2CPermissionUpdatePacket implements S2CModPacket<S2CPermissionUpda
         this.leader = friendlyByteBuf.readUUID();
         this.hasPerm = friendlyByteBuf.readBoolean();
     }
+
+    @Override
+    public Class<S2CPermissionUpdatePacket> getSelfClass() {
+        return S2CPermissionUpdatePacket.class;
+    }
 }

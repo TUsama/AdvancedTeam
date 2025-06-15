@@ -41,6 +41,11 @@ public class C2STeamCreatePacket implements C2SModPacket<C2STeamCreatePacket> {
         isPublic = friendlyByteBuf.readBoolean();
     }
 
+    @Override
+    public Class<C2STeamCreatePacket> getSelfClass() {
+        return C2STeamCreatePacket.class;
+    }
+
 
     @Override
     public void handleServer(ServerPlayer serverPlayer, C2STeamCreatePacket c2STeamCreatePacket, boolean b) {

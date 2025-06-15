@@ -25,6 +25,11 @@ public class C2STeamLeavePacket implements C2SModPacket<C2STeamLeavePacket> {
 
     }
 
+    @Override
+    public Class<C2STeamLeavePacket> getSelfClass() {
+        return C2STeamLeavePacket.class;
+    }
+
 
     @Override
     public void handleServer(ServerPlayer serverPlayer, C2STeamLeavePacket c2STeamLeavePacket, boolean b) {

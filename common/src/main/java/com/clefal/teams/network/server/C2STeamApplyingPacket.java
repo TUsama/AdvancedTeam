@@ -32,6 +32,11 @@ public class C2STeamApplyingPacket implements C2SModPacket<C2STeamApplyingPacket
         this.name = friendlyByteBuf.readUtf();
     }
 
+    @Override
+    public Class<C2STeamApplyingPacket> getSelfClass() {
+        return C2STeamApplyingPacket.class;
+    }
+
 
     @Override
     public void handleServer(ServerPlayer serverPlayer, C2STeamApplyingPacket c2SModPacket, boolean b) {

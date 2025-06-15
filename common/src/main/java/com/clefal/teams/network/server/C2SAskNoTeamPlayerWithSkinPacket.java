@@ -29,6 +29,11 @@ public class C2SAskNoTeamPlayerWithSkinPacket implements C2SModPacket<C2SAskNoTe
     }
 
     @Override
+    public Class<C2SAskNoTeamPlayerWithSkinPacket> getSelfClass() {
+        return C2SAskNoTeamPlayerWithSkinPacket.class;
+    }
+
+    @Override
     public void handleServer(ServerPlayer serverPlayer, C2SAskNoTeamPlayerWithSkinPacket c2SAskNoTeamPlayerWithSkinPacket, boolean b) {
         NetworkUtils.sendToClient(new S2CReturnPlayerWithSkinPacket(List.ofAll(serverPlayer.getServer().getPlayerList().getPlayers())
                 .filter(x -> !((IHasTeam) x).hasTeam())

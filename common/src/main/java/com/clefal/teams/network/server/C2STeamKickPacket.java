@@ -37,6 +37,11 @@ public class C2STeamKickPacket implements C2SModPacket<C2STeamKickPacket> {
     }
 
     @Override
+    public Class<C2STeamKickPacket> getSelfClass() {
+        return C2STeamKickPacket.class;
+    }
+
+    @Override
     public void handleServer(ServerPlayer serverPlayer, C2STeamKickPacket c2STeamKickPacket, boolean b) {
         ATServerTeam team = ATServerTeamData.getOrMakeDefault(serverPlayer.server).getTeam(name);
         if (team.playerHasPermissions(serverPlayer)) {

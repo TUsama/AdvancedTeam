@@ -47,6 +47,11 @@ public class S2CTeamDataUpdatePacket implements S2CModPacket<S2CTeamDataUpdatePa
     }
 
     @Override
+    public Class<S2CTeamDataUpdatePacket> getSelfClass() {
+        return S2CTeamDataUpdatePacket.class;
+    }
+
+    @Override
     public void handleClient() {
         Type type = Type.valueOf(tag.getString(TYPE_KEY));
         ListTag nbtList = tag.getList(TEAM_KEY, Tag.TAG_STRING);

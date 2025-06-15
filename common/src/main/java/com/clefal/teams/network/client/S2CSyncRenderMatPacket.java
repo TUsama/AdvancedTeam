@@ -67,4 +67,9 @@ public class S2CSyncRenderMatPacket implements S2CModPacket<S2CSyncRenderMatPack
         this.action = Action.values()[friendlyByteBuf.readByte()];
         this.type = Type.values()[friendlyByteBuf.readByte()];
     }
+
+    @Override
+    public Class<S2CSyncRenderMatPacket> getSelfClass() {
+        return S2CSyncRenderMatPacket.class;
+    }
 }

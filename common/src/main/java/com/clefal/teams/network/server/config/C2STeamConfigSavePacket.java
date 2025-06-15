@@ -34,6 +34,11 @@ public class C2STeamConfigSavePacket implements C2SModPacket<C2STeamConfigSavePa
     }
 
     @Override
+    public Class<C2STeamConfigSavePacket> getSelfClass() {
+        return C2STeamConfigSavePacket.class;
+    }
+
+    @Override
     public void handleServer(ServerPlayer serverPlayer, C2STeamConfigSavePacket c2STeamConfigSavePacket, boolean b) {
         ATServerTeam team = ((IHasTeam) serverPlayer).getTeam();
         if (team != null){

@@ -36,6 +36,10 @@ public class C2STeamInvitePacket implements C2SModPacket<C2STeamInvitePacket> {
         to = friendlyByteBuf.readList(FriendlyByteBuf::readUtf);
     }
 
+    @Override
+    public Class<C2STeamInvitePacket> getSelfClass() {
+        return C2STeamInvitePacket.class;
+    }
 
 
     @Override

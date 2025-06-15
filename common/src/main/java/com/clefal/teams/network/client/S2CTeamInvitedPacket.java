@@ -30,4 +30,9 @@ public class S2CTeamInvitedPacket implements S2CModPacket<S2CTeamInvitedPacket> 
         team = friendlyByteBuf.readUtf();
     }
 
+    @Override
+    public Class<S2CTeamInvitedPacket> getSelfClass() {
+        return S2CTeamInvitedPacket.class;
+    }
+
 }

@@ -28,6 +28,11 @@ public class C2SAskRequestPlayerWithSkinPacket implements C2SModPacket<C2SAskReq
     }
 
     @Override
+    public Class<C2SAskRequestPlayerWithSkinPacket> getSelfClass() {
+        return C2SAskRequestPlayerWithSkinPacket.class;
+    }
+
+    @Override
     public void handleServer(ServerPlayer serverPlayer, C2SAskRequestPlayerWithSkinPacket c2SAskRequestPlayerWithSkinPacket, boolean b) {
         NetworkUtils.sendToClient(new S2CReturnPlayerWithSkinPacket(List.ofAll(serverPlayer.getServer().getPlayerList().getPlayers())
                 .filter(x -> ((IHasTeam) serverPlayer).getTeam().isApplying(x))

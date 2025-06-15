@@ -33,6 +33,11 @@ public class C2STeamJoinPacket implements C2SModPacket<C2STeamJoinPacket> {
         team = friendlyByteBuf.readUtf();
     }
 
+    @Override
+    public Class<C2STeamJoinPacket> getSelfClass() {
+        return C2STeamJoinPacket.class;
+    }
+
 
     @Override
     public void handleServer(ServerPlayer serverPlayer, C2STeamJoinPacket c2STeamJoinPacket, boolean b) {

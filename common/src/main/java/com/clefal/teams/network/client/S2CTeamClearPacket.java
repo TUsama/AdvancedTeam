@@ -22,6 +22,11 @@ public class S2CTeamClearPacket implements S2CModPacket<S2CTeamClearPacket> {
     }
 
     @Override
+    public Class<S2CTeamClearPacket> getSelfClass() {
+        return S2CTeamClearPacket.class;
+    }
+
+    @Override
     public void handleClient() {
         ClientTeam.INSTANCE.reset();
         //don't think we need to reset invitations.
