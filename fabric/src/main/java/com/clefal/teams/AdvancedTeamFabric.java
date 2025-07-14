@@ -1,9 +1,7 @@
 package com.clefal.teams;
 
 import com.clefal.teams.modules.compat.CompatManager;
-import com.clefal.teams.modules.compat.ftbteams.FTBTeamsCompatModule;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -36,7 +34,6 @@ public class AdvancedTeamFabric implements ModInitializer {
 
         CompatManager.compats.addAll(
                 List.of(
-                        FTBTeamsCompatModule.getInstance()
                 ));
         CompatManager.tryEnableAll();
 

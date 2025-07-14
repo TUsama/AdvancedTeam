@@ -80,7 +80,6 @@ dependencies {
     modRuntimeOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1")
     modCompileOnly ("top.theillusivec4.curios:curios-forge:5.11.0+1.20.1:api")
     modImplementation ("maven.modrinth:nirvana-library:${project.name}-${minecraft_version}-${lib_version}")
-    //modImplementation ("blank:Nirvana Lib-forge-1.20.1:2.0.8")
     modImplementation("maven.modrinth:common-network:1.0.5-1.20.1"){
         transitive = false
     }

@@ -23,9 +23,5 @@ public class ClientTeamManagerImplMixin {
     @Shadow(remap = false)
     private KnownClientPlayer selfKnownPlayer;
 
-    @Inject(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), method = "initSelfDetails", cancellable = true, remap = false)
-    private void init(CallbackInfo info) {
-        MixinHelper.enableOfflineForFTBTeams(selfKnownPlayer, knownPlayers, info);
-    }
 }
 
