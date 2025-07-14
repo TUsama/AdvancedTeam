@@ -1,5 +1,12 @@
+### 1.4.5(Rollback)
+rollback version due to an unknown bug.
+completely remove FTB Teams compat.
+potentially fix promotion and config sync issue, now the team config should be correctly sync to client when joined.
+
+
 ### 1.6.2
 follow lib change
+
 
 ### 1.6.1
 add a FTBTeams compat config to allow server OP disable this function.
