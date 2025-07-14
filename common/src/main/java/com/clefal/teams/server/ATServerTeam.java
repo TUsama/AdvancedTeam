@@ -113,13 +113,15 @@ public class ATServerTeam extends Team {
     }
 
     public void promote(ServerPlayer player) {
-        ServerPlayer oldLeader = getOnlinePlayers().find(x -> x.getUUID().equals(leader)).get();
-        if (oldLeader == null) throw new NullPointerException("can't find old leader when try to promote!");
+        
+        
         this.leader = player.getUUID();
+        
         for (ServerPlayer onlinePlayer : this.onlinePlayers.values()) {
+            
             NetworkUtils.sendToClient(new S2CPermissionUpdatePacket(this.playerHasPermissions(onlinePlayer), this.leader), onlinePlayer);
         }
-        AdvancedTeam.post(new ServerPromoteEvent(oldLeader, player, this));
+        AdvancedTeam.post(new ServerPromoteEvent(player, this));
     }
 
     public void addApplication(Application application) {
@@ -282,17 +284,7 @@ public class ATServerTeam extends Team {
 
     private void removePlayer(UUID player) {
         players.remove(player);
-        //find a new leader
-        com.clefal.nirvana_lib.relocated.io.vavr.collection.List<ServerPlayer> onlinePlayers1 = getOnlinePlayers();
-        if (this.leader.equals(player) && onlinePlayers1.size() > 1) {
-            Iterator<ServerPlayer> iterator = onlinePlayers1.iterator();
-            if (iterator.hasNext()) {
-                this.promote(iterator.next());
 
-            }
-        } else if (onlinePlayers1.size() == 1) {
-            this.leader = onlinePlayers1.getOrElseThrow(() -> new NullPointerException("can't find the last player after removing, even there is still a player in team!")).getUUID();
-        }
         String playerName = getNameFromUUID(player);
         // Scoreboard
 
@@ -309,9 +301,26 @@ public class ATServerTeam extends Team {
             onPlayerOffline(playerEntity, true);
             NetworkUtils.sendToClient(new S2CTeamClearPacket(), playerEntity);
             NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);
-            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), onlinePlayers1.toJavaList());
+            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), onlinePlayers.values());
             ((IHasTeam) playerEntity).setTeam(null);
         }
+
+        //find a new leader
+        com.clefal.nirvana_lib.relocated.io.vavr.collection.List<ServerPlayer> onlinePlayers1 = getOnlinePlayers();
+        //should be players.size() because we haven't modified the onlinePlayers yet
+        if (this.leader.equals(player) && onlinePlayers1.size() > 1) {
+            
+            Iterator<ServerPlayer> iterator = onlinePlayers1.iterator();
+            if (iterator.hasNext()) {
+                this.promote(iterator.next());
+
+            }
+        } else if (onlinePlayers1.size() == 1) {
+            
+            this.promote(onlinePlayers1.getOrElseThrow(() -> new NullPointerException("can't find the last player after removing, even there is still a player in team!")));
+        }
+
+
         teamData.setDirty();
     }
 

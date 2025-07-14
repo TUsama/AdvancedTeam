@@ -1,6 +1,7 @@
 package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
+import com.clefal.teams.client.gui.screens.noteam.NoTeamScreen;
 import com.clefal.teams.utils.ClientHelper;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -18,6 +19,7 @@ public class S2CTeamInvitedPacket implements S2CModPacket<S2CTeamInvitedPacket> 
     @Override
     public void handleClient() {
         ClientHelper.addInviteToast(team);
+        NoTeamScreen.refreshThis();
     }
 
     @Override

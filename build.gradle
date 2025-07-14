@@ -1,3 +1,5 @@
+import me.modmuss50.mpp.ReleaseType
+
 plugins {
     id 'fabric-loom' version '1.10-SNAPSHOT' apply(false)
     id 'net.neoforged.moddev.legacyforge' version '2.0.89' apply(false)
@@ -14,7 +16,7 @@ publishMods {
             string
         }
     }}.join('\n')
-    type = BETA
+    type = ReleaseType.STABLE
     //dryRun = true
     // CurseForge options used by both Fabric and Forge
     def cfOptions = curseforgeOptions {

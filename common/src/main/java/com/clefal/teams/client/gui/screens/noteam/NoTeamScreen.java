@@ -9,6 +9,7 @@ import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.client.gui.screens.invite.CheckInvitationScreen;
 import com.clefal.teams.server.ModComponents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -60,6 +61,11 @@ public class NoTeamScreen extends TeamsScreen {
 
     public void refresh() {
         minecraft.setScreen(new NoTeamScreen(parent));
+    }
+    public static void refreshThis(){
+        if (Minecraft.getInstance().screen instanceof NoTeamScreen noTeamScreen){
+            noTeamScreen.refresh();
+        }
     }
 
     @Override

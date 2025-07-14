@@ -2,6 +2,7 @@ package com.clefal.teams.network.client;
 
 import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.teams.client.core.ClientTeamData;
+import com.clefal.teams.client.gui.screens.noteam.NoTeamScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -58,10 +59,22 @@ public class S2CTeamDataUpdatePacket implements S2CModPacket<S2CTeamDataUpdatePa
         for (var elem : nbtList) {
             String team = elem.getAsString();
             switch (type) {
-                case ADD -> ClientTeamData.INSTANCE.addTeam(team);
-                case DISBAND -> ClientTeamData.INSTANCE.removeTeam(team);
-                case ONLINE -> ClientTeamData.INSTANCE.teamOnline(team);
-                case OFFLINE -> ClientTeamData.INSTANCE.teamOffline(team);
+                case ADD -> {
+                    ClientTeamData.INSTANCE.addTeam(team);
+                    NoTeamScreen.refreshThis();
+                }
+                case DISBAND -> {
+                    ClientTeamData.INSTANCE.removeTeam(team);
+                    NoTeamScreen.refreshThis();
+                }
+                case ONLINE -> {
+                    ClientTeamData.INSTANCE.teamOnline(team);
+                    NoTeamScreen.refreshThis();
+                }
+                case OFFLINE -> {
+                    ClientTeamData.INSTANCE.teamOffline(team);
+                    NoTeamScreen.refreshThis();
+                }
                 case CLEAR -> ClientTeamData.INSTANCE.clear();
             }
         }
