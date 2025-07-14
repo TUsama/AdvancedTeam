@@ -5,8 +5,6 @@ import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerJoinTeamEvent;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
-import com.clefal.teams.network.client.S2CTeamInvitedPacket;
-import com.clefal.teams.platform.Services;
 import com.clefal.teams.utils.Failure;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -103,8 +101,8 @@ public class ATServerTeamData extends SavedData {
         if (player1.hasTeam()) {
             return Either.left(Failure.in_a_team);
         } else {
-            if (!player1.getInvitations().contains(new Invitation(team.getName()))) {
-                NetworkUtils.sendToClient(new S2CTeamInvitedPacket(team), player);
+            if (!player1.getInvitations().containsKey(team.getName())) {
+                ((IHasTeam) player).addInvitation(new Invitation(team.getName()));
                 return Either.right(true);
             } else {
                 return Either.left(Failure.already_invite);
@@ -154,6 +152,8 @@ public class ATServerTeamData extends SavedData {
         }
         compound.put(TEAMS_KEY, list);
     }
+
+    
 
 
     static ATServerTeamData getOrMake(ServerLevel serverLevel) {

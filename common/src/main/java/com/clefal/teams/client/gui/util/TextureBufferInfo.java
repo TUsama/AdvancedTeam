@@ -45,12 +45,11 @@ public record TextureBufferInfo(float pX1, float pX2, float pY1, float pY2, floa
     }
 
     public void upload(VertexConsumer consumer) {
-        final int light = 0xF000F0;
         float opacity = Math.min(this.renderInfo().opacity, 1.0f);
-        consumer.vertex(matrix4f, pX1, pY1, pBlitOffset).color(1.0f, 1.0f, 1.0f, opacity).uv(pMinU, pMinV).uv2(light).endVertex();
-        consumer.vertex(matrix4f, pX1, pY2, pBlitOffset).color(1.0f, 1.0f, 1.0f, opacity).uv(pMinU, pMaxV).uv2(light).endVertex();
-        consumer.vertex(matrix4f, pX2, pY2, pBlitOffset).color(1.0f, 1.0f, 1.0f, opacity).uv(pMaxU, pMaxV).uv2(light).endVertex();
-        consumer.vertex(matrix4f, pX2, pY1, pBlitOffset).color(1.0f, 1.0f, 1.0f, opacity).uv(pMaxU, pMinV).uv2(light).endVertex();
+        consumer.vertex(matrix4f, pX1, pY1, pBlitOffset).uv(pMinU, pMinV).color(1.0f, 1.0f, 1.0f, opacity).endVertex();
+        consumer.vertex(matrix4f, pX1, pY2, pBlitOffset).uv(pMinU, pMaxV).color(1.0f, 1.0f, 1.0f, opacity).endVertex();
+        consumer.vertex(matrix4f, pX2, pY2, pBlitOffset).uv(pMaxU, pMaxV).color(1.0f, 1.0f, 1.0f, opacity).endVertex();
+        consumer.vertex(matrix4f, pX2, pY1, pBlitOffset).uv(pMaxU, pMinV).color(1.0f, 1.0f, 1.0f, opacity).endVertex();
     }
 
     public record RenderInfo(float opacity) {

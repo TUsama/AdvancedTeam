@@ -61,5 +61,9 @@ public abstract class TeamsScreen extends Screen {
 
     protected abstract ResourceLocation getBackgroundTexture();
 
+    public void refresh(){
+
+    }
+
 
 }
