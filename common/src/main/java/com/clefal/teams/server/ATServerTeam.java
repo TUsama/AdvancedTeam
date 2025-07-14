@@ -9,8 +9,6 @@ import com.clefal.teams.mixin.AdvancementAccessor;
 import com.clefal.teams.network.client.*;
 import com.clefal.teams.network.client.config.S2CTeamConfigBooleanPacket;
 import com.mojang.authlib.GameProfile;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -103,10 +101,15 @@ public class ATServerTeam extends Team {
         return team;
     }
 
-    public void announceConfigChangeToClient() {
-        List<ServerPlayer> players1 = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
-        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), players1);
+    public void announceConfigChangeToClients() {
+        List<ServerPlayer> allPlayerForPublication = this.teamData.serverLevel.getServer().getPlayerList().getPlayers();
+        NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.Public(name, isPublic), allPlayerForPublication);
         NetworkUtils.sendToClients(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(name, allowEveryoneInvite), onlinePlayers.values());
+    }
+
+    public void announceConfigChangeToClient(ServerPlayer player) {
+        NetworkUtils.sendToClient(new S2CTeamConfigBooleanPacket.Public(name, isPublic), player);
+        NetworkUtils.sendToClient(new S2CTeamConfigBooleanPacket.EveryoneCanInvite(name, allowEveryoneInvite), player);
     }
 
     public void promote(ServerPlayer player) {
@@ -259,6 +262,7 @@ public class ATServerTeam extends Team {
             NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, true), playerEntity);
             NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.JOINED, false), getOnlinePlayers().toJavaList());
             onPlayerOnline(playerEntity, true);
+            announceConfigChangeToClient(playerEntity);
             // Advancement Sync
             Set<Advancement> advancements = ((AdvancementAccessor) playerEntity.getAdvancements()).getVisibleAdvancements();
             for (Advancement advancement : advancements) {
@@ -279,14 +283,15 @@ public class ATServerTeam extends Team {
     private void removePlayer(UUID player) {
         players.remove(player);
         //find a new leader
-        if (this.leader.equals(player) && getOnlinePlayers().size() > 1) {
-            Iterator<ServerPlayer> iterator = getOnlinePlayers().iterator();
+        com.clefal.nirvana_lib.relocated.io.vavr.collection.List<ServerPlayer> onlinePlayers1 = getOnlinePlayers();
+        if (this.leader.equals(player) && onlinePlayers1.size() > 1) {
+            Iterator<ServerPlayer> iterator = onlinePlayers1.iterator();
             if (iterator.hasNext()) {
                 this.promote(iterator.next());
 
             }
-        } else if (getOnlinePlayers().size() == 1) {
-            this.leader = getOnlinePlayers().getOrElseThrow(() -> new NullPointerException("can't find the last player after removing, even there is still a player in team!")).getUUID();
+        } else if (onlinePlayers1.size() == 1) {
+            this.leader = onlinePlayers1.getOrElseThrow(() -> new NullPointerException("can't find the last player after removing, even there is still a player in team!")).getUUID();
         }
         String playerName = getNameFromUUID(player);
         // Scoreboard
@@ -304,7 +309,7 @@ public class ATServerTeam extends Team {
             onPlayerOffline(playerEntity, true);
             NetworkUtils.sendToClient(new S2CTeamClearPacket(), playerEntity);
             NetworkUtils.sendToClient(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, true), playerEntity);
-            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), getOnlinePlayers().toJavaList());
+            NetworkUtils.sendToClients(new S2CTeamUpdatePacket(name, playerName, S2CTeamUpdatePacket.Action.LEFT, false), onlinePlayers1.toJavaList());
             ((IHasTeam) playerEntity).setTeam(null);
         }
         teamData.setDirty();

@@ -1,9 +1,6 @@
 package com.clefal.teams.server;
 
 import com.google.common.base.Objects;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.UUID;
@@ -11,11 +8,6 @@ import java.util.UUID;
 public class Application extends ExpirableObject{
     UUID applicant;
 
-    public static Codec<Application> CODEC = RecordCodecBuilder.create(applicationInstance -> applicationInstance.group(
-            UUIDUtil.CODEC.fieldOf("applicant").forGetter(x -> x.applicant),
-            Codec.INT.fieldOf("lifetime").forGetter(x -> x.lifetime)
-    ).apply(applicationInstance, Application::new)
-    );
 
     public Application(UUID applicant, int lifeTime) {
         lifetime = lifeTime;

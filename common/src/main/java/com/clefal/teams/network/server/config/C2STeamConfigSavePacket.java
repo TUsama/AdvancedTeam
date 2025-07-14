@@ -42,9 +42,9 @@ public class C2STeamConfigSavePacket implements C2SModPacket<C2STeamConfigSavePa
     public void handleServer(ServerPlayer serverPlayer, C2STeamConfigSavePacket c2STeamConfigSavePacket, boolean b) {
         ATServerTeam team = ((IHasTeam) serverPlayer).getTeam();
         if (team != null){
-            team.getConfig().isPublic = isPublic;
-            team.getConfig().allowEveryoneInvite = everyoneInvite;
-            team.announceConfigChangeToClient();
+            team.setPublic(isPublic);
+            team.setAllowEveryoneInvite(everyoneInvite);
+            team.announceConfigChangeToClients();
         } else {
             AdvancedTeam.LOGGER.warn("no-team player send C2STeamConfigChangePacket! name: {}", serverPlayer.getName().getString());
         }
