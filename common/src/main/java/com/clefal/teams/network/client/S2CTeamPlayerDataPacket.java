@@ -1,6 +1,6 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.API;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet;
 import com.clefal.nirvana_lib.relocated.net.neoforged.bus.api.Event;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class S2CTeamPlayerDataPacket implements S2CModPacket {
+public class S2CTeamPlayerDataPacket implements S2CModPacket<S2CTeamPlayerDataPacket> {
 
     public static final String ID_KEY = "playerUuid";
     public static final String NAME_KEY = "playerName";
@@ -46,10 +46,6 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
     public S2CTeamPlayerDataPacket(ServerPlayer player, Type type, HashSet<String> keys) {
         tag.putUUID(ID_KEY, player.getUUID());
         tag.putString(TYPE_KEY, type.toString());
-        Runnable gather = () -> this.postAndDo(new ServerGatherPropertyEvent.ServerGatherAllPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
-            tuple2._2().accept(tuple2._1(), tag);
-            this.propertiesName.add(tuple2._1().getIdentifier());
-        }));
         switch (type) {
             case ADD -> {
                 tag.putString(NAME_KEY, player.getName().getString());
@@ -62,13 +58,12 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                 tag.putString(SKIN_SIG_KEY, skin != null ?
                         skin.getSignature() != null ? skin.getSignature() : ""
                         : "");
-                //System.out.println("try run!");
-                this.postAndDo(new ServerGatherPropertyEvent.ServerGatherAllPropertyEvent(player), event -> API.For(event.gather).yield().forEach(tuple2 -> {
+                this.postAndDo(new ServerGatherPropertyEvent.ServerGatherAllPropertyEvent(player), event -> event.gather.forEach(tuple2 -> {
                     tuple2._2().accept(tuple2._1(), tag);
                     this.propertiesName.add(tuple2._1().getIdentifier());
                 }));
             }
-            case UPDATE -> this.postAndDo(new ServerGatherPropertyEvent(player, keys), event -> API.For(event.gather).yield().forEach(tuple2 -> {
+            case UPDATE -> this.postAndDo(new ServerGatherPropertyEvent(player, keys), event -> event.gather.forEach(tuple2 -> {
                 tuple2._2().accept(tuple2._1(), tag);
                 this.propertiesName.add(tuple2._1().getIdentifier());
             }));
@@ -81,15 +76,24 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
 
 
 
-    public S2CTeamPlayerDataPacket(FriendlyByteBuf byteBuf) {
-        tag = byteBuf.readNbt();
-        this.propertiesName = byteBuf.readList(FriendlyByteBuf::readUtf);
+    public S2CTeamPlayerDataPacket() {
     }
 
     @Override
     public void write(FriendlyByteBuf to) {
         to.writeNbt(tag);
         to.writeCollection(this.propertiesName, FriendlyByteBuf::writeUtf);
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        tag = friendlyByteBuf.readNbt();
+        this.propertiesName = friendlyByteBuf.readList(FriendlyByteBuf::readUtf);
+    }
+
+    @Override
+    public Class<S2CTeamPlayerDataPacket> getSelfClass() {
+        return S2CTeamPlayerDataPacket.class;
     }
 
     @Override
@@ -113,9 +117,10 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                     dummy.getProperties().put("textures", new Property("textures", skinVal, skinSig));
                     Minecraft.getInstance().getSkinManager().registerSkins(dummy, (type, id, texture) -> {
                         if (type == MinecraftProfileTexture.Type.SKIN) {
-
                             this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, id, event.getResults()));
-
+                        } else {
+                            //don't abort the property update even user can't get the skin.
+                            this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.addPlayer(uuid, name, DefaultPlayerSkin.getDefaultSkin(uuid), event.getResults()));
                         }
                     }, false);
                 } else {
@@ -123,7 +128,6 @@ public class S2CTeamPlayerDataPacket implements S2CModPacket {
                 }
             }
             case UPDATE -> {
-                //System.out.println("updating!");
                 this.postAndDo(new ClientReadPropertyEvent(tag, ImmutableList.copyOf(this.propertiesName)), event -> ClientTeam.INSTANCE.updatePlayer(uuid, event.getResults()));
             }
             case REMOVE -> {

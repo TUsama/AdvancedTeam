@@ -1,13 +1,13 @@
 package com.clefal.teams.network.server.config;
 
-import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.IHasTeam;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public class C2STeamConfigSavePacket implements C2SModPacket {
+public class C2STeamConfigSavePacket implements C2SModPacket<C2STeamConfigSavePacket> {
     boolean isPublic;
     boolean everyoneInvite;
 
@@ -16,27 +16,37 @@ public class C2STeamConfigSavePacket implements C2SModPacket {
         this.everyoneInvite = everyoneInvite;
     }
 
-    public C2STeamConfigSavePacket(FriendlyByteBuf buf) {
-        isPublic = buf.readBoolean();
-        everyoneInvite = buf.readBoolean();
+    public C2STeamConfigSavePacket() {
     }
 
-    @Override
-    public void handleServer(ServerPlayer player) {
-        ATServerTeam team = ((IHasTeam) player).getTeam();
-        if (team != null){
-            team.setPublic(isPublic);
-            team.setAllowEveryoneInvite(everyoneInvite);
-            team.announceConfigChangeToClient();
-        } else {
-            AdvancedTeam.LOGGER.warn("no-team player send C2STeamConfigChangePacket! name: {}", player.getName().getString());
-        }
 
-    }
 
     @Override
     public void write(FriendlyByteBuf to) {
         to.writeBoolean(isPublic);
         to.writeBoolean(everyoneInvite);
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        isPublic = friendlyByteBuf.readBoolean();
+        everyoneInvite = friendlyByteBuf.readBoolean();
+    }
+
+    @Override
+    public Class<C2STeamConfigSavePacket> getSelfClass() {
+        return C2STeamConfigSavePacket.class;
+    }
+
+    @Override
+    public void handleServer(ServerPlayer serverPlayer, C2STeamConfigSavePacket c2STeamConfigSavePacket, boolean b) {
+        ATServerTeam team = ((IHasTeam) serverPlayer).getTeam();
+        if (team != null){
+            team.getConfig().isPublic = isPublic;
+            team.getConfig().allowEveryoneInvite = everyoneInvite;
+            team.announceConfigChangeToClient();
+        } else {
+            AdvancedTeam.LOGGER.warn("no-team player send C2STeamConfigChangePacket! name: {}", serverPlayer.getName().getString());
+        }
     }
 }

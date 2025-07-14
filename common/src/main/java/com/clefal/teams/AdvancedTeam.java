@@ -8,11 +8,11 @@ import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.config.ConfigManager;
 import com.clefal.teams.event.client.ClientEvent;
 import com.clefal.teams.event.server.ServerEvent;
+import com.clefal.teams.event.server.ServerPlayerTickJobEvent;
 import com.clefal.teams.network.Packets;
+import com.clefal.teams.network.client.S2CSyncRenderMatPacket;
 import com.clefal.teams.network.client.S2CTeamDataUpdatePacket;
-import com.clefal.teams.platform.Services;
-import com.clefal.teams.server.ATServerTeam;
-import com.clefal.teams.server.ATServerTeamData;
+import com.clefal.teams.server.*;
 import com.clefal.teams.modules.internal.HandlerManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +20,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class AdvancedTeam {
     public static final boolean IN_DEV = Boolean.getBoolean("at.dev.tool");
@@ -75,9 +78,9 @@ public class AdvancedTeam {
     public static void serverInit() {
         ConfigManager.init();
         for (var han : HandlerManager.INSTANCE.getServerHandlers()) {
-
             serverBus.register(han);
         }
+        AdvancedTeam.serverBus.<ServerPlayerTickJobEvent>addListener(x -> onServerPlayerTick(x.player));
     }
 
 
@@ -87,6 +90,16 @@ public class AdvancedTeam {
         if (team != null) {
             team.addAdvancement(advancement);
         }
+    }
+
+    public static void onServerPlayerTick(ServerPlayer player){
+        IHasTeam hasTeam = (IHasTeam) player;
+        IPropertySender propertySender = (IPropertySender) player;
+        //tick invitation
+        hasTeam.tickInvitations();
+
+        //tick property update.
+        propertySender.handleUpdate();
     }
 
     public static void whenServerTick(MinecraftServer server){

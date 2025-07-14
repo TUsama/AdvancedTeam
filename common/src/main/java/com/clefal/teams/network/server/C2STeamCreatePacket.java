@@ -1,13 +1,13 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.event.server.ServerCreateTeamEvent;
 import com.clefal.teams.server.ATServerTeamData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public class C2STeamCreatePacket implements C2SModPacket {
+public class C2STeamCreatePacket implements C2SModPacket<C2STeamCreatePacket> {
 
     String team;
     boolean isPublic = false;
@@ -16,20 +16,17 @@ public class C2STeamCreatePacket implements C2SModPacket {
         this.team = team;
     }
 
-    public static C2STeamCreatePacket createNonPublicTeam(String team){
+    public C2STeamCreatePacket() {
+    }
+
+    public static C2STeamCreatePacket createNonPublicTeam(String team) {
         return new C2STeamCreatePacket(team);
     }
 
-    public static C2STeamCreatePacket createPublicTeam(String team){
+    public static C2STeamCreatePacket createPublicTeam(String team) {
         C2STeamCreatePacket c2STeamCreatePacket = new C2STeamCreatePacket(team);
         c2STeamCreatePacket.isPublic = true;
         return c2STeamCreatePacket;
-    }
-
-
-    public C2STeamCreatePacket(FriendlyByteBuf byteBuf) {
-        team = byteBuf.readUtf();
-        isPublic = byteBuf.readBoolean();
     }
 
     @Override
@@ -39,13 +36,25 @@ public class C2STeamCreatePacket implements C2SModPacket {
     }
 
     @Override
-    public void handleServer(ServerPlayer player) {
-        if (isPublic){
-            ATServerTeamData.getOrMakeDefault(player.server).createPublicTeam(team, player);
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        team = friendlyByteBuf.readUtf();
+        isPublic = friendlyByteBuf.readBoolean();
+    }
+
+    @Override
+    public Class<C2STeamCreatePacket> getSelfClass() {
+        return C2STeamCreatePacket.class;
+    }
+
+
+    @Override
+    public void handleServer(ServerPlayer serverPlayer, C2STeamCreatePacket c2STeamCreatePacket, boolean b) {
+        if (isPublic) {
+            ATServerTeamData.getOrMakeDefault(serverPlayer.server).createPublicTeam(team, serverPlayer);
         } else {
-            ATServerTeamData.getOrMakeDefault(player.server).createTeam(team, player);
+            ATServerTeamData.getOrMakeDefault(serverPlayer.server).createTeam(team, serverPlayer);
         }
 
-        AdvancedTeam.post(new ServerCreateTeamEvent(team, player));
+        AdvancedTeam.post(new ServerCreateTeamEvent(team, serverPlayer));
     }
 }

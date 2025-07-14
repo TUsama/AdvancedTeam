@@ -3,7 +3,7 @@ package com.clefal.teams.mixinhelper;
 import com.clefal.teams.modules.internal.effect.VanillaPotionEffectModule;
 import com.clefal.teams.modules.internal.effect.handlers.VanillaPotionEffectProperty;
 import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
-import com.clefal.teams.platform.Services;
+
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.server.IHasTeam;
@@ -31,7 +31,6 @@ public class Hooker {
                 IHasTeam player1 = (IHasTeam) player;
                 if (player1.hasTeam() && !listtag.isEmpty()) {
                     ((IPropertySender) player).addUpdate(VanillaPotionEffectProperty.KEY);
-                    System.out.println("update potion effect!");
                 }
             }
         }

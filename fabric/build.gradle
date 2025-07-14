@@ -1,16 +1,15 @@
 plugins {
-    id 'java'
-    id 'idea'
+    id 'multiloader-loader'
     id 'fabric-loom'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
-base {
-    archivesName = "${mod_name}-fabric-${minecraft_version}"
-}
+boolean enableFTBTeams = true
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-$minecraft_version:$parch_mapping@zip")
+        parchment("org.parchmentmc.data:parchment-$minecraft_version:$parchment_version@zip")
     }
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -22,8 +21,23 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":common")
+    
+    modImplementation "me.fzzyhmstrs:fzzy_config:${fzzy_config_version}+${minecraft_version}"
+    modImplementation "curse.maven:fabric-language-kotlin-308769:4718458"
 
-    modImplementation "curse.maven:nirvana-library-1164411:6434896"
+    modImplementation ("maven.modrinth:nirvana-library:${project.name}-${minecraft_version}-${lib_version}")
+    //modImplementation ("blank:Nirvana Lib-fabric-1.20.1:2.0.8")
+    modImplementation("maven.modrinth:common-network:hQsMT8cT"){
+        transitive = false
+    }
+
+    if (enableFTBTeams){
+        modImplementation "curse.maven:ftb-teams-fabric-438497:6130783"
+        modImplementation "curse.maven:architectury-api-419699:5137936"
+        modImplementation "curse.maven:ftb-library-fabric-438495:6164052"
+    } else {
+        modCompileOnly "curse.maven:ftb-teams-fabric-438497:6130783"
+    }
 }
 
 loom {
@@ -49,22 +63,5 @@ loom {
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("net.fabricmc:fabric-loader:$fabric_loader_version")
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
-
-processResources {
-    from project(":common").sourceSets.main.resources
-}
 
 

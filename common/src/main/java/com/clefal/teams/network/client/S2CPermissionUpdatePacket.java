@@ -1,12 +1,12 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.teams.client.core.ClientTeam;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
-public class S2CPermissionUpdatePacket implements S2CModPacket {
+public class S2CPermissionUpdatePacket implements S2CModPacket<S2CPermissionUpdatePacket> {
 
     UUID leader;
     boolean hasPerm;
@@ -15,10 +15,8 @@ public class S2CPermissionUpdatePacket implements S2CModPacket {
         this.leader = leader;
         this.hasPerm = hasPerm;
     }
+    public S2CPermissionUpdatePacket() {
 
-    public S2CPermissionUpdatePacket(FriendlyByteBuf byteBuf) {
-        this.leader = byteBuf.readUUID();
-        this.hasPerm = byteBuf.readBoolean();
     }
 
     @Override
@@ -31,5 +29,16 @@ public class S2CPermissionUpdatePacket implements S2CModPacket {
     public void write(FriendlyByteBuf to) {
         to.writeUUID(this.leader);
         to.writeBoolean(hasPerm);
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        this.leader = friendlyByteBuf.readUUID();
+        this.hasPerm = friendlyByteBuf.readBoolean();
+    }
+
+    @Override
+    public Class<S2CPermissionUpdatePacket> getSelfClass() {
+        return S2CPermissionUpdatePacket.class;
     }
 }

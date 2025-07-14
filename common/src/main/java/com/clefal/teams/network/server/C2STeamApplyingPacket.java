@@ -1,17 +1,17 @@
 package com.clefal.teams.network.server;
 
-import com.clefal.nirvana_lib.network.C2SModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.C2SModPacket;
 import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.server.ATServerTeam;
 import com.clefal.teams.server.ATServerTeamData;
 import com.clefal.teams.network.client.S2CTeamAppliedPacket;
-import com.clefal.teams.platform.Services;
+
 import com.clefal.teams.server.Application;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-public class C2STeamApplyingPacket implements C2SModPacket {
+public class C2STeamApplyingPacket implements C2SModPacket<C2STeamApplyingPacket> {
 
 
     String name;
@@ -19,8 +19,7 @@ public class C2STeamApplyingPacket implements C2SModPacket {
         this.name = name;
     }
 
-    public C2STeamApplyingPacket(FriendlyByteBuf byteBuf) {
-        name = byteBuf.readUtf();
+    public C2STeamApplyingPacket() {
     }
 
     @Override
@@ -29,15 +28,23 @@ public class C2STeamApplyingPacket implements C2SModPacket {
     }
 
     @Override
-    public void handleServer(ServerPlayer player) {
-        ATServerTeam team = ATServerTeamData.getOrMakeDefault(player.server).getTeam(name);
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        this.name = friendlyByteBuf.readUtf();
+    }
+
+    @Override
+    public Class<C2STeamApplyingPacket> getSelfClass() {
+        return C2STeamApplyingPacket.class;
+    }
+
+
+    @Override
+    public void handleServer(ServerPlayer serverPlayer, C2STeamApplyingPacket c2SModPacket, boolean b) {
+        ATServerTeam team = ATServerTeamData.getOrMakeDefault(serverPlayer.server).getTeam(name);
         if (team == null) {
-            player.sendSystemMessage(Component.literal("Team doesn't exist"));
+            serverPlayer.sendSystemMessage(Component.literal("Team doesn't exist"));
         } else {
-            var list = player.server.getPlayerList();
-            ServerPlayer seniorPlayer = list.getPlayer(team.getLeader());
-            team.addApplication(new Application(player.getUUID()));
-            NetworkUtils.sendToClient(new S2CTeamAppliedPacket(name, player.getUUID()), seniorPlayer);
+            team.addApplication(new Application(serverPlayer.getUUID()));
         }
     }
 }

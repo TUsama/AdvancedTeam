@@ -6,7 +6,7 @@ import com.clefal.teams.client.gui.components.ATCheckBox;
 import com.clefal.teams.client.gui.screens.hasteam.HasTeamScreen;
 import com.clefal.teams.server.ModComponents;
 import com.clefal.teams.network.server.C2STeamCreatePacket;
-import com.clefal.teams.platform.Services;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -40,7 +40,7 @@ public class TeamsCreateScreen extends TeamsInputScreen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         super.render(graphics, mouseX, mouseY, delta);
 
-        graphics.drawString(Minecraft.getInstance().font, Component.translatable("teams.menu.create.public").getString(), (int) (x + (float) (getWidth() - 100) / 2) + 13, y + 36, ChatFormatting.WHITE.getColor());
+        graphics.drawString(Minecraft.getInstance().font, Component.translatable("teams.menu.team_config.is_public").getString(), (int) (x + (float) (getWidth() - 100) / 2) + 13, y + 36, ChatFormatting.WHITE.getColor());
         this.isPublic.render(graphics, mouseX, mouseY, delta);
     }
 

@@ -7,7 +7,6 @@
   "mixins": [
     "ftbteams.ClientTeamManagerImplMixin",
     "mine_and_slash.InteractionNotifierMixin",
-    "mine_and_slash.MNSServerPlayerMixin",
     "mine_and_slash.ResourcesDataMixin",
     "mine_and_slash.TeamCommandMixin"
   ],

@@ -7,7 +7,7 @@ import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.clefal.teams.client.gui.components.ComponentButton;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2STeamJoinPacket;
-import com.clefal.teams.platform.Services;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

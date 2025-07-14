@@ -1,6 +1,5 @@
 package com.clefal.teams.modules;
 
-import com.clefal.teams.platform.Services;
 
 public interface IModule {
 

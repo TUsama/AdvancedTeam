@@ -6,7 +6,7 @@ import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2SAskNoTeamPlayerWithSkinPacket;
 import com.clefal.teams.network.server.C2STeamInvitePacket;
 import com.clefal.teams.server.ModComponents;
-import com.clefal.teams.platform.Services;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

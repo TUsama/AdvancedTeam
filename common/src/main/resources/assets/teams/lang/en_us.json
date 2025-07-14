@@ -45,7 +45,7 @@
   "teams.compat.mns_command": "You've install the Advanced Team mod, the MNS team command has been disabled. You can control your team relationship on GUI by clicking the button on the left-top inventory GUI.",
   "teams.button.kick": "Kick",
   "teams.button.promote": "Promote",
-
+  "teams.button.request": "Request",
   "key.teams.accept": "Accept Team",
   "key.teams.reject": "Reject Team",
   "key.teams.toggle_hud": "Toggle HUD",
@@ -71,6 +71,8 @@
   "teams.menu.team_config.save.success_toast.title": "Config Saved",
   "teams.menu.team_config.save.success_toast.subtitle": "Successfully save config!",
   "teams.effect_format.minute": "%s m",
-  "teams.effect_format.second": "%s"
+  "teams.effect_format.second": "%s",
+  "teams.server_config.shareAchievements.desc": "This require re-create the team after you change the config value.",
+  "teams.server_config.enableVanillaTeamCompat.desc": "This require re-create the team after you change the config value."
 
 }

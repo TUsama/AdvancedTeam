@@ -1,8 +1,8 @@
 package com.clefal.teams.network.client.config;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 
-abstract class S2CTeamConfigChangePacket<T> implements S2CModPacket {
+abstract class S2CTeamConfigChangePacket<T, MSG extends S2CModPacket<MSG>> implements S2CModPacket<MSG> {
     String name;
     T config;
 
@@ -11,4 +11,6 @@ abstract class S2CTeamConfigChangePacket<T> implements S2CModPacket {
         this.config = config;
     }
 
+    public S2CTeamConfigChangePacket() {
+    }
 }

@@ -1,12 +1,11 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
-import com.clefal.teams.client.gui.toast.ToastJoin;
-import com.clefal.teams.client.gui.toast.ToastLeave;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
+import com.clefal.teams.utils.ClientHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class S2CTeamUpdatePacket implements S2CModPacket {
+public class S2CTeamUpdatePacket implements S2CModPacket<S2CTeamUpdatePacket> {
 
     private static final String TEAM_KEY = "teamName";
     private static final String PLAYER_KEY = "playerName";
@@ -21,8 +20,7 @@ public class S2CTeamUpdatePacket implements S2CModPacket {
         tag.putBoolean(LOCAL_KEY, isLocal);
     }
 
-    public S2CTeamUpdatePacket(FriendlyByteBuf byteBuf) {
-        tag = byteBuf.readNbt();
+    public S2CTeamUpdatePacket() {
     }
 
     @Override
@@ -31,12 +29,22 @@ public class S2CTeamUpdatePacket implements S2CModPacket {
     }
 
     @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        tag = friendlyByteBuf.readNbt();
+    }
+
+    @Override
+    public Class<S2CTeamUpdatePacket> getSelfClass() {
+        return S2CTeamUpdatePacket.class;
+    }
+
+    @Override
     public void handleClient() {
         String team = tag.getString(TEAM_KEY);
         String player = tag.getString(PLAYER_KEY);
         S2CTeamUpdatePacket.Action action = S2CTeamUpdatePacket.Action.valueOf(tag.getString(ACTION_KEY));
         boolean isLocal = tag.getBoolean(LOCAL_KEY);
-        Helper.addJoinOrLeaveToast(action, team, player, isLocal);
+        ClientHelper.addJoinOrLeaveToast(action, team, player, isLocal);
     }
 
 

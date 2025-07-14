@@ -8,7 +8,7 @@ import com.clefal.teams.client.gui.components.ATEntryListTemplate;
 import com.clefal.teams.client.gui.screens.TeamsScreen;
 import com.clefal.teams.network.server.C2SPromotePacket;
 import com.clefal.teams.network.server.C2STeamKickPacket;
-import com.clefal.teams.platform.Services;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
@@ -34,7 +34,7 @@ public class TeammateEntryList extends ATEntryListTemplate {
         }
         setRenderBackground(false);
         updateSize(this.width, this.height, this.y0, screen.getY() + TeamsScreen.HEIGHT - 32);
-        setLeftPos(-10);
+        //setLeftPos(-10);
     }
 
 

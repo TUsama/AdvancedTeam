@@ -1,3 +1,32 @@
+### 1.6.2
+follow lib change
+
+### 1.6.1
+add a FTBTeams compat config to allow server OP disable this function.
+fix a FTBTeams compat bug that offline enabler doesn't work.
+clean up code.
+
+
+### 1.6.0
+## Breaking change!!! This will probably wipe the old team data after you update!
+so remember to back up your teams.dat!
+refactor data structure of the team
+use not intrusive way to handle the tick mixin, fix MNS mixin bug.
+if you find any bugs please report to GitHub!
+
+
+### 1.5.1
+fix a bug that can't find the player UUID after promoting
+fix a bug that can't show the tips when no public team
+hide "check request" button when players don't have permission
+fully implement the invitation and application function
+
+### 1.5.0
+(**Experience**)add FTB Teams compat, now the change made in this mod will be sync to FTB Teams. Let me know if there are any bugs!
+fix a bug that player can't leave the team when there is only one player in the team.
+fix a MNS duplicated damage particle bug.
+update dependency's version
+
 ### 1.4.4
 fix a crashing bug that passes null ResourceLocation.
 

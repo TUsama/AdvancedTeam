@@ -15,7 +15,7 @@ import com.clefal.teams.client.gui.screens.request.TeamApplicationScreen;
 import com.clefal.teams.client.gui.toast.ToastConfigSave;
 import com.clefal.teams.network.server.C2STeamLeavePacket;
 import com.clefal.teams.network.server.config.C2STeamConfigSavePacket;
-import com.clefal.teams.platform.Services;
+
 import com.clefal.teams.server.ModComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
@@ -54,8 +54,9 @@ public class HasTeamScreen extends TeamsScreen {
 
 
         if (ClientTeam.INSTANCE.hasPermissions() || AdvancedTeam.IN_DEV) {
-            menus = menus.prepend(new TeamConfigMenu(this)).reverse();
+            menus = menus.prepend(new TeamConfigMenu(this));
         }
+        menus = menus.reverse();
         menus.forEach(ITeamMenu::init);
 
         int YCursor = this.y + 3;
@@ -64,7 +65,6 @@ public class HasTeamScreen extends TeamsScreen {
             hasTeamMenuTab.setPosition(this.x - hasTeamMenuTab.getWidth() + 3, YCursor);
             YCursor += (int) (hasTeamMenuTab.getHeight() * 1.5f);
         }
-
         changeMenu(menus.head());
     }
 
@@ -115,8 +115,8 @@ public class HasTeamScreen extends TeamsScreen {
             screen.addRenderableWidget(leaveTeamButton);
             if (ClientTeam.INSTANCE.canInvite()){
                 screen.addRenderableWidget(inviteButton);
+                screen.addRenderableWidget(checkRequest);
             }
-            screen.addRenderableWidget(checkRequest);
         }
 
         @Override
@@ -135,6 +135,11 @@ public class HasTeamScreen extends TeamsScreen {
                     TeammateMenu teammateMenu = new TeammateMenu(screen);
                     teammateMenu.init();
                     screen.changeMenu(teammateMenu);
+                }
+
+                @Override
+                public boolean isInItsMenu() {
+                    return screen.currentMenu instanceof TeammateMenu;
                 }
 
                 @Override
@@ -157,7 +162,7 @@ public class HasTeamScreen extends TeamsScreen {
 
             this.leaveTeamButton = Button.builder(ModComponents.LEAVE_TEXT, button -> {
                 NetworkUtils.sendToServer(new C2STeamLeavePacket());
-                minecraft.setScreen(new NoTeamScreen(screen));
+                minecraft.setScreen(new NoTeamScreen(null));
             }).bounds(screen.width / 2 - 125, screen.y + HEIGHT - 30, 80, 20).build();
 
             this.inviteButton = Button.builder(ModComponents.INVITE_TEXT, button -> minecraft.setScreen(new TeamsInvitePlayerScreen(screen)))
@@ -169,7 +174,7 @@ public class HasTeamScreen extends TeamsScreen {
             if (ClientTeam.INSTANCE.canInvite()){
                 PlaceUtils.placeThreeButton(screen, leaveTeamButton, inviteButton, checkRequest);
             } else {
-                PlaceUtils.placeTwoButton(screen, leaveTeamButton, checkRequest);
+                PlaceUtils.placeOneButton(screen, leaveTeamButton);
             }
 
         }
@@ -215,6 +220,11 @@ public class HasTeamScreen extends TeamsScreen {
                     TeamConfigMenu teamConfigMenu1 = new TeamConfigMenu(screen);
                     teamConfigMenu1.init();
                     screen.changeMenu(teamConfigMenu1);
+                }
+
+                @Override
+                public boolean isInItsMenu() {
+                    return screen.currentMenu instanceof TeamConfigMenu;
                 }
 
                 @Override

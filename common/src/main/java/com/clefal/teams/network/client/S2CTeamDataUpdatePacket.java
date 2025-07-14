@@ -1,6 +1,6 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.teams.client.core.ClientTeamData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -8,7 +8,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class S2CTeamDataUpdatePacket implements S2CModPacket {
+public class S2CTeamDataUpdatePacket implements S2CModPacket<S2CTeamDataUpdatePacket> {
 
     private static final String TEAM_KEY = "teamName";
     private static final String TYPE_KEY = "type";
@@ -32,13 +32,23 @@ public class S2CTeamDataUpdatePacket implements S2CModPacket {
         tag.putString(TYPE_KEY, type.name());
     }
 
-    public S2CTeamDataUpdatePacket(FriendlyByteBuf byteBuf) {
-        tag = byteBuf.readNbt();
+    public S2CTeamDataUpdatePacket() {
+
     }
 
     @Override
     public void write(FriendlyByteBuf to) {
         to.writeNbt(tag);
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        tag = friendlyByteBuf.readNbt();
+    }
+
+    @Override
+    public Class<S2CTeamDataUpdatePacket> getSelfClass() {
+        return S2CTeamDataUpdatePacket.class;
     }
 
     @Override

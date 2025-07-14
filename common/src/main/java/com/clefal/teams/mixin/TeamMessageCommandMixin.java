@@ -26,7 +26,7 @@ public abstract class TeamMessageCommandMixin {
     @Shadow private static void sendMessage(CommandSourceStack pSource, Entity pSender, PlayerTeam pTeam, List<ServerPlayer> pTeamMembers, PlayerChatMessage pChatMessage) {
         throw new AssertionError();
     }
-
+/*
     //private static synthetic lambda$register$2(Lcom/mojang/brigadier/context/CommandContext;)I throws com/mojang/brigadier/exceptions/CommandSyntaxException
     @Inject(method = "*(Lcom/mojang/brigadier/context/CommandContext;)I",at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getTeam()Lnet/minecraft/world/scores/Team;"),
             locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
@@ -41,5 +41,5 @@ public abstract class TeamMessageCommandMixin {
             }
             cir.setReturnValue(list.size());
         }
-    }
+    }*/
 }

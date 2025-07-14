@@ -4,10 +4,11 @@ import com.clefal.nirvana_lib.utils.NetworkUtils;
 import com.clefal.teams.AdvancedTeam;
 import com.clefal.teams.client.core.property.impl.Health;
 import com.clefal.teams.event.server.ServerFreezePropertyUpdateEvent;
-import com.clefal.teams.network.client.S2CInvitationPacket;
+import com.clefal.teams.event.server.ServerPlayerTickJobEvent;
+import com.clefal.teams.network.client.S2CSyncRenderMatPacket;
 import com.clefal.teams.network.client.S2CTeamPlayerDataPacket;
-import com.clefal.teams.platform.Services;
 import com.clefal.teams.server.*;
+import com.clefal.teams.utils.ServerHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,11 +22,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
     @Unique
-    private final List<Invitation> invitations = new ArrayList<>();
+    private final Map<String, Invitation> invitations = new ConcurrentHashMap<>();
     @Unique
     private final Set<String> advancedTeam$updateKey = new HashSet<>(10);
     @Shadow
@@ -58,7 +60,31 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
     }
 
     @Override
-    public List<Invitation> getInvitations() {
+    public void addInvitation(Invitation invitation) {
+        ServerHelper.addInv(invitations, invitation, self());
+    }
+
+    @Override
+    public void tickInvitations() {
+        Map<String, Invitation> invitations = getInvitations();
+        Iterator<Map.Entry<String, Invitation>> iterator = invitations.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String, Invitation> next = iterator.next();
+            if (next.getValue().update()){
+                NetworkUtils.sendToClient(new S2CSyncRenderMatPacket(next.getKey(), S2CSyncRenderMatPacket.Action.REMOVE, S2CSyncRenderMatPacket.Type.INVITATION), self());
+                iterator.remove();
+            }
+        }
+    }
+
+
+    @Override
+    public void clearInvitations() {
+        invitations.forEach((x ,y) -> y.markRemoval());
+    }
+
+    @Override
+    public Map<String, Invitation> getInvitations() {
         return invitations;
     }
 
@@ -88,28 +114,7 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
 
     @Inject(at = @At(value = "TAIL"), method = "tick")
     private void tickJob(CallbackInfo ci) {
-        ListIterator<Invitation> invitationListIterator = getInvitations().listIterator();
-        ServerPlayer serverPlayer = self();
-        //tick invitation
-        while (invitationListIterator.hasNext()) {
-            Invitation next = invitationListIterator.next();
-            if (next.update()) {
-                invitationListIterator.remove();
-                NetworkUtils.sendToClient(new S2CInvitationPacket(next.teamName, S2CInvitationPacket.Type.REMOVE), serverPlayer);
-            }
-        }
-        //tick property update.
-        if (!advancedTeam$updateKey.isEmpty()) {
-            com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet<String> result = AdvancedTeam.post(new ServerFreezePropertyUpdateEvent(this.advancedTeam$updateKey)).getResult();
-            if (team != null) {
-                List<ServerPlayer> players = team.getOnlinePlayers().asJava();
-                S2CTeamPlayerDataPacket s2CTeamPlayerDataPacket = new S2CTeamPlayerDataPacket(self(), S2CTeamPlayerDataPacket.Type.UPDATE, result);
-                //this keys collection is only initialized when we need to send an UPDATE type packet.
-                NetworkUtils.sendToClients(s2CTeamPlayerDataPacket, players);
-            }
-            clear();
-        }
-
+        AdvancedTeam.post(new ServerPlayerTickJobEvent(self()));
     }
 
     private ServerPlayer self() {
@@ -124,5 +129,19 @@ public abstract class ServerPlayerMixin implements IHasTeam, IPropertySender {
     @Override
     public void clear() {
         this.advancedTeam$updateKey.clear();
+    }
+
+    @Override
+    public void handleUpdate() {
+        if (!advancedTeam$updateKey.isEmpty()) {
+            com.clefal.nirvana_lib.relocated.io.vavr.collection.HashSet<String> result = AdvancedTeam.post(new ServerFreezePropertyUpdateEvent(this.advancedTeam$updateKey)).getResult();
+            if (team != null) {
+                List<ServerPlayer> players = team.getOnlinePlayers().asJava();
+                S2CTeamPlayerDataPacket s2CTeamPlayerDataPacket = new S2CTeamPlayerDataPacket(self(), S2CTeamPlayerDataPacket.Type.UPDATE, result);
+                //this keys collection is only initialized when we need to send an UPDATE type packet.
+                NetworkUtils.sendToClients(s2CTeamPlayerDataPacket, players);
+            }
+            clear();
+        }
     }
 }

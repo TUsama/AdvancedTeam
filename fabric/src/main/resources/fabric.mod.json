@@ -3,17 +3,17 @@
   "id": "${mod_id}",
   "version": "${version}",
 
-  "name": "Teams Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Advanced Team",
+  "description": "Team up with your friends!",
   "authors": [
-    "CommodoreThrawn","Tfarcenim"
+    "CommodoreThrawn","Tfarcenim", "Clefal"
   ],
   "contact": {
-    "sources": "https://github.com/Tfarcenim/teamshud"
+    "sources": "https://github.com/TUsama/AdvancedTeam"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "MIT License",
+  "icon": "assets/teams/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -21,7 +21,7 @@
       "com.clefal.teams.AdvancedTeamFabric"
     ],
     "client": [
-      "com.clefal.teams.client.TeamsHUDClientFabric"
+      "com.clefal.teams.client.AdvancedTeamClientFabric"
     ]
   },
   "mixins": [
@@ -32,6 +32,7 @@
   "depends": {
     "fabricloader": ">=0.15.0",
     "fabric-api": "*",
-    "java": ">=17"
+    "java": ">=17",
+    "nirvana_lib": ">=1.1.10"
   }
 }

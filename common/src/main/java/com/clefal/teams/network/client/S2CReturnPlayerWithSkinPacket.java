@@ -1,13 +1,14 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.teams.client.gui.util.PlayerWithSkin;
+import com.clefal.teams.utils.ClientHelper;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
 
-public class S2CReturnPlayerWithSkinPacket implements S2CModPacket {
+public class S2CReturnPlayerWithSkinPacket implements S2CModPacket<S2CReturnPlayerWithSkinPacket> {
 
     public enum Usage{
         INVITATION,
@@ -22,22 +23,15 @@ public class S2CReturnPlayerWithSkinPacket implements S2CModPacket {
         this.usage = usage;
     }
 
-    public S2CReturnPlayerWithSkinPacket(FriendlyByteBuf byteBuf) {
-        java.util.List<PlayerWithSkin> objects = byteBuf.readCollection(x -> new ArrayList<>(), buf -> new PlayerWithSkin(
-                buf.readUtf(), buf.readUUID(), buf.readUtf(), buf.readUtf()
-        ));
-        playersName = List.ofAll(objects);
-        usage = byteBuf.readEnum(Usage.class);
+    public S2CReturnPlayerWithSkinPacket() {
     }
-
 
     @Override
     public void handleClient() {
         switch (usage){
-            case INVITATION -> Helper.tryUpdateInvitationScreenEntryList(playersName);
+            case INVITATION -> ClientHelper.tryUpdateInvitationScreenEntryList(playersName);
             case REQUEST -> {
-                System.out.println(playersName);
-                Helper.tryUpdateApplicationScreenEntryList(playersName);
+                ClientHelper.tryUpdateApplicationScreenEntryList(playersName);
             }
         }
 
@@ -52,5 +46,19 @@ public class S2CReturnPlayerWithSkinPacket implements S2CModPacket {
             buf.writeUtf(playerWithSkin.signature());
         });
         to.writeEnum(usage);
+    }
+
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        java.util.List<PlayerWithSkin> objects = friendlyByteBuf.readCollection(x -> new ArrayList<>(), buf -> new PlayerWithSkin(
+                buf.readUtf(), buf.readUUID(), buf.readUtf(), buf.readUtf()
+        ));
+        playersName = List.ofAll(objects);
+        usage = friendlyByteBuf.readEnum(Usage.class);
+    }
+
+    @Override
+    public Class<S2CReturnPlayerWithSkinPacket> getSelfClass() {
+        return S2CReturnPlayerWithSkinPacket.class;
     }
 }

@@ -1,14 +1,15 @@
 package com.clefal.teams.network.client;
 
-import com.clefal.nirvana_lib.network.S2CModPacket;
+import com.clefal.nirvana_lib.network.newtoolchain.S2CModPacket;
 import com.clefal.teams.client.core.ClientTeam;
+import com.clefal.teams.utils.ClientHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
 
-public class S2CTeamAppliedPacket implements S2CModPacket {
+public class S2CTeamAppliedPacket implements S2CModPacket<S2CTeamAppliedPacket> {
 
 
     CompoundTag tag = new CompoundTag();
@@ -18,8 +19,8 @@ public class S2CTeamAppliedPacket implements S2CModPacket {
         tag.putUUID(S2CTeamPlayerDataPacket.ID_KEY, id);
     }
 
-    public S2CTeamAppliedPacket(FriendlyByteBuf byteBuf) {
-        tag = byteBuf.readNbt();
+    public S2CTeamAppliedPacket() {
+
     }
 
     @Override
@@ -27,11 +28,21 @@ public class S2CTeamAppliedPacket implements S2CModPacket {
         to.writeNbt(tag);
     }
 
+    @Override
+    public void read(FriendlyByteBuf friendlyByteBuf) {
+        tag = friendlyByteBuf.readNbt();
+    }
+
+    @Override
+    public Class<S2CTeamAppliedPacket> getSelfClass() {
+        return S2CTeamAppliedPacket.class;
+    }
+
 
     @Override
     public void handleClient() {
         String name = tag.getString(S2CTeamPlayerDataPacket.NAME_KEY);
         UUID id = tag.getUUID(S2CTeamPlayerDataPacket.ID_KEY);
-        Helper.addRequestToast(ClientTeam.INSTANCE.getName(), name, id);
+        ClientHelper.addRequestToast(ClientTeam.INSTANCE.getName(), name, id);
     }
 }

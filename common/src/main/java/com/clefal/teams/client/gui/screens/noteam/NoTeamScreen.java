@@ -49,8 +49,8 @@ public class NoTeamScreen extends TeamsScreen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         super.render(graphics, mouseX, mouseY, delta);
-        if (ClientTeamData.INSTANCE.getOnlineTeams().isEmpty()) {
-            int textWidth = font.width(ModComponents.LONELY_TEXT);
+        if (ClientTeamData.INSTANCE.noPublicTeam()) {
+            int textWidth = font.width(ModComponents.LONELY_TEXT.getString());
             int textHeight = font.lineHeight;
             graphics.drawString(font, ModComponents.LONELY_TEXT, (this.width - textWidth) / 2, y + 24 - (textHeight / 2), ChatFormatting.BLACK.getColor(),false);
         } else {

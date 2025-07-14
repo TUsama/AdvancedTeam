@@ -15,22 +15,7 @@ class ClientTeamImpl implements ClientTeam {
 
     private Minecraft client = Minecraft.getInstance();
     private UUID leader;
-    private Map<UUID, Teammate> teammates = new TreeMap<>(new Comparator<>() {
-        @Override
-        public int compare(UUID uuid, UUID t1) {
-            if (uuid.equals(t1)) return 0;
-            int value;
-            if (uuid.equals(leader)) {
-                value = -1;
-            } else if (t1.equals(leader)) {
-                value = 1;
-            } else {
-                value = uuid.compareTo(t1);
-            }
-            return value;
-        }
-
-    });
+    private Map<UUID, Teammate> teammates = new HashMap<>();
     private boolean initialized = false;
     private String name = "";
     private boolean hasPermission;
@@ -105,12 +90,22 @@ class ClientTeamImpl implements ClientTeam {
 
     @Override
     public boolean isTeamEmpty() {
-        return teammates.size() == 0 || (teammates.size() == 1 && teammates.get(client.player.getUUID()) != null);
+        return teammates.isEmpty() || (teammates.size() == 1 && teammates.get(client.player.getUUID()) != null);
     }
 
     @Override
     public List<Teammate> getTeammates() {
-        return ImmutableList.copyOf(teammates.values());
+        ImmutableList.Builder<Teammate> builder = ImmutableList.<Teammate>builder();
+        Teammate leader = teammates.get(this.leader);
+        if (leader != null){
+            builder.add(leader);
+        }
+        for (Teammate teammate : teammates.values()) {
+            if (teammate.id.equals(this.leader)) continue;
+            builder.add(teammate);
+        }
+
+        return builder.build();
     }
 
     public boolean hasPlayer(UUID player) {
@@ -136,12 +131,13 @@ class ClientTeamImpl implements ClientTeam {
             for (IProperty property : properties) {
                 teammate.addProperty(property);
             }
-
         } else {
             // it means that the update is earlier than the client joins the world.
             // this should be ignored
-            if (teammates.get(client.player.getUUID()) != null)
+            if (teammates.get(client.player.getUUID()) != null) {
                 AdvancedTeam.LOGGER.warn("Tried updating player with UUID " + player + ", but they are not in this client team");
+                AdvancedTeam.LOGGER.info(teammates.keySet().toString());
+            }
         }
     }
 

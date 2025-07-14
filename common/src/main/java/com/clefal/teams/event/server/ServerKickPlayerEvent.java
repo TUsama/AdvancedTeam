@@ -7,9 +7,12 @@ import java.util.UUID;
 public class ServerKickPlayerEvent extends ServerEvent{
     public String teamName;
     public ServerPlayer toKick;
+    public ServerPlayer kicker;
 
-    public ServerKickPlayerEvent(String teamName, ServerPlayer toKick) {
-        this.teamName = teamName;
+    public ServerKickPlayerEvent(ServerPlayer kicker, ServerPlayer toKick, String teamName) {
+        this.kicker = kicker;
         this.toKick = toKick;
+        this.teamName = teamName;
     }
+
 }

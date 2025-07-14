@@ -1,6 +1,7 @@
 package com.clefal.teams.client;
 
-import com.clefal.teams.AdvancedTeamsHUDClient;
+import com.clefal.teams.AdvancedTeam;
+import com.clefal.teams.AdvancedTeamClient;
 import com.clefal.teams.client.gui.hud.CompassOverlay;
 import com.clefal.teams.client.gui.hud.StatusOverlay;
 import com.clefal.teams.client.gui.inventory.InventoryButton;
@@ -14,10 +15,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.KeyMapping;
 
-public class TeamsHUDClientFabric implements ClientModInitializer {
+public class AdvancedTeamClientFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        AdvancedTeam.clientInit();
+
         // Register HUDs
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             StatusOverlay.INSTANCE.render(graphics);
@@ -26,8 +29,8 @@ public class TeamsHUDClientFabric implements ClientModInitializer {
 
 
         // Register events
-        ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> AdvancedTeamsHUDClient.resetClientTeamStatus());
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> AdvancedTeamsHUDClient.resetClientTeamStatus());
+        ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> AdvancedTeamClient.resetClientTeamStatus());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> AdvancedTeamClient.resetClientTeamStatus());
 
         //add button on inventory
         ScreenEvents.AFTER_INIT.register(InventoryButton::afterScreenInit);

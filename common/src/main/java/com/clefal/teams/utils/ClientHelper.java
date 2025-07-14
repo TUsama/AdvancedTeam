@@ -1,10 +1,11 @@
-package com.clefal.teams.network.client;
+package com.clefal.teams.utils;
 
 import com.clefal.nirvana_lib.relocated.io.vavr.collection.List;
 import com.clefal.teams.client.gui.screens.invite.TeamsInvitePlayerScreen;
 import com.clefal.teams.client.gui.screens.request.TeamApplicationScreen;
 import com.clefal.teams.client.gui.toast.*;
 import com.clefal.teams.client.gui.util.PlayerWithSkin;
+import com.clefal.teams.network.client.S2CTeamUpdatePacket;
 import lombok.experimental.UtilityClass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
@@ -12,7 +13,7 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import java.util.UUID;
 
 @UtilityClass
-public class Helper {
+public class ClientHelper {
 
     public void addToast(Toast toast){
         Minecraft.getInstance().getToasts().addToast(toast);
@@ -26,7 +27,7 @@ public class Helper {
         addToast(new ToastInvited(team));
     }
 
-    public void addJoinOrLeaveToast(S2CTeamUpdatePacket. Action action, String team, String name, boolean local){
+    public void addJoinOrLeaveToast(S2CTeamUpdatePacket.Action action, String team, String name, boolean local){
         switch (action) {
             case JOINED -> addToast(new ToastJoin(team, name, local));
             case LEFT -> addToast(new ToastLeave(team, name, local));

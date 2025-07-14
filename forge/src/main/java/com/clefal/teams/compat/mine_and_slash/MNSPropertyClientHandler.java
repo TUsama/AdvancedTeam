@@ -7,7 +7,6 @@ import com.clefal.teams.client.core.ClientTeam;
 import com.clefal.teams.client.core.property.renderer.RendererManager;
 import com.clefal.teams.client.gui.util.VertexContainer;
 import com.clefal.teams.compat.mine_and_slash.property.*;
-import com.clefal.teams.config.ATClientConfig;
 import com.clefal.teams.event.client.ClientReadPropertyEvent;
 import com.clefal.teams.event.client.ClientRegisterPropertyRendererEvent;
 import com.clefal.teams.modules.internal.propertyhandler.IProperty;
@@ -20,7 +19,6 @@ import com.robertx22.mine_and_slash.saveclasses.unit.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Iterator;

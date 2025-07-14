@@ -1,12 +1,9 @@
 package com.clefal.teams.utils;
 
-import com.clefal.teams.compat.ftbteams.FTBTeamsCompatModule;
 import com.clefal.teams.compat.mine_and_slash.MineAndSlashCompatModule;
-import com.clefal.teams.compat.mine_and_slash.property.MNSStatusEffect;
+import com.clefal.teams.modules.compat.ftbteams.FTBTeamsCompatModule;
 import com.clefal.teams.server.IHasTeam;
-import com.clefal.teams.server.IPropertySender;
 import com.robertx22.library_of_exile.main.Packets;
-import com.robertx22.mine_and_slash.uncommon.datasaving.Load;
 import com.robertx22.mine_and_slash.vanilla_mc.packets.interaction.ExileInteractionResultPacket;
 import com.robertx22.mine_and_slash.vanilla_mc.packets.interaction.IParticleSpawnMaterial;
 import dev.ftb.mods.ftbteams.api.client.KnownClientPlayer;
@@ -29,6 +26,7 @@ public class MixinHelper {
             IHasTeam player = (IHasTeam) source;
             if (player.hasTeam()) {
                 for (ServerPlayer onlinePlayer : player.getTeam().getOnlinePlayers()) {
+                    if (onlinePlayer.equals(source)) continue;
                     if (source.distanceToSqr(onlinePlayer) <= Math.pow(MineAndSlashCompatModule.getServerConfig().sendParticleWhenWithinRange.get(), 2)) Packets.sendToClient(onlinePlayer, new ExileInteractionResultPacket(target.getId(), notifier));
                 }
             }
@@ -36,18 +34,9 @@ public class MixinHelper {
 
     }
 
-    public void updateStatusEffects(ServerPlayer player){
-        if (MineAndSlashCompatModule.INSTANCE.isModuleEnabled){
-            IPropertySender propertySender = (IPropertySender) player;
-            IHasTeam hasTeam = (IHasTeam) player;
-            if (hasTeam.hasTeam() && !Load.Unit(player).getStatusEffectsData().exileMap.isEmpty()){
-                propertySender.addUpdate(MNSStatusEffect.KEY);
-            }
-        }
-    }
 
     public void enableOfflineForFTBTeams(KnownClientPlayer selfKnown, Map<UUID, KnownClientPlayer> knownPlayers, CallbackInfo info){
-        if (FTBTeamsCompatModule.INSTANCE.isModuleEnabled && FTBTeamsCompatModule.getServerConfig().enableOfflineSupport && !ModList.get().isLoaded("ftb_teams_offline_enabler")){
+        if (FTBTeamsCompatModule.isModuleEnabled && FTBTeamsCompatModule.getServerConfig().enableOfflineSupport && !ModList.get().isLoaded("ftb_teams_offline_enabler")){
             String userName = Minecraft.getInstance().getUser().getName();
             UUID offlinePlayerUUID = UUIDUtil.createOfflinePlayerUUID(userName);
             selfKnown = knownPlayers.get(offlinePlayerUUID);
