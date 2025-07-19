@@ -231,10 +231,6 @@ public class ATServerTeam extends Team {
         AdvancedTeam.post(new ServerOnPlayerOnlineEvent(player));
     }
 
-    public Stream<UUID> getPlayerUuids() {
-        return players.stream();
-    }
-
     public void onPlayerOffline(ServerPlayer player, boolean sendPackets) {
         onlinePlayers.remove(player.getUUID());
         // Packets
@@ -244,7 +240,7 @@ public class ATServerTeam extends Team {
                 NetworkUtils.sendToClients(new S2CTeamDataUpdatePacket(S2CTeamDataUpdatePacket.Type.OFFLINE, name), players);
             }
             var players = getOnlinePlayers();
-            NetworkUtils.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.REMOVE), players.toJavaList());
+            NetworkUtils.sendToClients(new S2CTeamPlayerDataPacket(player, S2CTeamPlayerDataPacket.Type.REMOVE), players);
         }
     }
 

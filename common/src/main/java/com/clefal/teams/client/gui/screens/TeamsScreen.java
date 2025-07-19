@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 public abstract class TeamsScreen extends Screen {
     public static final int WIDTH = 256;
     public static final int HEIGHT = 166;
-    protected static final ResourceLocation TEXTURE = new ResourceLocation(AdvancedTeam.MODID, "textures/gui/screen_background.png");
+    protected static final ResourceLocation TEXTURE = AdvancedTeam.id("textures/gui/screen_background.png");
     @Nullable
     public final Screen parent;
     @Getter
