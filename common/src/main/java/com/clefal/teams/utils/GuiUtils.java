@@ -16,8 +16,10 @@ public class GuiUtils {
         Component formatDuration;
         if (duration >= 20 * 60){
             formatDuration =  Component.translatable("teams.effect_format.minute", duration / (20 * 60));
-        } else {
+        } else if (duration >= 0){
             formatDuration = Component.translatable("teams.effect_format.second", duration / 20);
+        } else {
+            formatDuration = Component.literal("∞");
         }
 
         String string = formatDuration.getString();
@@ -47,7 +49,7 @@ public class GuiUtils {
         float xf = xp * antiScale;
         float yf = yp * antiScale;
         pose.translate(xf, yf, 0);
-        gui.drawString(Minecraft.getInstance().font, number, 0, 0, ChatFormatting.WHITE.getColor());
+        if (!number.isEmpty()) gui.drawString(Minecraft.getInstance().font, number, 0, 0, ChatFormatting.WHITE.getColor());
 
         if (hasWord){
             pose.translate(textWidthMinus, 0, 0);
