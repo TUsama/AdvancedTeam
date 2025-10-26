@@ -1,3 +1,6 @@
+### 1.4.6
+add infinite time effect support
+
 ### 1.4.5(Rollback)
 rollback version due to an unknown bug.
 completely remove FTB Teams compat.
